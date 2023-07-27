@@ -2,8 +2,6 @@
 
 <Include file='actionbars\actionbars.xml'/>
 <Include file='blizzard\blizzard.xml'/>
-<Include file='chat\chat.xml'/>
-<Include file='maps\maps.xml'/>
 <Include file='nameplates\nameplates.xml'/>
 <Include file='objectives\objectives.xml'/>
 <Include file='unitframes\unitframes.xml'/>
