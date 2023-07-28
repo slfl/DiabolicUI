@@ -51,11 +51,7 @@ local LeftOrb = function(self, unit)
 	Health.PostUpdate = function(self)
 		local min, max = self:GetMinMaxValues()
 		local value = self:GetValue()
-		if UnitAffectingCombat("player") then
 			self.Value:Show()
-		else
-			self.Value:Hide()
-		end
 	end
 	
 	-- CastBar
@@ -148,11 +144,7 @@ local RightOrb = function(self, unit)
 	Power.PostUpdate = function(self)
 		local min, max = self:GetMinMaxValues()
 		local value = self:GetValue()
-		if UnitAffectingCombat("player") then
 			self.Value:Show()
-		else
-			self.Value:Hide()
-		end
 	end
 	
 	self.Power = Power
