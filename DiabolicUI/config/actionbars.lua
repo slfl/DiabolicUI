@@ -1,4 +1,4 @@
-local ADDON, Engine = ...
+﻿local ADDON, Engine = ...
 local path = ([[Interface\AddOns\%s\media\]]):format(ADDON)
 
 -- actionbutton sizes in various modes
@@ -117,7 +117,7 @@ local config = {
 					yoffset = 0
 				},
 				size = { sidebar_inset + buttonsize.triple + padding_small, buttonsize.triple*num_pet_buttons + padding_small*(num_pet_buttons-1) },
-				-- we’re using a different size for vehicles since the quest tracker might be anchored to this
+				-- weвЂ™re using a different size for vehicles since the quest tracker might be anchored to this
 				size_vehicle = { sidebar_inset, buttonsize.triple*num_pet_buttons + padding_small*(num_pet_buttons-1) }
 			},
 			
@@ -166,6 +166,16 @@ local config = {
 					["2"] = { 2 + buttonsize.double*num_buttons + padding*(num_buttons-1) + 2, 10 },
 					["3"] = { 2 + buttonsize.triple*num_buttons + padding*(num_buttons-1) + 2, 10 }
 				}
+			},
+
+			rep = {
+				position = { "TOP", 0, 10 + 6 }, -- Same as xp position, used when XP is disabled
+				size = {
+					["1"] = { 2 + buttonsize.single*num_buttons + padding*(num_buttons-1) + 2, 10 },
+					["2"] = { 2 + buttonsize.double*num_buttons + padding*(num_buttons-1) + 2, 10 },
+					["3"] = { 2 + buttonsize.triple*num_buttons + padding*(num_buttons-1) + 2, 10 }
+				},
+				offset = 12 -- Offset above XP bar when both are shown
 			}
 			
 		},
@@ -309,7 +319,17 @@ local config = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
 					texture = path .. [[textures\DiabolicUI_ActionBarArt1BarXP.tga]]
-				}, 
+				},
+				centerrep = {
+					size = { 1024, 256 },
+					position = { "BOTTOM", 0, -artwork_offscreen },
+					texture = path .. [[textures\DiabolicUI_ActionBarArt1BarXP.tga]] -- Reuse XP texture or replace with rep-specific
+				},
+				skullrep = {
+					size = { 512, 128 },
+					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
+					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
+				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset - skulloffset },
@@ -342,6 +362,16 @@ local config = {
 					position = { "BOTTOM", 0, -artwork_offscreen },
 					texture = path .. [[textures\DiabolicUI_ActionBarArt2BarsXP.tga]]
 				},
+				centerrep = {
+					size = { 1024, 256 },
+					position = { "BOTTOM", 0, -artwork_offscreen },
+					texture = path .. [[textures\DiabolicUI_ActionBarArt2BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
+				},
+				skullrep = {
+					size = { 512, 128 },
+					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
+					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
+				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset - skulloffset },
@@ -373,6 +403,16 @@ local config = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
 					texture = path .. [[textures\DiabolicUI_ActionBarArt3BarsXP.tga]]
+				},
+				centerrep = {
+					size = { 1024, 256 },
+					position = { "BOTTOM", 0, -artwork_offscreen },
+					texture = path .. [[textures\DiabolicUI_ActionBarArt3BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
+				},
+				skullrep = {
+					size = { 512, 128 },
+					position = { "BOTTOM", 0, bar_inset + buttonsize.triple*3 + padding*2 + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
+					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
 				},
 				skull = {
 					size = { 512, 128 },
