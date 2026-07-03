@@ -1574,7 +1574,7 @@ ActionButton.HasAction               = function(self) return HasAction(self.acti
 ActionButton.GetActionText           = function(self) return GetActionText(self.action_by_state) end
 ActionButton.GetTexture              = function(self) return GetActionTexture(self.action_by_state) end
 ActionButton.GetCharges              = function(self) 
-	return (Engine:IsBuild("MoP") and GetActionCharges(self.action_by_state))
+	return nil -- action charges don't exist in WotLK
 end
 ActionButton.GetCount                = function(self) return GetActionCount(self.action_by_state) end
 ActionButton.GetCooldown             = function(self) return GetActionCooldown(self.action_by_state) end
@@ -1586,7 +1586,6 @@ ActionButton.IsUsable                = function(self) return IsUsableAction(self
 ActionButton.IsConsumableOrStackable = function(self) 
 	return IsConsumableAction(self.action_by_state) 
 		or IsStackableAction(self.action_by_state) 
-		or (Engine:IsBuild("MoP") and (not IsItemAction(self.action_by_state) and GetActionCount(self.action_by_state) > 0))
 end
 ActionButton.IsUnitInRange           = function(self, unit) return IsActionInRange(self.action_by_state, unit) end
 ActionButton.SetTooltip              = function(self) return GameTooltip:SetAction(self.action_by_state) end
@@ -2093,11 +2092,7 @@ ButtonWidget.New = function(self, buttonType, id, header)
 		button:SetScript("OnUpdate", nil)
 		
 	elseif buttonType == "stance" then
-		if Engine:IsBuild("MoP") then
-			button = setmetatable(CreateFrame("CheckButton", name , header, "StanceButtonTemplate"), Button_MT)
-		else
-			button = setmetatable(CreateFrame("CheckButton", name , header, "ShapeshiftButtonTemplate"), Button_MT)
-		end
+		button = setmetatable(CreateFrame("CheckButton", name , header, "ShapeshiftButtonTemplate"), Button_MT)
 		button:UnregisterAllEvents()
 		button:SetScript("OnEvent", nil)
 		
@@ -2153,38 +2148,20 @@ ButtonWidget.New = function(self, buttonType, id, header)
 	-- 		value = detail of the thing on the cursor 
 	--
 	-- returns: ["clear",] kind, value
-	if Engine:IsBuild("MoP") then
-		header:WrapScript(button, "OnDragStart", [[
-			local button_state = self:GetParent():GetAttribute("state"); 
-			if not button_state then
-				return
-			end
-			local action_by_state = self:GetAttribute(format("action-by-state-%s", button_state));
-			local type_by_state = self:GetAttribute(format("type-by-state-%s", button_state));
-			if action_by_state and 
-			(IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown()) then
-			--(IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown()) or 
-			--(not self:GetAttribute("buttonlock") or IsModifiedClick("PICKUPACTION")) then
-				return "action", action_by_state
-			end
-		]])
-	else
-		header:WrapScript(button, "OnDragStart", [[
-			local button_state = self:GetParent():GetAttribute("state"); 
-			if not button_state then
-				return
-			end
-			local action_by_state = self:GetAttribute(format("action-by-state-%s", button_state));
-			local type_by_state = self:GetAttribute(format("type-by-state-%s", button_state));
-			if action_by_state and 
-			(IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown()) then
-			--(IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown()) or 
-			--(not self:GetAttribute("buttonlock") or IsModifiedClick("PICKUPACTION")) then
-				return "action", action_by_state
-			end
-		]])
-
-	end
+	header:WrapScript(button, "OnDragStart", [[
+		local button_state = self:GetParent():GetAttribute("state"); 
+		if not button_state then
+			return
+		end
+		local action_by_state = self:GetAttribute(format("action-by-state-%s", button_state));
+		local type_by_state = self:GetAttribute(format("type-by-state-%s", button_state));
+		if action_by_state and 
+		(IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown()) then
+		--(IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown()) or 
+		--(not self:GetAttribute("buttonlock") or IsModifiedClick("PICKUPACTION")) then
+			return "action", action_by_state
+		end
+	]])
 	setmetatable(button, button_type_meta_map[buttonType]) -- assign correct metatable
 
 
@@ -2208,20 +2185,12 @@ ButtonWidget.New = function(self, buttonType, id, header)
 	button.icon.dark = button:CreateTexture(nil, "OVERLAY")
 	button.icon.dark:Hide()
 	button.icon.dark:SetAllPoints(button.icon)
-	if Engine:IsBuild("Legion") then
-		button.icon.dark:SetColorTexture(.3, .3, .3, 1)
-	else
-		button.icon.dark:SetTexture(.3, .3, .3, 1)
-	end
+	button.icon.dark:SetTexture(.3, .3, .3, 1)
 
 	-- flash
 	button.flash = button:CreateTexture(nil, "OVERLAY")
 	button.flash:SetAllPoints(button.icon)
-	if Engine:IsBuild("Legion") then
-		button.flash:SetColorTexture(.7, 0, 0, .3)
-	else
-		button.flash:SetTexture(.7, 0, 0, .3)
-	end
+	button.flash:SetTexture(.7, 0, 0, .3)
 	button.flash:Hide()
 
 	-- We're doing these ourselves with our own system, 
@@ -2272,11 +2241,7 @@ ButtonWidget.New = function(self, buttonType, id, header)
 	-- let blizz handle this one
 	button.pushed = button:CreateTexture(nil, "OVERLAY")
 	button.pushed:SetAllPoints(button.icon)
-	if Engine:IsBuild("Legion") then
-		button.pushed:SetColorTexture(1, 1, 1, .25)
-	else
-		button.pushed:SetTexture(1, 1, 1, .25)
-	end
+	button.pushed:SetTexture(1, 1, 1, .25)
 	--button.pushed:SetTexture(1, .97, 0, .25)
 
 	button:SetPushedTexture(button.pushed)

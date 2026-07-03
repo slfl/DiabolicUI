@@ -352,41 +352,6 @@ local Style = function(self, unit)
 	
 	
 	-- Rogue Anticipation
-	if PlayerIsRogue and Engine:IsBuild("5.0.4") then
-		local Anticipation = CreateFrame("Frame", nil, ComboPoints)
-		local cw, ch, cp = 24, 8, 2
-		local anticipation_r = 0.4
-		local anticipation_g = 0.05
-		local anticipation_b = 0.15
-		
-		Anticipation:SetSize(cw*MAX_COMBO_POINTS + cp*(MAX_COMBO_POINTS-1), ch)
-		Anticipation:SetPoint("TOP", ComboPoints, "BOTTOM", 0, 0) 
-		
-		for i = 1, MAX_COMBO_POINTS do
-			local AnticipationPoint = CreateFrame("Frame", nil, Anticipation)
-			AnticipationPoint:Hide()
-			AnticipationPoint:SetSize(cw, ch)
-			AnticipationPoint:SetPoint("BOTTOMLEFT", (cw + cp)*(i-1), 0)
-			AnticipationPoint:SetBackdrop({
-				bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-				edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
-				tile = false,
-				edgeSize = 8,
-				insets = { 
-					left = 2.5,
-					right = 1.5,
-					top = 2.5,
-					bottom = 1.5
-				}
-			})
-			AnticipationPoint:SetBackdropColor(anticipation_r, anticipation_g, anticipation_b, 1)
-			AnticipationPoint:SetBackdropBorderColor(0, 0, 0, 1)
-			
-			Anticipation[i] = AnticipationPoint
-		end
-		
-		ComboPoints.Anticipation = Anticipation
-	end
 	
 
 

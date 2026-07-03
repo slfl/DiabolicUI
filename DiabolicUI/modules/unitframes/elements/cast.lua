@@ -68,17 +68,9 @@ local utf8sub = function(str, i, dots)
 end
 
 -- returns the latency in ms
-local GetLatency
-if Engine:IsBuild("4.0.6") then
-	GetLatency = function()
-		local down, up, lagHome, lagWorld = GetNetStats()
-		return lagWorld
-	end
-else
-	GetLatency = function()
-		local down, up, lagWorld = GetNetStats()
-		return lagWorld
-	end
+local GetLatency = function()
+	local down, up, lagWorld = GetNetStats()
+	return lagWorld
 end
 
 -- Proxy function to allow us to exit the update by returning,

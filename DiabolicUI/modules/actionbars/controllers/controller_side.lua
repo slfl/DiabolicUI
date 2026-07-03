@@ -81,38 +81,21 @@ ControllerWidget.OnEnable = function(self)
 	local driver = {}
 	local _, player_class = UnitClass("player")
 
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[overridebar][possessbar][shapeshift]possess")
-		tinsert(driver, "[bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6")
+	tinsert(driver, "[bonusbar:5]vehicle")
+	tinsert(driver, "[vehicleui]vehicle")
+	--tinsert(driver, "[bonusbar:5]11")
+	tinsert(driver, "[bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6")
 
-		if player_class == "DRUID" then
-			tinsert(driver, "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10")
-		elseif player_class == "MONK" then
-			tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
-		elseif player_class == "PRIEST" then
-			tinsert(driver, "[bonusbar:1] 7")
-		elseif player_class == "ROGUE" then
-			tinsert(driver, ("[%s:%s] %s; "):format("form", GetNumShapeshiftForms() + 1, 7) .. "[form:1] 7; [form:3] 7")
-		end
-
-	elseif Engine:IsBuild("WotLK") then -- also applies to Cata
-		tinsert(driver, "[bonusbar:5]vehicle")
-		tinsert(driver, "[vehicleui]vehicle")
-		--tinsert(driver, "[bonusbar:5]11")
-		tinsert(driver, "[bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6")
-
-		if player_class == "DRUID" then
-			tinsert(driver, "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10")
-		elseif player_class == "PRIEST" then
-			tinsert(driver, "[bonusbar:1] 7")
-		elseif player_class == "ROGUE" then
-			tinsert(driver, "[bonusbar:1] 7; [form:3] 8")
-		elseif player_class == "WARLOCK" then
-			tinsert(driver, "[form:2] 7")
-		elseif player_class == "WARRIOR" then
-			tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
-		end
-		
+	if player_class == "DRUID" then
+		tinsert(driver, "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10")
+	elseif player_class == "PRIEST" then
+		tinsert(driver, "[bonusbar:1] 7")
+	elseif player_class == "ROGUE" then
+		tinsert(driver, "[bonusbar:1] 7; [form:3] 8")
+	elseif player_class == "WARLOCK" then
+		tinsert(driver, "[form:2] 7")
+	elseif player_class == "WARRIOR" then
+		tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
 	end
 	
 	tinsert(driver, "1")

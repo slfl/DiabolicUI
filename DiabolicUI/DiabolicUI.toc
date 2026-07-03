@@ -3,7 +3,7 @@
 ## Title: |TInterface\Addons\DiabolicUI\media\diabolic-lettermark.tga:16:16:0:0:512:512:90:422:90:422|t |cffaa0022Diabolic|r|cfffafafaUI|r |cffcccccc1.0|r
 ## Notes: |cff666666By Lars Norberg|r |n|n|cff4488ffPayPal|r|cffffffff:|r |n|cfffffffflars@larsnorbergofficial.com|r |n|n|cff4488ffPayPal.Me|r|cffffffff:|r|n|cffffffffwww.paypal.me/larsnorberg|r
 ## Author: Lars Norberg
-## Version: 1.0
+## Version: 1.0-wotlk
 ## DefaultState: Enabled
 ## SavedVariables: DiabolicUI_DB
 ## X-eMail: lars@larsnorbergofficial.com

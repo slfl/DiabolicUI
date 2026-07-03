@@ -198,11 +198,7 @@ Frame.SetFadeOut = function(self, durationOut)
 		fadeFrames[self].fadeOutAnimation:Stop()
 	end
 	
-	if Engine:IsBuild("Legion") then
-		fadeFrames[self].fadeOutAnimation.alpha:SetToAlpha(0)
-	else
-		fadeFrames[self].fadeOutAnimation.alpha:SetChange(-1)
-	end
+	fadeFrames[self].fadeOutAnimation.alpha:SetChange(-1)
 	fadeFrames[self].fadeOutAnimation.alpha:SetDuration(fadeFrames[self].durationOut)
 	
 end
@@ -299,61 +295,32 @@ Shine.CreateShineAnimation = function(self, maxAlpha, duration, scale)
 	g:SetLooping("NONE") 
 	g:SetScript("OnFinished", shine_finished) 
 
-	if Engine:IsBuild("Legion") then
-		local a1 = g:CreateAnimation("Alpha")
-		a1:SetToAlpha(0) 
-		a1:SetDuration(0) 
-		a1:SetOrder(0) 
+	local a1 = g:CreateAnimation("Alpha")
+	a1:SetChange(-1) 
+	a1:SetDuration(0) 
+	a1:SetOrder(0) 
 
-		local a2 = g:CreateAnimation("Scale") 
-		a2:SetOrigin("CENTER", 0, 0) 
-		a2:SetScale(SCALE, SCALE) 
-		a2:SetDuration(DURATION/2) 
-		a2:SetOrder(1) 
+	local a2 = g:CreateAnimation("Scale") 
+	a2:SetOrigin("CENTER", 0, 0) 
+	a2:SetScale(SCALE, SCALE) 
+	a2:SetDuration(DURATION/2) 
+	a2:SetOrder(1) 
 
-		local a3 = g:CreateAnimation("Alpha") 
-		a3:SetToAlpha(MAXALPHA) 
-		a3:SetDuration(DURATION/2) 
-		a3:SetOrder(1)
+	local a3 = g:CreateAnimation("Alpha") 
+	a3:SetChange(MAXALPHA) 
+	a3:SetDuration(DURATION/2) 
+	a3:SetOrder(1)
 
-		local a4 = g:CreateAnimation("Scale") 
-		a4:SetOrigin("CENTER", 0, 0) 
-		a4:SetScale(-SCALE, -SCALE) 
-		a4:SetDuration(DURATION/2) 
-		a4:SetOrder(2)
+	local a4 = g:CreateAnimation("Scale") 
+	a4:SetOrigin("CENTER", 0, 0) 
+	a4:SetScale(-SCALE, -SCALE) 
+	a4:SetDuration(DURATION/2) 
+	a4:SetOrder(2)
 
-		local a5 = g:CreateAnimation("Alpha") 
-		a5:SetToAlpha(0) 
-		a5:SetDuration(DURATION/2) 
-		a5:SetOrder(2)
-	else
-		local a1 = g:CreateAnimation("Alpha")
-		a1:SetChange(-1) 
-		a1:SetDuration(0) 
-		a1:SetOrder(0) 
-
-		local a2 = g:CreateAnimation("Scale") 
-		a2:SetOrigin("CENTER", 0, 0) 
-		a2:SetScale(SCALE, SCALE) 
-		a2:SetDuration(DURATION/2) 
-		a2:SetOrder(1) 
-
-		local a3 = g:CreateAnimation("Alpha") 
-		a3:SetChange(MAXALPHA) 
-		a3:SetDuration(DURATION/2) 
-		a3:SetOrder(1)
-
-		local a4 = g:CreateAnimation("Scale") 
-		a4:SetOrigin("CENTER", 0, 0) 
-		a4:SetScale(-SCALE, -SCALE) 
-		a4:SetDuration(DURATION/2) 
-		a4:SetOrder(2)
-
-		local a5 = g:CreateAnimation("Alpha") 
-		a5:SetChange(-MAXALPHA) 
-		a5:SetDuration(DURATION/2) 
-		a5:SetOrder(2)
-	end
+	local a5 = g:CreateAnimation("Alpha") 
+	a5:SetChange(-MAXALPHA) 
+	a5:SetDuration(DURATION/2) 
+	a5:SetOrder(2)
 
 	return g
 end

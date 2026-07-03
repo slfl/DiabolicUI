@@ -49,43 +49,41 @@ end
 -- get rid of stuff we don't want from the dropdown menus
 -- * this appears to be causing taint for elements other than set/clear focus
 -- * blizzard added fixes/secure menus for 3rd party frames in 5.2?
-if not Engine:IsBuild("5.2.0") then
-	local UnWanted = {
-		["SET_FOCUS"] = true,
-		["CLEAR_FOCUS"] = true,
+local UnWanted = {
+	["SET_FOCUS"] = true,
+	["CLEAR_FOCUS"] = true,
 
-		-- WotLK
-		["LOCK_FOCUS_FRAME"] = true,
-		["UNLOCK_FOCUS_FRAME"] = true,
+	-- WotLK
+	["LOCK_FOCUS_FRAME"] = true,
+	["UNLOCK_FOCUS_FRAME"] = true,
+
+	-- Cata
+	["MOVE_PLAYER_FRAME"] = true,
+	["LOCK_PLAYER_FRAME"] = true,
+	["UNLOCK_PLAYER_FRAME"] = true,
+	["RESET_PLAYER_FRAME_POSITION"] = true,
+	["PLAYER_FRAME_SHOW_CASTBARS"] = true,
 	
-		-- Cata
-		["MOVE_PLAYER_FRAME"] = true,
-		["LOCK_PLAYER_FRAME"] = true,
-		["UNLOCK_PLAYER_FRAME"] = true,
-		["RESET_PLAYER_FRAME_POSITION"] = true,
-		["PLAYER_FRAME_SHOW_CASTBARS"] = true,
-		
-		["MOVE_TARGET_FRAME"] = true,
-		["LOCK_TARGET_FRAME"] = true,
-		["UNLOCK_TARGET_FRAME"] = true,
-		["TARGET_FRAME_BUFFS_ON_TOP"] = true,
-		["RESET_TARGET_FRAME_POSITION"] = true
-	}
-	for id,menu in pairs(UnitPopupMenus) do
-		for i = #menu, 1, -1 do
-			local option = UnitPopupMenus[id][i]
-			if option and UnWanted[option] then
-				tremove(UnitPopupMenus[id], i)
-			end
+	["MOVE_TARGET_FRAME"] = true,
+	["LOCK_TARGET_FRAME"] = true,
+	["UNLOCK_TARGET_FRAME"] = true,
+	["TARGET_FRAME_BUFFS_ON_TOP"] = true,
+	["RESET_TARGET_FRAME_POSITION"] = true
+}
+for id,menu in pairs(UnitPopupMenus) do
+	for i = #menu, 1, -1 do
+		local option = UnitPopupMenus[id][i]
+		if option and UnWanted[option] then
+			tremove(UnitPopupMenus[id], i)
 		end
 	end
-	-- attempt to replace the default raid target icons from unitmenus
-	-- *will have to see if this taints them
-	-- *TODO: make this work and move to blizzard skinning folder
-	--for i = 1,8 do
-	--	UnitPopupButtons["RAID_TARGET_" .. i].icon = M("Icon", "RaidTarget")
-	--end
 end
+-- attempt to replace the default raid target icons from unitmenus
+-- *will have to see if this taints them
+-- *TODO: make this work and move to blizzard skinning folder
+--for i = 1,8 do
+--	UnitPopupButtons["RAID_TARGET_" .. i].icon = M("Icon", "RaidTarget")
+--end
 
 local UnitFrameMenu = function(self)
 	if not self.unit then 
@@ -429,16 +427,10 @@ Handler.New = function(self, unit, parent, style_func)
 	object:SetAttribute("*type1", "target")
 
 	-- right click for menu
-	if Engine:IsBuild("5.2.0") then
-		-- Secure menus, but has redundant stuff like unlocking the frames, 
-		-- which can't be done at all with our custom frames. 
-		object:SetAttribute('*type2', 'togglemenu')
-	else
-		-- Tainted menus, but set focus is removed, so nothing bad ever happens.
-		-- Frame unlocking and all that jazz have also been removed.
-		object:SetAttribute("*type2", "menu")
-		object.menu = UnitFrameMenu
-	end
+	-- Tainted menus, but set focus is removed, so nothing bad ever happens.
+	-- Frame unlocking and all that jazz have also been removed.
+	object:SetAttribute("*type2", "menu")
+	object.menu = UnitFrameMenu
 	
 	-- alt left click to focus
 	if unit == "focus" then

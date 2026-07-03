@@ -192,9 +192,6 @@ Module.GrabKeybinds = Module:Wrap(function(self)
             "BONUSACTIONBUTTON%d",           -- pet bar
             "SHAPESHIFTBUTTON%d"             -- stance bar
         }
-        if Engine:IsBuild("Cata") then
-            tinsert(self.binding_table, "EXTRAACTIONBUTTON%d") -- extra action button
-        end
     end
     for bar_number,action_name in ipairs(self.binding_table) do
         local bar = bars[bar_number] -- upvalue the current bar
@@ -222,44 +219,6 @@ Module.GrabKeybinds = Module:Wrap(function(self)
     end
 
     -- TODO: add binds for our custom fishing/garrison bar
-    if Engine:IsBuild("MoP") then
-        if not self.petbattle_controller then
-            -- The blizzard petbattle UI gets its keybinds from the primary action bar, 
-            -- so in order for the petbattle UI keybinds to function properly, 
-            -- we need to temporarily give the primary action bar backs its keybinds.
-            local controller = CreateFrame("Frame", nil, UIParent, "SecureHandlerStateTemplate")
-            controller:SetAttribute("_onstate-petbattle", [[
-                if newstate == "petbattle" then
-                    for i = 1,6 do
-                        local our_button, blizz_button = ("CLICK EngineBar1Button%d:LeftButton"):format(i), ("ACTIONBUTTON%d"):format(i)
-
-                        -- Grab the keybinds from our own primary action bar,
-                        -- and assign them to the default blizzard bar. 
-                        -- The pet battle system will in turn get its bindings 
-                        -- from the default blizzard bar, and the magic works! :)
-                        
-                        for k=1,select("#", GetBindingKey(our_button)) do
-                            local key = select(k, GetBindingKey(our_button)) -- retrieve the binding key from our own primary bar
-                            self:SetBinding(true, key, blizz_button) -- assign that key to the default bar
-                        end
-                        
-                        -- do the same for the default UIs bindings
-                        for k=1,select("#", GetBindingKey(blizz_button)) do
-                            local key = select(k, GetBindingKey(blizz_button))
-                            self:SetBinding(true, key, blizz_button)
-                        end    
-                    end
-                else
-                    -- Return the key bindings to whatever buttons they were
-                    -- assigned to before we so rudely grabbed them! :o
-                    self:ClearBindings()
-                end
-            ]])
-            self.petbattle_controller = controller
-        end
-        UnregisterStateDriver(self.petbattle_controller, "petbattle")
-        RegisterStateDriver(self.petbattle_controller, "petbattle", "[petbattle]petbattle;nopetbattle")
-    end
     
     if not self.vehicle_controller then
         -- We're using a custom vehicle bar, and in order for it to work properly, 
@@ -290,11 +249,7 @@ Module.GrabKeybinds = Module:Wrap(function(self)
     end
 
     UnregisterStateDriver(self.vehicle_controller, "vehicle")
-    if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-        RegisterStateDriver(self.vehicle_controller, "vehicle", "[overridebar][possessbar][shapeshift][vehicleui]vehicle;novehicle")
-    elseif Engine:IsBuild("WotLK") then -- also applies to Cata
-        RegisterStateDriver(self.vehicle_controller, "vehicle", "[bonusbar:5][vehicleui]vehicle;novehicle")
-    end
+    RegisterStateDriver(self.vehicle_controller, "vehicle", "[bonusbar:5][vehicleui]vehicle;novehicle")
 end)
 
 Module.OnInit = function(self, event, ...)
@@ -329,15 +284,6 @@ Module.OnInit = function(self, event, ...)
     self:GetWidget("Menu: Chat"):Enable()
     
 
-    if Engine:IsBuild("Cata") then
-        self:GetWidget("Bar: Extra"):Enable()
-
-        -- skinning (TODO: move to the blizzard skinning module)
-        local UIHider = CreateFrame("Frame")
-        UIHider:Hide()
-        StreamingIcon:SetParent(UIHider)
-    end
-    
     -- This is used to reassign the keybinds, 
     -- and the order of the bars determine what keybinds to grab. 
     self.bars = {} 
@@ -348,9 +294,6 @@ Module.OnInit = function(self, event, ...)
     tinsert(self.bars, self:GetWidget("Bar: 5"):GetFrame())    -- 5
     tinsert(self.bars, self:GetWidget("Bar: Pet"):GetFrame()) -- 7
     tinsert(self.bars, self:GetWidget("Bar: Stance"):GetFrame()) -- 6
-    if Engine:IsBuild("Cata") then
-        --tinsert(self.bars, self:GetWidget("Bar: Extra"):GetFrame()) --8
-    end
         
     self:GrabKeybinds()
     self:RegisterEvent("UPDATE_BINDINGS", "GrabKeybinds")
@@ -367,40 +310,38 @@ Module.OnInit = function(self, event, ...)
     self:RegisterEvent("PLAYER_UPDATE_RESTING", "UpdateArtwork")
     self:RegisterEvent("UPDATE_FACTION", "UpdateArtwork")
     
-    if not Engine:IsBuild("Cata") then
-        -- faking a CVar here for WotLK clients
-        local value, defaultValue, serverStoredAccountWide, serverStoredPerCharacter = GetCVarInfo("ActionButtonUseKeyDown")
-        if value == nil and defaultValue == nil and serverStoredAccountWide == nil and serverStoredPerCharacter == nil then
-            RegisterCVar("ActionButtonUseKeyDown", false)
-            hooksecurefunc("SetCVar", function(name, value) 
-                if name == "ActionButtonUseKeyDown" then
-                    self:GetWidget("Template: Button"):OnEvent("CVAR_UPDATE", "ACTION_BUTTON_USE_KEY_DOWN", value)
-                    self.db.cast_on_down = GetCVarBool("ActionButtonUseKeyDown") and 1 or 0 -- store the change 
-                end
-            end)
-            
-            -- set the newly created CVar to our stored setting
-            SetCVar("ActionButtonUseKeyDown", self.db.cast_on_down == 1 and "1" or "0")
-        end
+    -- faking a CVar here for WotLK clients
+    local value, defaultValue, serverStoredAccountWide, serverStoredPerCharacter = GetCVarInfo("ActionButtonUseKeyDown")
+    if value == nil and defaultValue == nil and serverStoredAccountWide == nil and serverStoredPerCharacter == nil then
+        RegisterCVar("ActionButtonUseKeyDown", false)
+        hooksecurefunc("SetCVar", function(name, value) 
+            if name == "ActionButtonUseKeyDown" then
+                self:GetWidget("Template: Button"):OnEvent("CVAR_UPDATE", "ACTION_BUTTON_USE_KEY_DOWN", value)
+                self.db.cast_on_down = GetCVarBool("ActionButtonUseKeyDown") and 1 or 0 -- store the change 
+            end
+        end)
         
-        -- add the button to the same menu as it's found in from Cata and up
-        local name = "InterfaceOptionsCombatPanelActionButtonUseKeyDown"
-        if not _G[name] then
-            -- We're mimicking what blizzard do to create the button in Cata and higher here
-            -- We can't directly add it to their system, though, because the menu is secure and that would taint it 
-            local button = CreateFrame("CheckButton", "$parentActionButtonUseKeyDown", InterfaceOptionsCombatPanel, "InterfaceOptionsCheckButtonTemplate")
-            button:SetPoint("TOPLEFT", button:GetParent():GetName().."SelfCastKeyDropDown", "BOTTOMLEFT", 14, -24)
-            button:SetChecked(GetCVarBool("ActionButtonUseKeyDown"))
-            button:SetScript("OnClick", function() 
-                if button:GetChecked() then
-                    SetCVar("ActionButtonUseKeyDown", "1")
-                else
-                    SetCVar("ActionButtonUseKeyDown", "0")
-                end
-                self:GetWidget("Template: Button"):OnEvent("CVAR_UPDATE", "ACTION_BUTTON_USE_KEY_DOWN", GetCVar("ActionButtonUseKeyDown"))
-            end)
-            _G[button:GetName() .. "Text"]:SetText(L["Cast action keybinds on key down"])
-        end
+        -- set the newly created CVar to our stored setting
+        SetCVar("ActionButtonUseKeyDown", self.db.cast_on_down == 1 and "1" or "0")
+    end
+    
+    -- add the button to the same menu as it's found in from Cata and up
+    local name = "InterfaceOptionsCombatPanelActionButtonUseKeyDown"
+    if not _G[name] then
+        -- We're mimicking what blizzard do to create the button in Cata and higher here
+        -- We can't directly add it to their system, though, because the menu is secure and that would taint it 
+        local button = CreateFrame("CheckButton", "$parentActionButtonUseKeyDown", InterfaceOptionsCombatPanel, "InterfaceOptionsCheckButtonTemplate")
+        button:SetPoint("TOPLEFT", button:GetParent():GetName().."SelfCastKeyDropDown", "BOTTOMLEFT", 14, -24)
+        button:SetChecked(GetCVarBool("ActionButtonUseKeyDown"))
+        button:SetScript("OnClick", function() 
+            if button:GetChecked() then
+                SetCVar("ActionButtonUseKeyDown", "1")
+            else
+                SetCVar("ActionButtonUseKeyDown", "0")
+            end
+            self:GetWidget("Template: Button"):OnEvent("CVAR_UPDATE", "ACTION_BUTTON_USE_KEY_DOWN", GetCVar("ActionButtonUseKeyDown"))
+        end)
+        _G[button:GetName() .. "Text"]:SetText(L["Cast action keybinds on key down"])
     end
 end
 
@@ -408,17 +349,7 @@ Module.OnEnable = function(self, event, ...)
     local BlizzardUI = self:GetHandler("BlizzardUI")
     BlizzardUI:GetElement("ActionBars"):Disable()
     
-    if Engine:IsBuild("Legion") then
-        BlizzardUI:GetElement("Menu_Panel"):Remove(5, "InterfaceOptionsActionBarsPanel")
-    elseif Engine:IsBuild("WoD") then
-        BlizzardUI:GetElement("Menu_Panel"):Remove(6, "InterfaceOptionsActionBarsPanel")
-    elseif Engine:IsBuild("MoP") then
-        BlizzardUI:GetElement("Menu_Panel"):Remove(6, "InterfaceOptionsActionBarsPanel")
-    elseif Engine:IsBuild("Cata") then
-        BlizzardUI:GetElement("Menu_Panel"):Remove(6, "InterfaceOptionsActionBarsPanel")
-    elseif Engine:IsBuild("WotLK") then
-        BlizzardUI:GetElement("Menu_Panel"):Remove(6, "InterfaceOptionsActionBarsPanel")
-    end
+    BlizzardUI:GetElement("Menu_Panel"):Remove(6, "InterfaceOptionsActionBarsPanel")
     
     -- In theory this shouldn't have any effect, but by removing the menu panels above, 
     -- we're preventing the blizzard UI from calling it, and for some reason it is 

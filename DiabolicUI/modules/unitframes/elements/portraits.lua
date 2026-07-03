@@ -52,17 +52,7 @@ local HasFemaleHumanPortrait = function(unit)
 	-- Do we have an illusion?
 	local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellId, canApplyAura, isBossDebuff, isCastByPlayer, value1, value2, value3
 	for i = 1,40 do
-		if Engine:IsBuild("5.1.0") then
-			name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, shouldConsolidate, spellId, canApplyAura, isBossDebuff, isCastByPlayer = UnitAura(unit, i)
-		elseif Engine:IsBuild("4.2.0") then
-			name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff, value1, value2, value3 = UnitAura(unit, i)
-		elseif Engine:IsBuild("4.0.1") then
-			name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, i)
-		elseif Engine:IsBuild("3.3.0") then
-			name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff = UnitAura(unit, i)
-		elseif Engine:IsBuild("3.2.0") then
-			name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable = UnitAura(unit, i)
-		end
+		name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId, canApplyAura, isBossDebuff = UnitAura(unit, i)
 		
 		-- return true if we find a match
 		if spellId and female_human[spellId] then

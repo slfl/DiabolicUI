@@ -30,7 +30,7 @@ tinsert(anticipation, (GetSpellInfo(115189))) -- the ability that triggers
 tinsert(anticipation, (GetSpellInfo(114015))) -- the rogue talent from MoP 5.0.4
 
 local Anticipation_Talent = 114015
-local HasAnticipation = Engine:IsBuild("5.0.4") and PlayerIsRogue and IsPlayerSpell(Anticipation_Talent)
+local HasAnticipation = false -- Anticipation talent is MoP-only, never present in WotLK
 
 local Update = function(self, event, ...)
 	local unit = self.unit
@@ -89,14 +89,6 @@ local Enable = function(self, unit)
 		self:RegisterEvent("PLAYER_ENTERING_WORLD", Update)
 		self:RegisterEvent("PLAYER_TARGET_CHANGED", Update)
 		self:RegisterEvent("UNIT_COMBO_POINTS", Update)
-
-		if Engine:IsBuild("5.0.4") and PlayerIsRogue then
-			self:RegisterEvent("SPELLS_CHANGED", SpellsChanged)
-			
-			if HasAnticipation then
-				self:RegisterEvent("UNIT_AURA", Update)
-			end
-		end
 	end
 end
 
@@ -106,14 +98,6 @@ local Disable = function(self, unit)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)
 		self:UnregisterEvent("PLAYER_TARGET_CHANGED", Update)
 		self:UnregisterEvent("UNIT_COMBO_POINTS", Update)
-
-		if Engine:IsBuild("5.0.4") and PlayerIsRogue then
-			self:UnregisterEvent("SPELLS_CHANGED", SpellsChanged)
-
-			if HasAnticipation then
-				self:UnregisterEvent("UNIT_AURA", Update)
-			end
-		end
 	end
 end
 

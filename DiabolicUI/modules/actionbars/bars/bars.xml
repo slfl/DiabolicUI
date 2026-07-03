@@ -12,8 +12,5 @@
 <Script file='bar_stance.lua'/>
 <Script file='bar_vehicle.lua'/>
 
-<Script file='bar_extra.lua'/>
-<Script file='bar_custom.lua'/>
-
 
 </Ui>

@@ -42,43 +42,14 @@ BarWidget.OnEnable = function(self)
 	end
 
 	
-	if Engine:IsBuild("MoP") then
-		-- The whole bar system changed in MoP, adding a lot of macro conditionals
-		-- and changing a lot of the old structure. 
-		-- So different conditionals and drivers are needed.
-		Bar:SetAttribute("_onstate-page", [[ 
-			if newstate == "possess" or newstate == "11" then
-				if HasVehicleActionBar() then
-					newstate = GetVehicleBarIndex();
-				elseif HasOverrideActionBar() then
-					newstate = GetOverrideBarIndex();
-				elseif HasTempShapeshiftActionBar() then
-					newstate = GetTempShapeshiftBarIndex();
-				else
-					newstate = nil;
-				end
-				if not newstate then
-					newstate = 12;
-				end
-			end
-			self:SetAttribute("state", newstate);
-			for i = 1, self:GetAttribute("num_buttons") do
-				local Button = self:GetFrameRef("Button"..i);
-				Button:SetAttribute("actionpage", tonumber(newstate)); 
-			end
-			control:CallMethod("UpdateAction");
-		]])	
-		
-	elseif Engine:IsBuild("WotLK") then
-		Bar:SetAttribute("_onstate-page", [[ 
-			self:SetAttribute("state", newstate);
-			for i = 1, self:GetAttribute("num_buttons") do
-				local Button = self:GetFrameRef("Button"..i);
-				Button:SetAttribute("actionpage", tonumber(newstate)); 
-			end
-			control:CallMethod("UpdateAction");
-		]])	
-	end
+	Bar:SetAttribute("_onstate-page", [[ 
+		self:SetAttribute("state", newstate);
+		for i = 1, self:GetAttribute("num_buttons") do
+			local Button = self:GetFrameRef("Button"..i);
+			Button:SetAttribute("actionpage", tonumber(newstate)); 
+		end
+		control:CallMethod("UpdateAction");
+	]])	
 
 	-- reset the page before applying a new page driver
 	Bar:SetAttribute("state-page", "0") 
@@ -98,11 +69,7 @@ BarWidget.OnEnable = function(self)
 	]])
 
 	local driver = {}
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[overridebar][possessbar][shapeshift]hide")
-	elseif Engine:IsBuild("WotLK") then
-		tinsert(driver, "[bonusbar:5]hide")
-	end
+	tinsert(driver, "[bonusbar:5]hide")
 	tinsert(driver, "[vehicleui]hide")
 	tinsert(driver, "show")
 

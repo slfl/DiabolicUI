@@ -148,10 +148,6 @@ Module.BuffFrame_Update = function(self, ...)
 end
 
 Module.OnEnable = function(self)
-	--if Engine:IsBuild("MoP") then
-	--	return
-	--end
-
 	self.config = self:GetStaticConfig("Auras")
 	self.build = {}
 
@@ -222,9 +218,7 @@ Module.OnEnable = function(self)
 		ConsolidatedBuffsTooltip:SetBackdropColor(unpack(config.visuals.consolidation.window.backdropcolor))
 		ConsolidatedBuffsTooltip:SetBackdropBorderColor(unpack(config.visuals.consolidation.window.bordercolor))
 		
-		if not Engine:IsBuild("MoP") then
-			ConsolidatedBuffsContainer:SetScale(2/3) -- more accurate
-		end
+		ConsolidatedBuffsContainer:SetScale(2/3) -- more accurate
 	end
 
 	-- temp enchants exist already, so just skin them right away!

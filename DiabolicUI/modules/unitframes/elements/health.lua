@@ -102,170 +102,87 @@ else
 end
 
 local Update
-if Engine:IsBuild("Legion") then
-	Update = function(self, event, ...)
-		local Health = self.Health
+local Update
+Update = function(self, event, ...)
+	local Health = self.Health
 
-		local unit = self.unit
-		local health = UnitHealth(unit)
-		local healthmax = UnitHealthMax(unit)
-		local object_type = Health:GetObjectType()
-		
-		local dead = UnitIsDead(unit) or UnitIsGhost(unit)
-		if dead then
-			health = 0
-			healthmax = 0
-		end
-
-		Health:SetMinMaxValues(0, healthmax)
-		Health:SetValue(health)
-
-		if object_type == "Orb" then
-			for i,v in pairs(colors.orb) do
-				Health:SetStatusBarColor(unpack(v))
-			end
-		elseif object_type == "StatusBar" then
-			local r, g, b
-			if not UnitIsConnected(unit) then
-				r, g, b = unpack(colors.disconnected)
-			elseif UnitIsDead(unit) or UnitIsGhost(unit) then
-				r, g, b = unpack(colors.dead)
-			elseif UnitIsTapDenied(unit) then
-				r, g, b = unpack(colors.tapped)
-			elseif UnitIsPlayer(unit) or (UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
-				local _, class = UnitClass(unit)
-				r, g, b = unpack(colors.class[class] or colors.class.UNKNOWN)
-			elseif UnitReaction(unit, "player") then
-				r, g, b = unpack(colors.reaction[UnitReaction(unit, "player")])
-			else
-				r, g, b = unpack(colors.orb[1])
-			end
-			Health:SetStatusBarColor(r, g, b)
-		end
-		
-		if Health.Value then
-			if health == 0 or healthmax == 0 then
-				Health.Value:SetText("")
-			else
-				if Health.Value.showDeficit then
-					if Health.Value.showPercent then
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s - %d%%", short(healthmax - health), short(healthmax), floor(health/healthmax * 100))
-						else
-							Health.Value:SetFormattedText("%s / %d%%", short(healthmax - health), floor(health/healthmax * 100))
-						end
-					else
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s", short(healthmax - health), short(healthmax))
-						else
-							Health.Value:SetFormattedText("%s / %s", short(healthmax - health))
-						end
-					end
-				else
-					if Health.Value.showPercent then
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s - %d%%", short(health), short(healthmax), floor(health/healthmax * 100))
-						else
-							Health.Value:SetFormattedText("%s / %d%%", short(health), floor(health/healthmax * 100))
-						end
-					else
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s", short(health), short(healthmax))
-						else
-							Health.Value:SetFormattedText("%s / %s", short(health))
-						end
-					end
-				end
-			end
-		end
-		
-		if Health.PostUpdate then
-			return Health:PostUpdate()
-		end
+	local unit = self.unit
+	local health = UnitHealth(unit)
+	local healthmax = UnitHealthMax(unit)
+	local object_type = Health:GetObjectType()
+	
+	local dead = UnitIsDead(unit) or UnitIsGhost(unit)
+	if dead then
+		health = 0
+		healthmax = 0
 	end
 
-else
-	Update = function(self, event, ...)
-		local Health = self.Health
+	Health:SetMinMaxValues(0, healthmax)
+	Health:SetValue(health)
 
-		local unit = self.unit
-		local health = UnitHealth(unit)
-		local healthmax = UnitHealthMax(unit)
-		local object_type = Health:GetObjectType()
-		
-		local dead = UnitIsDead(unit) or UnitIsGhost(unit)
-		if dead then
-			health = 0
-			healthmax = 0
+	if object_type == "Orb" then
+		for i,v in pairs(colors.orb) do
+			Health:SetStatusBarColor(unpack(v))
 		end
-
-		Health:SetMinMaxValues(0, healthmax)
-		Health:SetValue(health)
-
-		if object_type == "Orb" then
-			for i,v in pairs(colors.orb) do
-				Health:SetStatusBarColor(unpack(v))
-			end
-		elseif object_type == "StatusBar" then
-			local r, g, b
-			if not UnitIsConnected(unit) then
-				r, g, b = unpack(colors.disconnected)
-			elseif UnitIsDead(unit) or UnitIsGhost(unit) then
-				r, g, b = unpack(colors.dead)
-			elseif UnitIsTapped(unit) and 
-			not(UnitPlayerControlled(unit) or UnitIsTappedByPlayer(unit) or UnitIsTappedByAllThreatList(unit) or UnitIsFriend("player", unit)) then
-				r, g, b = unpack(colors.tapped)
-			elseif UnitIsPlayer(unit)
-			or (UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
-				local _, class = UnitClass(unit)
-				r, g, b = unpack(colors.class[class] or colors.class.UNKNOWN)
-			elseif UnitReaction(unit, "player") then
-				r, g, b = unpack(colors.reaction[UnitReaction(unit, "player")])
-			else
-				r, g, b = unpack(colors.orb[1])
-			end
-			Health:SetStatusBarColor(r, g, b)
+	elseif object_type == "StatusBar" then
+		local r, g, b
+		if not UnitIsConnected(unit) then
+			r, g, b = unpack(colors.disconnected)
+		elseif UnitIsDead(unit) or UnitIsGhost(unit) then
+			r, g, b = unpack(colors.dead)
+		elseif UnitIsTapped(unit) and 
+		not(UnitPlayerControlled(unit) or UnitIsTappedByPlayer(unit) or UnitIsTappedByAllThreatList(unit) or UnitIsFriend("player", unit)) then
+			r, g, b = unpack(colors.tapped)
+		elseif UnitIsPlayer(unit)
+		or (UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
+			local _, class = UnitClass(unit)
+			r, g, b = unpack(colors.class[class] or colors.class.UNKNOWN)
+		elseif UnitReaction(unit, "player") then
+			r, g, b = unpack(colors.reaction[UnitReaction(unit, "player")])
+		else
+			r, g, b = unpack(colors.orb[1])
 		end
-		
-		if Health.Value then
-			if health == 0 or healthmax == 0 then
-				Health.Value:SetText("")
-			else
-				if Health.Value.showDeficit then
-					if Health.Value.showPercent then
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s - %d%%", short(healthmax - health), short(healthmax), floor(health/healthmax * 100))
-						else
-							Health.Value:SetFormattedText("%s / %d%%", short(healthmax - health), floor(health/healthmax * 100))
-						end
+		Health:SetStatusBarColor(r, g, b)
+	end
+	
+	if Health.Value then
+		if health == 0 or healthmax == 0 then
+			Health.Value:SetText("")
+		else
+			if Health.Value.showDeficit then
+				if Health.Value.showPercent then
+					if Health.Value.showMaximum then
+						Health.Value:SetFormattedText("%s / %s - %d%%", short(healthmax - health), short(healthmax), floor(health/healthmax * 100))
 					else
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s", short(healthmax - health), short(healthmax))
-						else
-							Health.Value:SetFormattedText("%s / %s", short(healthmax - health))
-						end
+						Health.Value:SetFormattedText("%s / %d%%", short(healthmax - health), floor(health/healthmax * 100))
 					end
 				else
-					if Health.Value.showPercent then
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s - %d%%", short(health), short(healthmax), floor(health/healthmax * 100))
-						else
-							Health.Value:SetFormattedText("%s / %d%%", short(health), floor(health/healthmax * 100))
-						end
+					if Health.Value.showMaximum then
+						Health.Value:SetFormattedText("%s / %s", short(healthmax - health), short(healthmax))
 					else
-						if Health.Value.showMaximum then
-							Health.Value:SetFormattedText("%s / %s", short(health), short(healthmax))
-						else
-							Health.Value:SetFormattedText("%s / %s", short(health))
-						end
+						Health.Value:SetFormattedText("%s / %s", short(healthmax - health))
+					end
+				end
+			else
+				if Health.Value.showPercent then
+					if Health.Value.showMaximum then
+						Health.Value:SetFormattedText("%s / %s - %d%%", short(health), short(healthmax), floor(health/healthmax * 100))
+					else
+						Health.Value:SetFormattedText("%s / %d%%", short(health), floor(health/healthmax * 100))
+					end
+				else
+					if Health.Value.showMaximum then
+						Health.Value:SetFormattedText("%s / %s", short(health), short(healthmax))
+					else
+						Health.Value:SetFormattedText("%s / %s", short(health))
 					end
 				end
 			end
 		end
-		
-		if Health.PostUpdate then
-			return Health:PostUpdate()
-		end
+	end
+	
+	if Health.PostUpdate then
+		return Health:PostUpdate()
 	end
 end
 	

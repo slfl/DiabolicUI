@@ -56,13 +56,8 @@ ControllerWidget.OnEnable = function(self)
 	-- create a driver that will hide the pet bar when inside vehicles
 	local driver = {}
 
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[overridebar][possessbar][shapeshift]vehicle")		
-		tinsert(driver, "[vehicleui]vehicle")
-	elseif Engine:IsBuild("WotLK") then -- also applies to Cata
-		tinsert(driver, "[bonusbar:5]vehicle")
-		tinsert(driver, "[vehicleui]vehicle")
-	end
+	tinsert(driver, "[bonusbar:5]vehicle")
+	tinsert(driver, "[vehicleui]vehicle")
 	tinsert(driver, "[nopet]vehicle") -- to shrink the width if no pet is out
 	tinsert(driver, "novehicle")
 	

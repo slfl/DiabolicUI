@@ -15,9 +15,7 @@ local config = {
 			texture_disabled = path .. [[textures\DiabolicUI_ExpandCollapseButton_22x21_Disabled.tga]]
 		},
 		title = {
-			position = Engine:IsBuild("WoD") and 
-				{ "TOPRIGHT", ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "TOPLEFT", -16, 0 } or 
-				{ "TOPRIGHT", "WatchFrameCollapseExpandButton", "TOPLEFT", -16, 0 },
+			position = { "TOPRIGHT", "WatchFrameCollapseExpandButton", "TOPLEFT", -16, 0 },
 			font_object = DiabolicWatchFrameHeader
 		},
 		line = {

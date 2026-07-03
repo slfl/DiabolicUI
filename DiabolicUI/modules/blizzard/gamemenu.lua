@@ -28,7 +28,7 @@ Module.UpdateButtonLayout = Module:Wrap(function(self)
 				if previous then
 					button:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, -config.button_spacing)
 				else
-					local p = Engine:IsBuild("WoD") and config.button_anchor_wod or config.button_anchor
+					local p = config.button_anchor
 					button:SetPoint(p.position, Engine:GetFrame(), p.rposition, p.xoffset, p.yoffset)
 				end
 				previous = button
@@ -289,88 +289,25 @@ Module.OnInit = function(self)
 	self.config = self:GetStaticConfig("Blizzard").gamemenu
 	self.frame = GameMenuFrame
 
-	if Engine:IsBuild("WoD") then
-		self.buttons = {
-			{ content = GameMenuButtonHelp, label = GAMEMENU_HELP },
-			{ content = GameMenuButtonStore, label = BLIZZARD_STORE },
-			{ content = GameMenuButtonWhatsNew, label = GAMEMENU_NEW_BUTTON },
-			{ content = GameMenuButtonOptions, label = SYSTEMOPTIONS_MENU },
-			{ content = GameMenuButtonUIOptions, label = UIOPTIONS_MENU },
-			{ content = GameMenuButtonKeybindings, label = KEY_BINDINGS },
-			{ content = "GameMenuButtonMoveAnything", label = function() return GameMenuButtonMoveAnything:GetText() end, addon = true }, -- MoveAnything
-			{ content = GameMenuButtonMacros, label = MACROS },
-			{ content = GameMenuButtonAddons, label = ADDONS },
-			{ content = GameMenuButtonRatings, label = RATINGS_MENU },
-			{ content = GameMenuButtonLogout, label = LOGOUT },
-			{ content = GameMenuButtonQuit, label = EXIT_GAME },
-			{ content = GameMenuButtonContinue, label = RETURN_TO_GAME, anchor = "BOTTOM" }
-		}
-		
-	elseif Engine:IsBuild("MoP") then
-		local Fix_ACP = function(self)
-			self:SetScript("OnLoad", nil)
-			self:SetScript("OnShow", nil)
-			self:SetScript("OnHide", nil)
-		end
+	local Fix_ACP = function(self)
+		self:SetScript("OnShow", nil)
+		self:SetScript("OnHide", nil)
+	end
 
-		self.buttons = {
-			{ content = GameMenuButtonHelp, label = GAMEMENU_HELP },
-			{ content = GameMenuButtonStore, label = BLIZZARD_STORE },
-			{ content = GameMenuButtonOptions, label = SYSTEMOPTIONS_MENU },
-			{ content = GameMenuButtonUIOptions, label = UIOPTIONS_MENU },
-			{ content = GameMenuButtonMacOptions, label = MAC_OPTIONS },
-			{ content = GameMenuButtonKeybindings, label = KEY_BINDINGS },
-			{ content = "GameMenuButtonMoveAnything", label = function() return GameMenuButtonMoveAnything:GetText() end, addon = true }, -- MoveAnything
-			{ content = GameMenuButtonMacros, label = MACROS },
-			{ content = "GameMenuButtonAddOns", label = function() return GameMenuButtonAddOns:GetText() end, run = Fix_ACP, addon = true }, -- ACP (Addon Control Panel)
-			{ content = GameMenuButtonRatings, label = RATINGS_MENU },
-			{ content = GameMenuButtonLogout, label = LOGOUT },
-			{ content = GameMenuButtonQuit, label = EXIT_GAME },
-			{ content = GameMenuButtonContinue, label = RETURN_TO_GAME, anchor = "BOTTOM" }
-		}
-	elseif Engine:IsBuild("Cata") then
-		local Fix_ACP = function(self)
-			self:SetScript("OnShow", nil)
-			self:SetScript("OnHide", nil)
-		end
-	
-		self.buttons = {
-			{ content = GameMenuButtonHelp, label = GAMEMENU_HELP },
-			{ content = GameMenuButtonOptions, label = SYSTEMOPTIONS_MENU },
-			{ content = GameMenuButtonUIOptions, label = UIOPTIONS_MENU },
-			{ content = GameMenuButtonMacOptions, label = MAC_OPTIONS },
-			{ content = GameMenuButtonKeybindings, label = KEY_BINDINGS },
-			{ content = "GameMenuButtonMoveAnything", label = function() return GameMenuButtonMoveAnything:GetText() end, addon = true }, -- MoveAnything
-			{ content = GameMenuButtonMacros, label = MACROS },
-			{ content = "GameMenuButtonAddOns", label = function() return GameMenuButtonAddOns:GetText() end, run = Fix_ACP, addon = true }, -- ACP (Addon Control Panel)
-			{ content = GameMenuButtonRatings, label = RATINGS_MENU },
-			{ content = GameMenuButtonLogout, label = LOGOUT },
-			{ content = GameMenuButtonQuit, label = EXIT_GAME },
-			{ content = GameMenuButtonContinue, label = RETURN_TO_GAME, anchor = "BOTTOM" }
-		}
-		
-	elseif Engine:IsBuild("WotLK") then
-		local Fix_ACP = function(self)
-			self:SetScript("OnShow", nil)
-			self:SetScript("OnHide", nil)
-		end
-
-		self.buttons = {
-			{ content = GameMenuButtonOptions, label = VIDEOOPTIONS_MENU },
-			{ content = GameMenuButtonSoundOptions, label = VOICE_SOUND }, -- SOUNDOPTIONS_MENU
-			{ content = GameMenuButtonUIOptions, label = UIOPTIONS_MENU },
-			{ content = GameMenuButtonMacOptions, label = MAC_OPTIONS },
-			{ content = GameMenuButtonKeybindings, label = KEY_BINDINGS },
-			{ content = "GameMenuButtonMoveAnything", label = function() return GameMenuButtonMoveAnything:GetText() end, addon = true }, -- MoveAnything
-			{ content = GameMenuButtonMacros, label = MACROS },
-			{ content = "GameMenuButtonAddOns", label = function() return GameMenuButtonAddOns:GetText() end, run = Fix_ACP, addon = true }, -- ACP (Addon Control Panel)
-			{ content = GameMenuButtonRatings, label = RATINGS_MENU },
-			{ content = GameMenuButtonLogout, label = LOGOUT },
-			{ content = GameMenuButtonQuit, label = EXIT_GAME },
-			{ content = GameMenuButtonContinue, label = RETURN_TO_GAME, anchor = "BOTTOM" }
-		}
-		
-	end	
+	self.buttons = {
+		{ content = GameMenuButtonOptions, label = VIDEOOPTIONS_MENU },
+		{ content = GameMenuButtonSoundOptions, label = VOICE_SOUND }, -- SOUNDOPTIONS_MENU
+		{ content = GameMenuButtonUIOptions, label = UIOPTIONS_MENU },
+		{ content = GameMenuButtonMacOptions, label = MAC_OPTIONS },
+		{ content = GameMenuButtonKeybindings, label = KEY_BINDINGS },
+		{ content = "GameMenuButtonMoveAnything", label = function() return GameMenuButtonMoveAnything:GetText() end, addon = true }, -- MoveAnything
+		{ content = GameMenuButtonMacros, label = MACROS },
+		{ content = "GameMenuButtonAddOns", label = function() return GameMenuButtonAddOns:GetText() end, run = Fix_ACP, addon = true }, -- ACP (Addon Control Panel)
+		{ content = GameMenuButtonRatings, label = RATINGS_MENU },
+		{ content = GameMenuButtonLogout, label = LOGOUT },
+		{ content = GameMenuButtonQuit, label = EXIT_GAME },
+		{ content = GameMenuButtonContinue, label = RETURN_TO_GAME, anchor = "BOTTOM" }
+	}
 	
 	local UIHider = CreateFrame("Frame")
 	UIHider:Hide()

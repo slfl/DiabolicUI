@@ -56,47 +56,16 @@ BarWidget.OnEnable = function(self)
 	-- on all the bar's children, which in turn updates button actions 
 	-- and initiate a texture update!
 	
-	if Engine:IsBuild("MoP") then
-		-- The whole bar system changed in MoP, adding a lot of macro conditionals
-		-- and changing a lot of the old structure. 
-		-- So different conditionals and drivers are needed.
-		Bar:SetAttribute("_onstate-page", [[ 
-			if newstate == "possess" or newstate == "11" then
-				if HasVehicleActionBar() then
-					newstate = GetVehicleBarIndex(); -- 12
-				elseif HasOverrideActionBar() then 
-					newstate = GetOverrideBarIndex(); --14
-				elseif HasTempShapeshiftActionBar() then
-					newstate = GetTempShapeshiftBarIndex(); --13
-				else
-					newstate = nil;
-				end
-				if not newstate then
-					newstate = 12; -- "possess"
-				end
-			end
-			self:SetAttribute("state", newstate);
+	Bar:SetAttribute("_onstate-page", [[ 
+		self:SetAttribute("state", newstate);
 
-			for i = 1, self:GetAttribute("num_buttons") do
-				local Button = self:GetFrameRef("Button"..i);
-				Button:SetAttribute("actionpage", tonumber(newstate)); 
-			end
+		for i = 1, self:GetAttribute("num_buttons") do
+			local Button = self:GetFrameRef("Button"..i);
+			Button:SetAttribute("actionpage", tonumber(newstate)); 
+		end
 
-			control:CallMethod("UpdateAction");
-		]])	
-		
-	elseif Engine:IsBuild("WotLK") then
-		Bar:SetAttribute("_onstate-page", [[ 
-			self:SetAttribute("state", newstate);
-
-			for i = 1, self:GetAttribute("num_buttons") do
-				local Button = self:GetFrameRef("Button"..i);
-				Button:SetAttribute("actionpage", tonumber(newstate)); 
-			end
-
-			control:CallMethod("UpdateAction");
-		]])	
-	end
+		control:CallMethod("UpdateAction");
+	]])	
 
 	-- reset the page before applying a new page driver
 	Bar:SetAttribute("state-page", "0") 
@@ -106,38 +75,19 @@ BarWidget.OnEnable = function(self)
 	local driver = {}
 	local _, player_class = UnitClass("player")
 
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[vehicleui][overridebar][possessbar][shapeshift]possess")
-		tinsert(driver, "[bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6")
+	tinsert(driver, "[bonusbar:5]11")
+	tinsert(driver, "[bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6")
 
-		if player_class == "DRUID" then
-			tinsert(driver, "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10")
-		elseif player_class == "MONK" then
-			tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
-		elseif player_class == "PRIEST" then
-			tinsert(driver, "[bonusbar:1] 7")
-		elseif player_class == "ROGUE" then
-			tinsert(driver, ("[%s:%s] %s; "):format("form", GetNumShapeshiftForms() + 1, 7) .. "[form:1] 7; [form:3] 7")
-		elseif player_class == "WARRIOR" then
-			tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
-		end
-
-	elseif Engine:IsBuild("WotLK") then -- also applies to Cata
-		tinsert(driver, "[bonusbar:5]11")
-		tinsert(driver, "[bar:2]2; [bar:3]3; [bar:4]4; [bar:5]5; [bar:6]6")
-
-		if player_class == "DRUID" then
-			tinsert(driver, "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10")
-		elseif player_class == "PRIEST" then
-			tinsert(driver, "[bonusbar:1] 7")
-		elseif player_class == "ROGUE" then
-			tinsert(driver, "[bonusbar:1] 7; [form:3] 8")
-		elseif player_class == "WARLOCK" then
-			tinsert(driver, "[form:2] 7")
-		elseif player_class == "WARRIOR" then
-			tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
-		end
-		
+	if player_class == "DRUID" then
+		tinsert(driver, "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 7; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10")
+	elseif player_class == "PRIEST" then
+		tinsert(driver, "[bonusbar:1] 7")
+	elseif player_class == "ROGUE" then
+		tinsert(driver, "[bonusbar:1] 7; [form:3] 8")
+	elseif player_class == "WARLOCK" then
+		tinsert(driver, "[form:2] 7")
+	elseif player_class == "WARRIOR" then
+		tinsert(driver, "[bonusbar:1] 7; [bonusbar:2] 8; [bonusbar:3] 9")
 	end
 	
 	tinsert(driver, "1")
@@ -159,11 +109,7 @@ BarWidget.OnEnable = function(self)
 	]])
 
 	twipe(driver)
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[vehicleui][overridebar][possessbar][shapeshift]hide")
-	elseif Engine:IsBuild("WotLK") then
-		tinsert(driver, "[bonusbar:5]hide")
-	end
+	tinsert(driver, "[bonusbar:5]hide")
 	tinsert(driver, "[vehicleui]hide")
 	tinsert(driver, "show")
 

@@ -269,132 +269,30 @@ MenuWidget.OnEnable = function(self)
 	local button_to_icon = {} -- simple mapping of icons to the buttons
 	local faction = UnitFactionGroup("player") -- to get the right faction icon, or neutral
 	
-	-- Buttons haven't changed from WoD to Legion,
-	-- at least not in the build I'm working on when writing this.
-	if Engine:IsBuild("WoD") then
-		MicroMenuWindow:InsertButton(CharacterMicroButton)
-		MicroMenuWindow:InsertButton(SpellbookMicroButton)
-		MicroMenuWindow:InsertButton(TalentMicroButton)
-		MicroMenuWindow:InsertButton(AchievementMicroButton)
-		MicroMenuWindow:InsertButton(QuestLogMicroButton)
-		MicroMenuWindow:InsertButton(GuildMicroButton)
-		MicroMenuWindow:InsertButton(LFDMicroButton)
-		MicroMenuWindow:InsertButton(CollectionsMicroButton)
-		MicroMenuWindow:InsertButton(EJMicroButton)
-		
-		if C_StorePublic and C_StorePublic.IsEnabled() then
-			MicroMenuWindow:InsertButton(StoreMicroButton)
-		end
-		
-		MicroMenuWindow:InsertButton(MainMenuMicroButton)
-		--MicroMenuWindow:InsertButton(HelpMicroButton) -- on the game menu
-		MicroMenuWindow:SetRowSize(4)
-		
-		button_to_icon = {
-			[CharacterMicroButton] = "character", 
-			[SpellbookMicroButton] = "spellbook", 
-			[TalentMicroButton] = "talents", 
-			[AchievementMicroButton] = "achievements", 
-			[QuestLogMicroButton] = "worldmap", 
-			[GuildMicroButton] = "guild", 
-			[LFDMicroButton] = "raid", 
-			[CollectionsMicroButton] = "mount", 
-			[EJMicroButton] = "encounterjournal", 
-			[StoreMicroButton] = "store", 
-			[MainMenuMicroButton] = "cogs", 
-			[HelpMicroButton] = "bug"
-		}
-		
-	
-	elseif Engine:IsBuild("MoP") then
-		MicroMenuWindow:InsertButton(CharacterMicroButton)
-		MicroMenuWindow:InsertButton(SpellbookMicroButton)
-		MicroMenuWindow:InsertButton(TalentMicroButton)
-		MicroMenuWindow:InsertButton(AchievementMicroButton)
-		MicroMenuWindow:InsertButton(QuestLogMicroButton)
-		MicroMenuWindow:InsertButton(GuildMicroButton)
-		MicroMenuWindow:InsertButton(PVPMicroButton)
-		MicroMenuWindow:InsertButton(LFDMicroButton)
-		MicroMenuWindow:InsertButton(CompanionsMicroButton)
-		MicroMenuWindow:InsertButton(EJMicroButton)
-		MicroMenuWindow:InsertButton(StoreMicroButton)
-		MicroMenuWindow:InsertButton(MainMenuMicroButton)
-		--MicroMenuWindow:InsertButton(HelpMicroButton) -- blizz removes this? -- on the game menu
-		MicroMenuWindow:SetRowSize(4)
+	MicroMenuWindow:InsertButton(CharacterMicroButton)
+	MicroMenuWindow:InsertButton(SpellbookMicroButton)
+	MicroMenuWindow:InsertButton(TalentMicroButton)
+	MicroMenuWindow:InsertButton(AchievementMicroButton)
+	MicroMenuWindow:InsertButton(QuestLogMicroButton)
+	MicroMenuWindow:InsertButton(SocialsMicroButton)
+	MicroMenuWindow:InsertButton(PVPMicroButton)
+	MicroMenuWindow:InsertButton(LFDMicroButton)
+	MicroMenuWindow:InsertButton(MainMenuMicroButton)
+	MicroMenuWindow:InsertButton(HelpMicroButton)
+	MicroMenuWindow:SetRowSize(5)
 
-		button_to_icon = {
-			[CharacterMicroButton] = "character", 
-			[SpellbookMicroButton] = "spellbook", 
-			[TalentMicroButton] = "talents", 
-			[AchievementMicroButton] = "achievements", 
-			[QuestLogMicroButton] = "questlog", 
-			[GuildMicroButton] = "guild", 
-			[PVPMicroButton] = faction == "Alliance" and "alliance" or faction == "Horde" and "horde" or "neutral", 
-			[LFDMicroButton] = "raid", 
-			[CompanionsMicroButton] = "mount", 
-			[EJMicroButton] = "encounterjournal", 
-			[StoreMicroButton] = "store", 
-			[MainMenuMicroButton] = "cogs", 
-			[HelpMicroButton] = "bug"
-		}
-
-	elseif Engine:IsBuild("Cata") then
-		MicroMenuWindow:InsertButton(CharacterMicroButton)
-		MicroMenuWindow:InsertButton(SpellbookMicroButton)
-		MicroMenuWindow:InsertButton(TalentMicroButton)
-		MicroMenuWindow:InsertButton(AchievementMicroButton)
-		MicroMenuWindow:InsertButton(QuestLogMicroButton)
-		MicroMenuWindow:InsertButton(GuildMicroButton)
-		MicroMenuWindow:InsertButton(PVPMicroButton)
-		MicroMenuWindow:InsertButton(LFDMicroButton)
-		MicroMenuWindow:InsertButton(RaidMicroButton)
-		MicroMenuWindow:InsertButton(EJMicroButton)
-		MicroMenuWindow:InsertButton(MainMenuMicroButton)
-		--MicroMenuWindow:InsertButton(HelpMicroButton) -- on the game menu
-		MicroMenuWindow:SetRowSize(4)
-		
-		button_to_icon = {
-			[CharacterMicroButton] = "character", 
-			[SpellbookMicroButton] = "spellbook", 
-			[TalentMicroButton] = "talents", 
-			[AchievementMicroButton] = "achievements", 
-			[QuestLogMicroButton] = "questlog", 
-			[GuildMicroButton] = "guild", 
-			[PVPMicroButton] = faction == "Alliance" and "alliance" or faction == "Horde" and "horde" or "neutral", 
-			[LFDMicroButton] = "group", 
-			[RaidMicroButton] = "raid", 
-			[EJMicroButton] = "encounterjournal", 
-			[MainMenuMicroButton] = "cogs", 
-			[HelpMicroButton] = "bug"
-		}
-
-	elseif Engine:IsBuild("WotLK") then
-		MicroMenuWindow:InsertButton(CharacterMicroButton)
-		MicroMenuWindow:InsertButton(SpellbookMicroButton)
-		MicroMenuWindow:InsertButton(TalentMicroButton)
-		MicroMenuWindow:InsertButton(AchievementMicroButton)
-		MicroMenuWindow:InsertButton(QuestLogMicroButton)
-		MicroMenuWindow:InsertButton(SocialsMicroButton)
-		MicroMenuWindow:InsertButton(PVPMicroButton)
-		MicroMenuWindow:InsertButton(LFDMicroButton)
-		MicroMenuWindow:InsertButton(MainMenuMicroButton)
-		MicroMenuWindow:InsertButton(HelpMicroButton)
-		MicroMenuWindow:SetRowSize(5)
-
-		button_to_icon = {
-			[CharacterMicroButton] = "character", 
-			[SpellbookMicroButton] = "spellbook", 
-			[TalentMicroButton] = "talents", 
-			[AchievementMicroButton] = "achievements", 
-			[QuestLogMicroButton] = "questlog", 
-			[SocialsMicroButton] = "group", 
-			[PVPMicroButton] = faction == "Alliance" and "alliance" or faction == "Horde" and "horde" or "neutral", 
-			[LFDMicroButton] = "raid", 
-			[MainMenuMicroButton] = "cogs", 
-			[HelpMicroButton] = "bug"
-		}
-
-	end
+	button_to_icon = {
+		[CharacterMicroButton] = "character", 
+		[SpellbookMicroButton] = "spellbook", 
+		[TalentMicroButton] = "talents", 
+		[AchievementMicroButton] = "achievements", 
+		[QuestLogMicroButton] = "questlog", 
+		[SocialsMicroButton] = "group", 
+		[PVPMicroButton] = faction == "Alliance" and "alliance" or faction == "Horde" and "horde" or "neutral", 
+		[LFDMicroButton] = "raid", 
+		[MainMenuMicroButton] = "cogs", 
+		[HelpMicroButton] = "bug"
+	}
 	
 	-- Disable Blizzard texture changes and stuff from these buttons.
 	-- Also re-align their tooltips to be above our menu.
@@ -752,11 +650,9 @@ MenuWidget.OnEnable = function(self)
 	CharacterBag2Slot:SetParent(BagBarMenuWindow)
 	CharacterBag3Slot:SetParent(BagBarMenuWindow)
 
-	-- The keyring was removed in 4.2.0 in Cata
-	if not Engine:IsBuild("4.2.0") then
-		KeyRingButton:SetParent(BagBarMenuWindow)
-		KeyRingButton:Show()
-	end
+	-- The keyring was removed in 4.2.0 in Cata; still present in WotLK
+	KeyRingButton:SetParent(BagBarMenuWindow)
+	KeyRingButton:Show()
 
 	-- initial hack of the bag position
 	local Blizz_ToggleBackpack = ToggleBackpack
@@ -790,11 +686,7 @@ MenuWidget.OnEnable = function(self)
 
 	BagBarMenuButton.OnClick = function(self, button) 
 		if button == "LeftButton" then
-			if Engine:IsBuild("Cata") then
-				ToggleAllBags() -- functionality on OpenAllBags was changed in Cata from toggle to pure open.
-			else
-				OpenAllBags() -- Toggle bag frames. This was actually a toggle function in WotLK.
-			end
+			OpenAllBags() -- Toggle bag frames. This was actually a toggle function in WotLK.
 		elseif button == "RightButton" then
 			-- Bagbar was toggled by the secure environement. Put any post updates here, if needed.
 		end

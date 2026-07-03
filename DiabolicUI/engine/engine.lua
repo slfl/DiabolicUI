@@ -66,135 +66,10 @@ local _inlockdown = InCombatLockdown()
 
 -- expansion and patch to game client build translation table
 local game_versions = {
-	["The Burning Crusade"] = 8606, ["TBC"] = 8606, -- using latest patch
-		["Before the Storm"] = 6180,
-			["2.0.0"] = 6080, -- download content only
-			["2.0.1"] = 6180, -- this is the "real" TBC patch, that came on DVDs, had Lua 5.1.1 and more. 
-			["2.0.3"] = 6299, -- dark portal opening event
-			["2.0.4"] = 6314,
-			["2.0.5"] = 6320,
-			["2.0.6"] = 6337,
-			["2.0.7"] = 6383,
-			["2.0.8"] = 6403,
-			["2.0.9"] = 6403, -- only Chinese localization changes, but never released
-			["2.0.10"] = 6448,
-			["2.0.11"] = 6448, -- the actual release of the Chinese localization changes planned for 2.0.9
-			["2.0.12"] = 6546,
-		["The Black Temple"] = 6692,
-			["2.1.0"] = 6692,
-			["2.1.0a"] = 6729,
-			["2.1.1"] = 6739,
-			["2.1.2"] = 6803,
-			["2.1.3"] = 6898,
-			["2.1.4"] = 6898, -- asian localization stuff again
-		["Voice Chat!"] = 7272,
-			["2.2.0"] = 7272,
-			["2.2.2"] = 7318,
-			["2.2.3"] = 7359,
-		["The Gods of Zul’Aman"] = 7561,
-			["2.3.0"] = 7561,
-			["2.3.2"] = 7741,
-			["2.3.3"] = 7799,
-		["Fury of the Sunwell"] = 8089,
-			["2.4.0"] = 8089,
-			["2.4.1"] = 8125,
-			["2.4.2"] = 8209,
-			["2.4.3"] = 8606,
-	
-	["Wrath of the Lich King"] = 12340, ["WotLK"] = 12340, -- using latest patch
-		["Echoes of Doom"] = 9056,
-			["3.0.2"] = 9056,
-			["3.0.3"] = 9183,
-			["3.0.8"] = 9464,
-			["3.0.8a"] = 9506,
-			["3.0.9"] = 9551,
-		["Secrets of Ulduar"] = 9767,
-			["3.1.0"] = 9767,
-			["3.1.1"] = 9806,
-			["3.1.1a"] = 9835,
-			["3.1.2"] = 9901,
-			["3.1.3"] = 9947,
-		["Call of the Crusade"] = 10192,
-			["3.2.0"] = 10192,
-			["3.2.0a"] = 10314,
-			["3.2.2"] = 10482,
-			["3.2.2a"] = 10505,
-		["Fall of the Lich King"] = 10958,
-			["3.3.0"] = 10958,
-			["3.3.0a"] = 11159,
-			["3.3.2"] = 11403,
-			["3.3.3"] = 11685,
-			["3.3.3a"] = 11723,
-		["Defending the Ruby Sanctum"] = 12213,
-			["3.3.5"] = 12213,
-			["3.3.5a"] = 12340,
-
-	["Cataclysm"] = 15595, ["Cata"] = 15595, -- using latest patch
-		["Cataclysm Systems"] = 13164,
-			["4.0.1"] = 13164,
-			["4.0.1a"] = 13205,
-			["4.0.3"] = 13287,
-		["The Shattering"] = 13329,
-			["4.0.3a"] = 13329,
-			["4.0.6"] = 13596,
-			["4.0.6a"] = 13623,
-		["Rise of the Zandalari"] = 13914,
-			["4.1.0"] = 13914,
-			["4.1.0a"] = 14007,
-		["Rage of the Firelands"] = 14333,
-			["4.2.0"] = 14333,
-			["4.2.0a"] = 14480,
-			["4.2.2"] = 14545,
-		["Hour of Twilight"] = 15005,
-			["4.3.0"] = 15005,
-			["4.3.0a"] = 15050,
-			["4.3.2"] = 15211,
-			["4.3.3"] = 15354,
-			["4.3.4"] = 15595,
-	
-	["Mists of Pandaria"] = 18414, ["MoP"] = 18414, -- using latest patch
-			["5.0.4"] = 16016,
-			["5.0.5"] = 16048,
-			["5.0.5a"] = 16057,
-			["5.0.5b"] = 16135,
-		["Landfall"] = 16309,
-			["5.1.0"] = 16309,
-			["5.1.0a"] = 16357,
-		["The Thunder King"] = 16650,
-			["5.2.0"] = 16650, -- 16826
-		["Escalation"] = 17128,
-			["5.3.0"] = 17128,
-		["Siege of Orgrimmar"] = 17399,
-			["5.4.0"] = 17399,
-			["5.4.1"] = 17538,
-			["5.4.2"] = 17688,
-			["5.4.7"] = 18019,
-			["5.4.8"] = 18414,
-
-	["Warlords of Draenor"] = 20779, ["WoD"] = 20779, -- using 6.2.3, not latest
-		["The Iron Tide"] = 19034,
-			["6.0.2"] = 19034,
-			["6.0.3"] = 19243,
-			["6.0.3a"] = 19243, 
-			["6.0.3b"] = 19342, 
-		["Garrisons Update"] = 19702,
-			["6.1.0"] = 19702,
-			["6.1.2"] = 19865,
-		["Fury of Hellfire"] = 20173,
-			["6.2.0"] = 20173,
-			["6.2.0a"] = 20338,
-			["6.2.2"] = 20444,
-			["6.2.2a"] = 20574,
-			["6.2.3"] = 20779,
-			["6.2.3a"] = 20886,
-			["6.2.4"] = 21345,
-			["6.2.4a"] = 21463,
-			["6.2.4a"] = 21463,
-			["6.2.4a"] = 21463,
-			["6.2.4a"] = 21742,
-			
-	["Legion"] = 21996, 
-			["7.0.3"] = 21996
+	["Wrath of the Lich King"] = 12340, ["WotLK"] = 12340, -- 3.3.5a, the only client this UI targets
+		["3.3.0"] = 10958,
+		["3.3.5"] = 12213,
+		["3.3.5a"] = 12340,
 }
 
 
@@ -1146,13 +1021,7 @@ end
 
 -- Matching the pre-MoP return arguments of the Blizzard API call
 Engine.GetAddOnInfo = function(self, index)
-	local name, title, notes, enabled, loadable, reason, security
-	if self:IsBuild("6.0.2") then
-		name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo(index)
-		enabled = not(GetAddOnEnableState(UnitName("player"), index) == 0) -- not a boolean, messed that one up! o.O
-	else
-		name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(index)
-	end
+	local name, title, notes, enabled, loadable, reason, security = GetAddOnInfo(index)
 	return name, title, notes, enabled, loadable, reason, security
 end
 
@@ -1329,12 +1198,7 @@ Engine.UpdateScale = function(self)
 	local widescreen = 1.6 -- minimum aspect ratio for a screen to be considered widescreen
 
 	local resolution
-	if Engine:IsBuild("Legion") then
-		local monitorIndex = (tonumber(GetCVar("gxMonitor")) or 0) + 1
-		resolution = select(GetCurrentResolution(monitorIndex), GetScreenResolutions(monitorIndex))
-	else
-		resolution = ({GetScreenResolutions()})[GetCurrentResolution()]
-	end
+	resolution = ({GetScreenResolutions()})[GetCurrentResolution()]
 	local screen_width = tonumber(strmatch(resolution, "(%d+)x%d+")) 
 	local screen_height = tonumber(strmatch(resolution, "%d+x(%d+)"))
 	local using_scale = tonumber(GetCVar("useUiScale"))
@@ -1394,54 +1258,25 @@ Engine.UpdateScale = function(self)
 				-- so to be safe and not sorry we're using our 
 				-- out of combat wrapper here.
 				Engine:Wrap(function()
-					if Engine:IsBuild("Cata") then 
-						if screen_width >= pixelperfect_minimum_width then
-							-- In Cataclysm the scaling system changed, 
-							-- and it's sufficient to simply turn off uiscaling for pixel perfection here.
-							if using_scale == 1 then
-								SetCVar("useUiScale", "0")
-							end
-						else
-							-- Even in Cataclysm we still need scaling for tiny resolutions, though.
-							if using_scale ~= 1 then
-								SetCVar("useUiScale", "1")
-							end
-							local current_scale = round(tonumber(GetCVar("uiScale")), accuracy)
-							local correct_scale
-							if screen_width >= pixelperfect_minimum_width then
-								correct_scale = highres_wide_scale
-							else
-								if aspect_ratio >= widescreen then
-									correct_scale = lowres_wide_scale
-								else
-									correct_scale = lowres_box_scale
-								end
-							end
-							if not compare(current_scale, correct_scale, compare_accuracy) then
-								SetCVar("uiScale", correct_scale)
-							end
-						end
+					-- Prior to Cataclysm we needed uiscaling at all times for pixel perfection
+					if using_scale ~= 1 then
+						SetCVar("useUiScale", "1")
+					end
+					-- The required uiscale for pixel perfection was dependant upon resolution, 
+					-- and had to be calculated after the events PLAYER_ALIVE and VARIABLES_LOADED had fired!
+					local current_scale = round(tonumber(GetCVar("uiScale")), accuracy)
+					local correct_scale
+					if screen_width >= pixelperfect_minimum_width then
+						correct_scale = highres_wide_scale
 					else
-						-- Prior to Cataclysm we needed uiscaling at all times for pixel perfection
-						if using_scale ~= 1 then
-							SetCVar("useUiScale", "1")
-						end
-						-- The required uiscale for pixel perfection was dependant upon resolution, 
-						-- and had to be calculated after the events PLAYER_ALIVE and VARIABLES_LOADED had fired!
-						local current_scale = round(tonumber(GetCVar("uiScale")), accuracy)
-						local correct_scale
-						if screen_width >= pixelperfect_minimum_width then
-							correct_scale = highres_wide_scale
+						if aspect_ratio >= widescreen then
+							correct_scale = lowres_wide_scale
 						else
-							if aspect_ratio >= widescreen then
-								correct_scale = lowres_wide_scale
-							else
-								correct_scale = lowres_box_scale
-							end
+							correct_scale = lowres_box_scale
 						end
-						if not compare(current_scale, correct_scale, compare_accuracy) then
-							SetCVar("uiScale", correct_scale)
-						end
+					end
+					if not compare(current_scale, correct_scale, compare_accuracy) then
+						SetCVar("uiScale", correct_scale)
 					end
 					
 					local db = Engine:GetConfig("UI")
@@ -1482,65 +1317,29 @@ Engine.UpdateScale = function(self)
 	local fix
 	local popup = PopUpMessage:GetPopUp("ENGINE_UISCALE_RELOAD_NEEDED")
 
-	if self:IsBuild("Cata") then 
-		if screen_width >= pixelperfect_minimum_width then
-			-- In Cataclysm the scaling system changed, 
-			-- and it's sufficient to simply turn off uiscaling for pixel perfection here.
-			if using_scale == 1 then
-				popup.text = L["UI scaling is activated and needs to be disabled, otherwise you'll might get fuzzy borders or pixelated graphics. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-				fix = true
-			end
-		else
-			-- Even in Cataclysm we still need scaling for tiny resolutions, though.
-			if using_scale ~= 1 then
-				popup.text = L["UI scaling was turned off but needs to be enabled, otherwise you'll might get fuzzy borders or pixelated graphics. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-				fix = true
-			end
-			local current_scale = round(tonumber(GetCVar("uiScale")), accuracy)
-			local correct_scale
-			if screen_width >= pixelperfect_minimum_width then
-				correct_scale = highres_wide_scale
-			else
-				if aspect_ratio >= widescreen then
-					correct_scale = lowres_wide_scale
-				else
-					correct_scale = lowres_box_scale
-				end
-			end
-			if not compare(current_scale, correct_scale, compare_accuracy) then
-				if screen_width >= pixelperfect_minimum_width then
-					popup.text = L["The UI scale is wrong, so the graphics might appear fuzzy or pixelated. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-				else
-					popup.text = L["Your resolution is too low for this UI, but the UI scale can still be adjusted to make it fit. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-				end
-				fix = true
-			end
-		end
+	-- Prior to Cataclysm we needed uiscaling at all times for pixel perfection
+	if using_scale ~= 1 then
+		popup.text = L["UI scaling was turned off but needs to be enabled, otherwise you'll might get fuzzy borders or pixelated graphics. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
+		fix = true
+	end
+	local current_scale = round(tonumber(GetCVar("uiScale")), accuracy)
+	local correct_scale
+	if screen_width >= pixelperfect_minimum_width then
+		correct_scale = highres_wide_scale
 	else
-		-- Prior to Cataclysm we needed uiscaling at all times for pixel perfection
-		if using_scale ~= 1 then
-			popup.text = L["UI scaling was turned off but needs to be enabled, otherwise you'll might get fuzzy borders or pixelated graphics. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-			fix = true
-		end
-		local current_scale = round(tonumber(GetCVar("uiScale")), accuracy)
-		local correct_scale
-		if screen_width >= pixelperfect_minimum_width then
-			correct_scale = highres_wide_scale
+		if aspect_ratio >= 1.6 then
+			correct_scale = lowres_wide_scale
 		else
-			if aspect_ratio >= 1.6 then
-				correct_scale = lowres_wide_scale
-			else
-				correct_scale = lowres_box_scale
-			end
+			correct_scale = lowres_box_scale
 		end
-		if not compare(current_scale, correct_scale, compare_accuracy) then
-			if screen_width >= pixelperfect_minimum_width then
-				popup.text = L["The UI scale is wrong, so the graphics might appear fuzzy or pixelated. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-			else
-				popup.text = L["Your resolution is too low for this UI, but the UI scale can still be adjusted to make it fit. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
-			end
-			fix = true
+	end
+	if not compare(current_scale, correct_scale, compare_accuracy) then
+		if screen_width >= pixelperfect_minimum_width then
+			popup.text = L["The UI scale is wrong, so the graphics might appear fuzzy or pixelated. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
+		else
+			popup.text = L["Your resolution is too low for this UI, but the UI scale can still be adjusted to make it fit. If you choose to ignore it and handle the UI scaling yourself, you won't be asked about this issue again.|n|nFix this issue now?"]
 		end
+		fix = true
 	end
 	
 	if fix then
@@ -1568,13 +1367,8 @@ do
 		-- from slightly modifying the stored scale everytime we enter the video options. 
 		-- If we don't do this, the user will either get spammed with reload requests, 
 		-- or the scale will eventually become slightly wrong, and the graphics slightly fuzzy.
-		if self:IsBuild("Cata") then
-			self:GetHandler("BlizzardUI"):GetElement("Menu_Option"):Remove(true, "Advanced_UIScaleSlider")
-			self:GetHandler("BlizzardUI"):GetElement("Menu_Option"):Remove(true, "Advanced_UseUIScale")
-		elseif self:IsBuild("WotLK") then
-			self:GetHandler("BlizzardUI"):GetElement("Menu_Option"):Remove(true, "VideoOptionsResolutionPanelUseUIScale")
-			self:GetHandler("BlizzardUI"):GetElement("Menu_Option"):Remove(true, "VideoOptionsResolutionPanelUIScaleSlider")
-		end
+		self:GetHandler("BlizzardUI"):GetElement("Menu_Option"):Remove(true, "VideoOptionsResolutionPanelUseUIScale")
+		self:GetHandler("BlizzardUI"):GetElement("Menu_Option"):Remove(true, "VideoOptionsResolutionPanelUIScaleSlider")
 		
 		only_once = true
 	end)
@@ -1589,11 +1383,6 @@ Engine.Init = function(self, event, ...)
 
 	-- update stored settings (needs to happen before init)
 	self:ParseSavedVariables()
-	
-	-- Might as well do this
-	if self:IsBuild("MoP") then
-		RegisterStateDriver(UICenter, "visibility", "[petbattle]hide;show")
-	end
 
 	-- initialize all handlers here
 	for name, handler in pairs(handlers) do
@@ -1746,13 +1535,8 @@ Engine:RegisterEvent("PLAYER_REGEN_DISABLED", combat_starts)
 Engine:RegisterEvent("PLAYER_REGEN_ENABLED", combat_ends)
 
 -- register basic startup events with our event handler
-if Engine:IsBuild("Cata") then
-	Engine:RegisterEvent("ADDON_LOADED", "Init")
-	Engine:RegisterEvent("PLAYER_LOGIN", "Enable")
-else
-	Engine:RegisterEvent("ADDON_LOADED", "PreInit")
-	Engine:RegisterEvent("VARIABLES_LOADED", "PreInit")
-end
+Engine:RegisterEvent("ADDON_LOADED", "PreInit")
+Engine:RegisterEvent("VARIABLES_LOADED", "PreInit")
 
 Engine:RegisterEvent("PLAYER_ENTERING_WORLD", "UpdateOffWorld")
 Engine:RegisterEvent("PLAYER_LEAVING_WORLD", "UpdateOffWorld")
@@ -1760,10 +1544,3 @@ Engine:RegisterEvent("PLAYER_LEAVING_WORLD", "UpdateOffWorld")
 -- apply scripts to our event/update frame
 Frame:SetScript("OnEvent", OnEvent)
 Frame:SetScript("OnUpdate", OnUpdate)
-
--- fix some weird MoP bug I can't really explain
-if Engine:IsBuild("MoP") and not Engine:IsBuild("WoD") then
-	if not C_AuthChallenge then
-		DisableAddOn("Blizzard_AuthChallengeUI")
-	end
-end

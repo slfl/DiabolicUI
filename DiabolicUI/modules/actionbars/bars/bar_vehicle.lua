@@ -54,47 +54,16 @@ BarWidget.OnEnable = function(self)
 	-- on all the bar's children, which in turn updates button actions 
 	-- and initiate a texture update!
 	
-	if Engine:IsBuild("MoP") then
-		-- The whole bar system changed in MoP, adding a lot of macro conditionals
-		-- and changing a lot of the old structure. 
-		-- So different conditionals and drivers are needed.
-		Bar:SetAttribute("_onstate-page", [[ 
-			if newstate == "possess" or newstate == "11" then
-				if HasVehicleActionBar() then
-					newstate = GetVehicleBarIndex();
-				elseif HasOverrideActionBar() then
-					newstate = GetOverrideBarIndex();
-				elseif HasTempShapeshiftActionBar() then
-					newstate = GetTempShapeshiftBarIndex();
-				else
-					newstate = nil;
-				end
-				if not newstate then
-					newstate = 12;
-				end
-			end
-			self:SetAttribute("state", newstate);
+	Bar:SetAttribute("_onstate-page", [[ 
+		self:SetAttribute("state", newstate);
 
-			for i = 1, self:GetAttribute("num_buttons") do
-				local Button = self:GetFrameRef("Button"..i);
-				Button:SetAttribute("actionpage", tonumber(newstate)); 
-			end
+		for i = 1, self:GetAttribute("num_buttons") do
+			local Button = self:GetFrameRef("Button"..i);
+			Button:SetAttribute("actionpage", tonumber(newstate)); 
+		end
 
-			control:CallMethod("UpdateAction");
-		]])	
-		
-	elseif Engine:IsBuild("WotLK") then
-		Bar:SetAttribute("_onstate-page", [[ 
-			self:SetAttribute("state", newstate);
-
-			for i = 1, self:GetAttribute("num_buttons") do
-				local Button = self:GetFrameRef("Button"..i);
-				Button:SetAttribute("actionpage", tonumber(newstate)); 
-			end
-
-			control:CallMethod("UpdateAction");
-		]])	
-	end
+		control:CallMethod("UpdateAction");
+	]])	
 
 	-- reset the page before applying a new page driver
 	Bar:SetAttribute("state-page", "0") 
@@ -105,11 +74,7 @@ BarWidget.OnEnable = function(self)
 	local _, player_class = UnitClass("player")
 
 
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[overridebar][possessbar][shapeshift]possess")
-	elseif Engine:IsBuild("WotLK") then -- also applies to Cata
-		tinsert(driver, "[bonusbar:5]11")
-	end
+	tinsert(driver, "[bonusbar:5]11")
 	
 	tinsert(driver, "11")
 	local page_driver = tconcat(driver, "; ")
@@ -130,11 +95,7 @@ BarWidget.OnEnable = function(self)
 	]])
 
 	twipe(driver)
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[overridebar][possessbar][shapeshift]show")
-	elseif Engine:IsBuild("WotLK") then
-		tinsert(driver, "[bonusbar:5]show")
-	end
+	tinsert(driver, "[bonusbar:5]show")
 	tinsert(driver, "[vehicleui]show")
 	tinsert(driver, "hide")
 
@@ -193,10 +154,6 @@ BarWidget.OnEnable = function(self)
 	
 	self:SpawnVehicleExitButton()
 	
-	if Engine:IsBuild(19678) then -- added in patch 6.1
-		self:SpawnTaxiExitButton()
-	end
-
 	self.Bar = Bar
 end
 
@@ -401,11 +358,7 @@ BarWidget.SpawnVehicleExitButton = function(self)
 	VehicleExitButton:SetAttribute("type", "macro")
 	VehicleExitButton:SetAttribute("macrotext", [[/run VehicleExit(); ]])
 	
-	if Engine:IsBuild("MoP") then
-		RegisterStateDriver(VehicleExitButton, "visibility", "[target=vehicle,exists,canexitvehicle] show; hide")
-	else
-		RegisterStateDriver(VehicleExitButton, "visibility", "[target=vehicle,exists] show; hide")
-	end
+	RegisterStateDriver(VehicleExitButton, "visibility", "[target=vehicle,exists] show; hide")
 end
 
 BarWidget.GetFrame = function(self)

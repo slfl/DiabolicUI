@@ -80,13 +80,8 @@ BarWidget.OnEnable = function(self)
 	]])
 
 	local driver = {}
-	if Engine:IsBuild("MoP") then -- also applies to WoD and (possibly) Legion
-		tinsert(driver, "[overridebar][possessbar][shapeshift]hide")		
-		tinsert(driver, "[vehicleui]hide")
-	elseif Engine:IsBuild("WotLK") then -- also applies to Cata
-		tinsert(driver, "[bonusbar:5]hide")
-		tinsert(driver, "[vehicleui]hide")
-	end
+	tinsert(driver, "[bonusbar:5]hide")
+	tinsert(driver, "[vehicleui]hide")
 	tinsert(driver, "[pet]show")
 	tinsert(driver, "hide")
 	

@@ -261,16 +261,14 @@ local elements = {
 			MainMenuExpBar:SetScale(0.00001)
 			MainMenuExpBar:SetParent(UIHider)
 			
-			if not Engine:IsBuild("MoP") then
-				BonusActionBarFrame:UnregisterAllEvents()
-				BonusActionBarFrame:Hide()
-				BonusActionBarFrame:SetAlpha(0)
-				
-				VehicleMenuBar:UnregisterAllEvents()
-				VehicleMenuBar:Hide()
-				VehicleMenuBar:SetAlpha(0)
-				VehicleMenuBar:SetScale(0.00001)
-			end
+			BonusActionBarFrame:UnregisterAllEvents()
+			BonusActionBarFrame:Hide()
+			BonusActionBarFrame:SetAlpha(0)
+			
+			VehicleMenuBar:UnregisterAllEvents()
+			VehicleMenuBar:Hide()
+			VehicleMenuBar:SetAlpha(0)
+			VehicleMenuBar:SetScale(0.00001)
 
 			PossessBarFrame:UnregisterAllEvents()
 			PossessBarFrame:Hide()
@@ -296,83 +294,19 @@ local elements = {
 
 			ReputationWatchBar:SetParent(UIHider)
 			
-			if not Engine:IsBuild("MoP") then
-				ShapeshiftBarFrame:EnableMouse(false)
-				ShapeshiftBarFrame:UnregisterAllEvents()
-				ShapeshiftBarFrame:Hide()
-				ShapeshiftBarFrame:SetAlpha(0)
+			ShapeshiftBarFrame:EnableMouse(false)
+			ShapeshiftBarFrame:UnregisterAllEvents()
+			ShapeshiftBarFrame:Hide()
+			ShapeshiftBarFrame:SetAlpha(0)
 
-				ShapeshiftBarLeft:Hide()
-				ShapeshiftBarLeft:SetAlpha(0)
+			ShapeshiftBarLeft:Hide()
+			ShapeshiftBarLeft:SetAlpha(0)
 
-				ShapeshiftBarMiddle:Hide()
-				ShapeshiftBarMiddle:SetAlpha(0)
+			ShapeshiftBarMiddle:Hide()
+			ShapeshiftBarMiddle:SetAlpha(0)
 
-				ShapeshiftBarRight:Hide()
-				ShapeshiftBarRight:SetAlpha(0)
-			end
-
-			if Engine:IsBuild("Cata") then
-				GuildChallengeAlertFrame:UnregisterAllEvents()
-				GuildChallengeAlertFrame:Hide()
-
-				TalentMicroButtonAlert:UnregisterAllEvents()
-				TalentMicroButtonAlert:SetParent(UIHider)
-			end
-
-			if Engine:IsBuild("MoP") then
-				StanceBarFrame:EnableMouse(false)
-				StanceBarFrame:UnregisterAllEvents()
-				StanceBarFrame:Hide()
-				StanceBarFrame:SetAlpha(0)
-
-				StanceBarLeft:Hide()
-				StanceBarLeft:SetAlpha(0)
-
-				StanceBarMiddle:Hide()
-				StanceBarMiddle:SetAlpha(0)
-
-				StanceBarRight:Hide()
-				StanceBarRight:SetAlpha(0)
-				
-				--OverrideActionBar:SetParent(UIHider)
-				OverrideActionBar:EnableMouse(false)
-				OverrideActionBar:UnregisterAllEvents()
-				OverrideActionBar:Hide()
-				OverrideActionBar:SetAlpha(0)
-
-				if not Engine:IsBuild(19678) then -- removed in WoD 6.1.0 
-					CompanionsMicroButtonAlert:UnregisterAllEvents()
-					CompanionsMicroButtonAlert:SetParent(UIHider)
-				end
-
-				MainMenuBar.slideOut:GetAnimations():SetOffset(0,0)
-				OverrideActionBar.slideOut:GetAnimations():SetOffset(0,0)
-
-				for i = 1,6 do
-					_G["OverrideActionBarButton"..i]:UnregisterAllEvents()
-					_G["OverrideActionBarButton"..i]:SetAttribute("statehidden", true)
-				end
-			end
-			
-			if Engine:IsBuild("WoD") then
-				CollectionsMicroButtonAlert:UnregisterAllEvents()
-				CollectionsMicroButtonAlert:SetParent(UIHider)
-				CollectionsMicroButtonAlert:Hide()
-
-				EJMicroButtonAlert:UnregisterAllEvents()
-				EJMicroButtonAlert:SetParent(UIHider)
-				EJMicroButtonAlert:Hide()
-
-				LFDMicroButtonAlert:UnregisterAllEvents()
-				LFDMicroButtonAlert:SetParent(UIHider)
-				LFDMicroButtonAlert:Hide()
-
-				if not Engine:IsBuild(19678) then -- removed in WoD 6.1.0 
-					ToyBoxMicroButtonAlert:UnregisterAllEvents()
-					ToyBoxMicroButtonAlert:SetParent(UIHider)
-				end
-			end
+			ShapeshiftBarRight:Hide()
+			ShapeshiftBarRight:SetAlpha(0)
 
 			for i = 1,12 do
 				_G["ActionButton" .. i]:Hide()
@@ -464,25 +398,7 @@ local elements = {
 			MinimapZoomOut:SetParent(UIHider)
 			MinimapZoneTextButton:SetParent(UIHider)
 			
-			if Engine:IsBuild("Legion") then
-				-- Legion stuff coming here. 
-			end
-			if Engine:IsBuild("WoD") then
-				-- ugly hack to keep the keybind functioning
-				GarrisonLandingPageMinimapButton:SetParent(UIHider)
-				GarrisonLandingPageMinimapButton:UnregisterAllEvents()
-				GarrisonLandingPageMinimapButton:Show()
-				GarrisonLandingPageMinimapButton.Hide = GarrisonLandingPageMinimapButton.Show
-			end
-			if Engine:IsBuild("5.0.4") then
-				QueueStatusMinimapButtonBorder:SetParent(UIHider)
-			end
-			if Engine:IsBuild("4.0.6") then
-				GuildInstanceDifficulty:SetParent(UIHider)
-			end
-			if Engine:IsBuild("3.3.0") then
-				MiniMapInstanceDifficulty:SetParent(UIHider)
-			end
+			MiniMapInstanceDifficulty:SetParent(UIHider)
 						
 			-- the clock addon is usually not loaded until after login
 			if TimeManagerClockButton then
@@ -515,30 +431,10 @@ local elements = {
 	},
 	ObjectiveTracker = {
 		OnDisable = function(self)
-			if Engine:IsBuild("WoD") then
-				ObjectiveTrackerFrame:SetParent(UIHider)
-				ObjectiveTrackerFrame:UnregisterAllEvents()
-			end
 		end
 	},
 	TimerTracker = {
 		OnDisable = function(self)
-			-- bg/arena countdown timer
-			if Engine:IsBuild("Cata") then
-				if TimerTracker then
-					TimerTracker:SetScript("OnEvent", nil)
-					TimerTracker:SetScript("OnUpdate", nil)
-					TimerTracker:UnregisterAllEvents()
-					if TimerTracker.timerList then
-						for _, bar in pairs(TimerTracker.timerList) do
-							bar:SetScript("OnEvent", nil)
-							bar:SetScript("OnUpdate", nil)
-							bar:SetParent(UIHider)
-							bar:UnregisterAllEvents()
-						end
-					end
-				end
-			end
 		end
 	},
 	UnitFrames = {

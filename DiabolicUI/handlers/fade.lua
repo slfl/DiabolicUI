@@ -421,25 +421,7 @@ Handler.UpdateSecureState = function(self, state)
 end
 
 local first
-local unit_events = Engine:IsBuild("Cata") and {
-	ENTER = {
-		PLAYER_ENTERING_WORLD = true
-	},
-	HEALTH = {
-		UNIT_HEALTH = true,
-		UNIT_HEALTH_FREQUENT = true,
-		UNIT_MAXHEALTH = true
-	},
-	POWER = {
-		UNIT_POWER = true,
-		UNIT_POWER_FREQUENT = true,
-		UNIT_MAXPOWER = true,
-		UNIT_DISPLAYPOWER = true
-	},
-	AURA = {
-		UNIT_AURA = true
-	}
-} or {
+local unit_events = {
 	ENTER = {
 		PLAYER_ENTERING_WORLD = true
 	},
@@ -575,14 +557,7 @@ Handler.OnEnable = function(self)
 	tinsert(self.stateframe.driver, "[@target,exists]target") -- visible
 	tinsert(self.stateframe.driver, "[@player,dead]dead") -- hidden
 	tinsert(self.stateframe.driver, "[combat]combat") -- visible
-	if Engine:IsBuild("WoD") then
-		tinsert(self.stateframe.driver, "[resting]resting") -- hidden
-	end
-	if Engine:IsBuild("MoP") then
-		tinsert(self.stateframe.driver, "[possessbar][overridebar][vehicleui]override") -- visible
-	else
-		tinsert(self.stateframe.driver, "[bonusbar:5][vehicleui]override") -- visible
-	end
+	tinsert(self.stateframe.driver, "[bonusbar:5][vehicleui]override") -- visible
 	tinsert(self.stateframe.driver, "[flying][mounted]mounted") -- hidden
 
 	tinsert(self.stateframe.driver, "nocombat") -- hidden

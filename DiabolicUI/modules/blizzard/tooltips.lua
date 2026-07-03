@@ -250,19 +250,7 @@ Module.Tooltip_OnTooltipSetUnit = function(self, tooltip)
 		isboss = classification == "worldboss"
 		reaction = UnitReaction(unit, "player")
 
-		if Engine:IsBuild("Legion") then
-			istapped = UnitIsTapDenied(unit)
-		else
-			istapped = UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit)
-		end
-		
-		if Engine:IsBuild("MoP") then
-			iswildpet = UnitIsWildBattlePet(unit)
-			isbattlepet = UnitIsBattlePetCompanion(unit)
-			if isbattlepet or iswildpet then
-				level = UnitBattlePetLevel(unit)
-			end
-		end
+		istapped = UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit)
 		
 		if level == -1 then
 			classification = "worldboss"
