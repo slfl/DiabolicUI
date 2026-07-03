@@ -3,7 +3,6 @@
 <Script file="actionbars.lua"/>
 <Script file="auras.lua"/>
 <Script file="blizzard.lua"/>
-<Script file="chat.lua"/>
 <Script file="fonts.lua"/>
 <Script file="objectives.lua"/>
 <Script file="tooltips.lua"/>

@@ -14,14 +14,14 @@ local config = {
 				icon = {
 					size = { 64, 64 },
 					point = { "CENTER", 0, 0 },
-					texture = path .. [[textures\DiabolicUI_Aura_30x30_Consolidation.tga]],
+					texture = path .. [[textures\auras\DiabolicUI_Aura_30x30_Consolidation.tga]],
 					texcoords = { 0, 1, 0, 1 }
 				}
 			},
 			window = {
 				backdrop = {
 					bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-					edgeFile = path .. [[textures\DiabolicUI_Tooltip_Small.tga]],
+					edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Small.tga]],
 					edgeSize = 32,
 					tile = false,
 					tileSize = 0,
@@ -42,7 +42,7 @@ local config = {
 				point = { "CENTER", 0, 0 },
 				backdrop = {
 					bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-					edgeFile = path .. [[textures\DiabolicUI_GlowBorder_128x16.tga]],
+					edgeFile = path .. [[textures\ui\DiabolicUI_GlowBorder_128x16.tga]],
 					edgeSize = 4,
 					tile = false,
 					tileSize = 0,
@@ -77,7 +77,7 @@ local config = {
 				point = { "CENTER", 0, 0 }
 			},
 			shade = {
-				texture = path .. [[textures\DiabolicUI_Shade_64x64.tga]],
+				texture = path .. [[textures\auras\DiabolicUI_Shade_64x64.tga]],
 				texcoords = { 5/64, 59/64, 5/64, 59/64 },
 				size = { 24, 24 },
 				point = { "CENTER", 0, 0 }

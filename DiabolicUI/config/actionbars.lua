@@ -303,148 +303,148 @@ local config = {
 				left = {
 					size = { 256, 256 },
 					position = { "BOTTOM", -( (buttonsize.single*num_buttons + padding*(num_buttons-1))/2 + angel_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Demon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Demon.tga]]
 				},
 				right = {
 					size = { 256, 256 },
 					position = { "BOTTOM", ( (buttonsize.single*num_buttons + padding*(num_buttons-1))/2 + demon_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Angel.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Angel.tga]]
 				},
 				center = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt1Bar.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt1Bar.tga]]
 				},
 				centerxp = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt1BarXP.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt1BarXP.tga]]
 				},
 				centerrep = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt1BarXP.tga]] -- Reuse XP texture or replace with rep-specific
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt1BarXP.tga]] -- Reuse XP texture or replace with rep-specific
 				},
 				skullrep = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
 				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				},
 				skullxp = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				}
 			},
 			["2"] = {
 				left = {
 					size = { 256, 256 },
 					position = { "BOTTOM", -( (buttonsize.double*num_buttons + padding*(num_buttons-1))/2 + angel_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Demon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Demon.tga]]
 				},
 				right = {
 					size = { 256, 256 },
 					position = { "BOTTOM", ( (buttonsize.double*num_buttons + padding*(num_buttons-1))/2 + demon_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Angel.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Angel.tga]]
 				},
 				center = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt2Bars.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt2Bars.tga]]
 				},
 				centerxp = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt2BarsXP.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt2BarsXP.tga]]
 				},
 				centerrep = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt2BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt2BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
 				},
 				skullrep = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
 				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				},
 				skullxp = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				}
 			},
 			["3"] = {
 				left = {
 					size = { 256, 256 },
 					position = { "BOTTOM", -( (buttonsize.triple*num_buttons + padding*(num_buttons-1))/2 + angel_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Demon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Demon.tga]]
 				},
 				right = {
 					size = { 256, 256 },
 					position = { "BOTTOM", ( (buttonsize.triple*num_buttons + padding*(num_buttons-1))/2 + demon_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Angel.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Angel.tga]]
 				},
 				center = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt3Bars.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt3Bars.tga]]
 				},
 				centerxp = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt3BarsXP.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt3BarsXP.tga]]
 				},
 				centerrep = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArt3BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt3BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
 				},
 				skullrep = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.triple*3 + padding*2 + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
 				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.triple*3 + padding*2 + bar_inset - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				},
 				skullxp = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.triple*3 + padding*2 + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				}
 			},
 			["vehicle"] = {
 				left = {
 					size = { 256, 256 },
 					position = { "BOTTOM", -( (buttonsize.vehicle*num_vehicle_buttons + padding*(num_vehicle_buttons-1))/2 + angel_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Demon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Demon.tga]]
 				},
 				right = {
 					size = { 256, 256 },
 					position = { "BOTTOM", ( (buttonsize.vehicle*num_vehicle_buttons + padding*(num_vehicle_buttons-1))/2 + demon_offset ), -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_Artwork_Angel.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Angel.tga]]
 				},
 				center = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\DiabolicUI_ActionBarArtVehicle.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArtVehicle.tga]]
 				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.vehicle + bar_inset - skulloffset },
-					texture = path .. [[textures\DiabolicUI_Artwork_Skull.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]]
 				}
 			}
 		},
@@ -471,7 +471,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_BackdropWeapon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_BackdropWeapon.tga]]
 				},
 				
 				-- cooldown frame
@@ -500,7 +500,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_Border.tga]]
 				},
 				border_empty_highlight = {
 					size = { 64, 64 },
@@ -508,7 +508,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_BorderHighlight.tga]]
 				},
 				border_normal = {
 					size = { 64, 64 },
@@ -516,7 +516,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_Border.tga]]
 				},
 				border_normal_highlight = {
 					size = { 64, 64 },
@@ -524,7 +524,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_BorderHighlight.tga]]
 				},
 				border_checked = {
 					size = { 64, 64 },
@@ -532,7 +532,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_Checked.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_Checked.tga]]
 				},
 				border_checked_highlight = {
 					size = { 64, 64 },
@@ -540,7 +540,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_36x36_CheckedHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_36x36_CheckedHighlight.tga]]
 				},
 				
 				-- border frame, texts
@@ -587,7 +587,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_BackdropWeapon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_BackdropWeapon.tga]]
 				},
 				
 				-- cooldown frame
@@ -616,7 +616,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_Empty.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_Empty.tga]]
 				},
 				border_empty_highlight = {
 					size = { 64, 64 },
@@ -624,7 +624,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_EmptyHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_EmptyHighlight.tga]]
 				},
 				border_normal = {
 					size = { 64, 64 },
@@ -632,7 +632,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_Border.tga]]
 				},
 				border_normal_highlight = {
 					size = { 64, 64 },
@@ -640,7 +640,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_BorderHighlight.tga]]
 				},
 				border_checked = {
 					size = { 64, 64 },
@@ -648,7 +648,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_Checked.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_Checked.tga]]
 				},
 				border_checked_highlight = {
 					size = { 64, 64 },
@@ -656,7 +656,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_44x44_CheckedHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_44x44_CheckedHighlight.tga]]
 				},
 				
 				-- border frame, texts
@@ -702,7 +702,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_BackdropWeapon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_BackdropWeapon.tga]]
 				},
 				
 				-- cooldown frame
@@ -731,7 +731,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_Border.tga]]
 				},
 				border_empty_highlight = {
 					size = { 64, 64 },
@@ -739,7 +739,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_BorderHighlight.tga]]
 				},
 				border_normal = {
 					size = { 64, 64 },
@@ -747,7 +747,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_Border.tga]]
 				},
 				border_normal_highlight = {
 					size = { 64, 64 },
@@ -755,7 +755,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_BorderHighlight.tga]]
 				},
 				border_checked = {
 					size = { 64, 64 },
@@ -763,7 +763,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_Checked.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_Checked.tga]]
 				},
 				border_checked_highlight = {
 					size = { 64, 64 },
@@ -771,7 +771,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_50x50_CheckedHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_50x50_CheckedHighlight.tga]]
 				},
 				
 				-- border frame, texts
@@ -817,7 +817,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_BackdropWeapon.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_BackdropWeapon.tga]]
 				},
 				
 				-- cooldown frame
@@ -846,7 +846,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_Border.tga]]
 				},
 				border_empty_highlight = {
 					size = { 128, 128 },
@@ -854,7 +854,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_BorderHighlight.tga]]
 				},
 				border_normal = {
 					size = { 128, 128 },
@@ -862,7 +862,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_Border.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_Border.tga]]
 				},
 				border_normal_highlight = {
 					size = { 128, 128 },
@@ -870,7 +870,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_BorderHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_BorderHighlight.tga]]
 				},
 				border_checked = {
 					size = { 128, 128 },
@@ -878,7 +878,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_Checked.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_Checked.tga]]
 				},
 				border_checked_highlight = {
 					size = { 128, 128 },
@@ -886,7 +886,7 @@ local config = {
 					texcoords = { 0, 1, 0, 1 },
 					alpha = 1,
 					color = { 1, 1, 1 },
-					texture = path .. [[textures\DiabolicUI_Button_64x64_CheckedHighlight.tga]]
+					texture = path .. [[textures\actionbars\DiabolicUI_Button_64x64_CheckedHighlight.tga]]
 				},
 				
 				-- border frame, texts
@@ -918,10 +918,10 @@ local config = {
 				texture_size = { 64, 64 },
 				texture_position = { "CENTER", 0, 0 },
 				textures = {
-					normal = path .. [[textures\DiabolicUI_ExitButton_37x37_Normal.tga]],
-					highlight = path .. [[textures\DiabolicUI_ExitButton_37x37_Highlight.tga]],
-					pushed = path .. [[textures\DiabolicUI_ExitButton_37x37_Pushed.tga]],
-					disabled = path .. [[textures\DiabolicUI_ExitButton_37x37_Disabled.tga]]
+					normal = path .. [[textures\actionbars\DiabolicUI_ExitButton_37x37_Normal.tga]],
+					highlight = path .. [[textures\actionbars\DiabolicUI_ExitButton_37x37_Highlight.tga]],
+					pushed = path .. [[textures\actionbars\DiabolicUI_ExitButton_37x37_Pushed.tga]],
+					disabled = path .. [[textures\actionbars\DiabolicUI_ExitButton_37x37_Disabled.tga]]
 				}
 			},
 			extra = {
@@ -938,8 +938,8 @@ local config = {
 					size = { 64, 64 },
 					position = { "CENTER", 0, 0 },
 					textures = {
-						normal = path .. [[textures\DiabolicUI_Button_37x37_Normal.tga]],
-						highlight = path .. [[textures\DiabolicUI_Button_37x37_Highlight.tga]]
+						normal = path .. [[textures\actionbars\DiabolicUI_Button_37x37_Normal.tga]],
+						highlight = path .. [[textures\actionbars\DiabolicUI_Button_37x37_Highlight.tga]]
 					}
 				}
 			}
@@ -953,7 +953,7 @@ local config = {
 					alpha = 1,
 					position = { "CENTER", 0, -4 }
 				},
-				texture = path .. [[textures\DiabolicUI_40x40_MenuIconGrid.tga]],
+				texture = path .. [[textures\actionbars\DiabolicUI_40x40_MenuIconGrid.tga]],
 				texture_size = { 256, 256 },
 				texcoords = {
 					character = { 0, 39/255, 0, 39/255 },
@@ -1004,8 +1004,8 @@ local config = {
 						texture_size = { 128, 128 },
 						texture_position = { "TOPLEFT", -34, 37 },
 						textures = {
-							normal = path .. [[textures\DiabolicUI_UIButton_61x55_Normal.tga]],
-							pushed = path .. [[textures\DiabolicUI_UIButton_61x55_Pushed.tga]]
+							normal = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Normal.tga]],
+							pushed = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Pushed.tga]]
 						}
 					},
 					
@@ -1021,8 +1021,8 @@ local config = {
 						texture_size = { 128, 128 },
 						texture_position = { "TOPLEFT", -34, 37 },
 						textures = {
-							normal = path .. [[textures\DiabolicUI_UIButton_61x55_Normal.tga]],
-							pushed = path .. [[textures\DiabolicUI_UIButton_61x55_Pushed.tga]]
+							normal = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Normal.tga]],
+							pushed = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Pushed.tga]]
 						}
 					},
 					
@@ -1048,14 +1048,14 @@ local config = {
 						texture_size = { 128, 128 },
 						texture_position = { "TOPLEFT", -34, 37 },
 						textures = {
-							normal = path .. [[textures\DiabolicUI_UIButton_61x55_Normal.tga]],
-							pushed = path .. [[textures\DiabolicUI_UIButton_61x55_Pushed.tga]]
+							normal = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Normal.tga]],
+							pushed = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Pushed.tga]]
 						}
 					},
 					backdrop = nil,
 					backdrop2 = {
 						bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-						edgeFile = path .. [[textures\DiabolicUI_Tooltip_Border.tga]],
+						edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Border.tga]],
 						edgeSize = 32,
 						tile = false,
 						tileSize = 0,
@@ -1083,7 +1083,7 @@ local config = {
 							insets = { 6, 6, 6, 6 }, -- left, right, top, bottom
 							backdrop = {
 								bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-								edgeFile = path .. [[textures\DiabolicUI_Tooltip_Border.tga]],
+								edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Border.tga]],
 								edgeSize = 32,
 								tile = false,
 								tileSize = 0,
@@ -1101,8 +1101,8 @@ local config = {
 								insets = { 29, 29, 29, 29 },
 								height = 40, 
 								backdrop = {
-									bgFile = path .. [[textures\DiabolicUI_Tooltip_Header_TitleBackground.tga]],
-									edgeFile = path .. [[textures\DiabolicUI_Tooltip_Header.tga]],
+									bgFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header_TitleBackground.tga]],
+									edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header.tga]],
 									edgeSize = 32,
 									insets = {
 										left = 3,
@@ -1115,19 +1115,19 @@ local config = {
 								backdrop_border_color = { 1, 1, 1, 1 },
 								texture = {
 									left = {
-										texture = path .. [[textures\DiabolicUI_Tooltip_TitleDecoration.tga]],
+										texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_TitleDecoration.tga]],
 										offset = -5,
 										size = { 32, 64 },
 										texcoord = { 0, 31/128, 0, 1 }
 									},
 									right = {
-										texture = path .. [[textures\DiabolicUI_Tooltip_TitleDecoration.tga]],
+										texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_TitleDecoration.tga]],
 										offset = 12,
 										size = { 64, 64 },
 										texcoord = { 32/128, 95/128, 0, 1 }
 									},
 									top = {
-										texture = path .. [[textures\DiabolicUI_Tooltip_TitleDecoration.tga]],
+										texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_TitleDecoration.tga]],
 										offset = 5,
 										size = { 32, 64 },
 										texcoord = { 96/128, 1, 0, 1 }
@@ -1143,7 +1143,7 @@ local config = {
 								insets = { 29, 29, 29, 29 },
 								backdrop = {
 									bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-									edgeFile = path .. [[textures\DiabolicUI_Tooltip_Body.tga]],
+									edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Body.tga]],
 									edgeSize = 32,
 									insets = {
 										left = 3,
@@ -1161,7 +1161,7 @@ local config = {
 								offset = 3, -- offset from the body before it
 								backdrop = {
 									bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-									edgeFile = path .. [[textures\DiabolicUI_Tooltip_Footer.tga]],
+									edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Footer.tga]],
 									edgeSize = 16,
 									insets = {
 										left = 3,
@@ -1189,9 +1189,9 @@ local config = {
 							},
 							texture_size = { 512, 128 },
 							texture = {
-								normal = path .. [[textures\DiabolicUI_UIButton_300x51_Normal.tga]],
-								highlight = path .. [[textures\DiabolicUI_UIButton_300x51_Highlight.tga]],
-								pushed = path .. [[textures\DiabolicUI_UIButton_300x51_Pushed.tga]]
+								normal = path .. [[textures\ui\DiabolicUI_UIButton_300x51_Normal.tga]],
+								highlight = path .. [[textures\ui\DiabolicUI_UIButton_300x51_Highlight.tga]],
+								pushed = path .. [[textures\ui\DiabolicUI_UIButton_300x51_Pushed.tga]]
 							}
 						}
 						
@@ -1205,13 +1205,13 @@ local config = {
 						texture_size = { 128, 128 },
 						texture_position = { "TOPLEFT", -34, 37 },
 						textures = {
-							normal = path .. [[textures\DiabolicUI_UIButton_61x55_Normal.tga]],
-							pushed = path .. [[textures\DiabolicUI_UIButton_61x55_Pushed.tga]]
+							normal = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Normal.tga]],
+							pushed = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Pushed.tga]]
 						}
 					},
 					backdrop = {
 						bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-						edgeFile = path .. [[textures\DiabolicUI_Tooltip_Border.tga]],
+						edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Border.tga]],
 						edgeSize = 32,
 						tile = false,
 						tileSize = 0,
@@ -1240,13 +1240,13 @@ local config = {
 						texture_size = { 128, 128 },
 						texture_position = { "TOPLEFT", -34, 37 },
 						textures = {
-							normal = path .. [[textures\DiabolicUI_UIButton_61x55_Normal.tga]],
-							pushed = path .. [[textures\DiabolicUI_UIButton_61x55_Pushed.tga]]
+							normal = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Normal.tga]],
+							pushed = path .. [[textures\actionbars\DiabolicUI_UIButton_61x55_Pushed.tga]]
 						}
 					},
 					backdrop = {
 						bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-						edgeFile = path .. [[textures\DiabolicUI_Tooltip_Border.tga]],
+						edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Border.tga]],
 						edgeSize = 32,
 						tile = false,
 						tileSize = 0,
@@ -1270,8 +1270,8 @@ local config = {
 				texture_size = { 128, 128 },
 				texture_position = { "TOPLEFT", -(64 - 25), (64 - 26) },
 				textures = {
-					normal = path .. [[textures\DiabolicUI_Button_51x51_Normal.tga]],
-					pushed = path .. [[textures\DiabolicUI_Button_51x51_Normal.tga]]
+					normal = path .. [[textures\actionbars\DiabolicUI_Button_51x51_Normal.tga]],
+					pushed = path .. [[textures\actionbars\DiabolicUI_Button_51x51_Normal.tga]]
 				}
 			},
 			window = {
@@ -1301,9 +1301,9 @@ local config = {
 				texture_size = { 1024, 32 },
 				texture_position = { "CENTER", 0, 0 },
 				textures = { 
-					["1"] = path .. [[textures\DiabolicUI_XPBackdrop1Bar.tga]],
-					["2"] = path .. [[textures\DiabolicUI_XPBackdrop2Bars.tga]],
-					["3"] = path .. [[textures\DiabolicUI_XPBackdrop3Bars.tga]]
+					["1"] = path .. [[textures\actionbars\DiabolicUI_XPBackdrop1Bar.tga]],
+					["2"] = path .. [[textures\actionbars\DiabolicUI_XPBackdrop2Bars.tga]],
+					["3"] = path .. [[textures\actionbars\DiabolicUI_XPBackdrop3Bars.tga]]
 				}
 			}
 		}

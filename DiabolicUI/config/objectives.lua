@@ -11,8 +11,8 @@ local config = {
 			size = { 22, 21 },
 			position = { "TOPRIGHT", -5, 0 }, -- blizzard "TOPRIGHT", -12, -5
 			texture_size = { 32, 32 },
-			texture = path .. [[textures\DiabolicUI_ExpandCollapseButton_22x21.tga]],
-			texture_disabled = path .. [[textures\DiabolicUI_ExpandCollapseButton_22x21_Disabled.tga]]
+			texture = path .. [[textures\objectives\DiabolicUI_ExpandCollapseButton_22x21.tga]],
+			texture_disabled = path .. [[textures\objectives\DiabolicUI_ExpandCollapseButton_22x21_Disabled.tga]]
 		},
 		title = {
 			position = { "TOPRIGHT", "WatchFrameCollapseExpandButton", "TOPLEFT", -16, 0 },

@@ -15,15 +15,15 @@ local config = {
 	coin = {
 		font_object = DiabolicTooltipNumber, 
 
-		gold_texture = path .. [[textures\DiabolicUI_Coins_32x32.tga]],
+		gold_texture = path .. [[textures\ui\DiabolicUI_Coins_32x32.tga]],
 		gold_texcoord = { 0/64, 32/64, 0/64, 32/64 }, 
 		gold_size = { 16, 16 },
 		
-		silver_texture = path .. [[textures\DiabolicUI_Coins_32x32.tga]],
+		silver_texture = path .. [[textures\ui\DiabolicUI_Coins_32x32.tga]],
 		silver_texcoord = { 32/64, 64/64, 0/64, 32/64 }, 
 		silver_size = { 16, 16 },
 
-		copper_texture = path .. [[textures\DiabolicUI_Coins_32x32.tga]],
+		copper_texture = path .. [[textures\ui\DiabolicUI_Coins_32x32.tga]],
 		copper_texcoord = { 0/64, 32/64, 32/64, 64/64 }, 
 		copper_size = { 16, 16 },
 		
@@ -35,7 +35,7 @@ local config = {
 		glow = {
 			backdrop = {
 				bgFile = nil,
-				edgeFile = path .. [[textures\Diabolic_GlowBorder_128x16.tga]],
+				edgeFile = path .. [[textures\ui\DiabolicUI_GlowBorder_128x16.tga]],
 				edgeSize = 16,
 				tile = false,
 				tileSize = 0,
@@ -94,9 +94,9 @@ local config = {
 		},
 		texture_size = { 512, 128 },
 		texture = {
-			normal = path .. [[textures\DiabolicUI_UIButton_300x51_Normal.tga]],
-			highlight = path .. [[textures\DiabolicUI_UIButton_300x51_Highlight.tga]],
-			pushed = path .. [[textures\DiabolicUI_UIButton_300x51_Pushed.tga]]
+			normal = path .. [[textures\ui\DiabolicUI_UIButton_300x51_Normal.tga]],
+			highlight = path .. [[textures\ui\DiabolicUI_UIButton_300x51_Highlight.tga]],
+			pushed = path .. [[textures\ui\DiabolicUI_UIButton_300x51_Pushed.tga]]
 		}
 	},
 	popup = {
@@ -106,7 +106,7 @@ local config = {
 		insets = { 6, 6, 6, 6 }, -- left, right, top, bottom
 		backdrop = {
 			bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-			edgeFile = path .. [[textures\DiabolicUI_Tooltip_Border.tga]],
+			edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Border.tga]],
 			edgeSize = 32,
 			tile = false,
 			tileSize = 0,
@@ -124,8 +124,8 @@ local config = {
 			insets = { 29, 29, 29, 29 },
 			height = 40, 
 			backdrop = {
-				bgFile = path .. [[textures\DiabolicUI_Tooltip_Header_TitleBackground.tga]],
-				edgeFile = path .. [[textures\DiabolicUI_Tooltip_Header.tga]],
+				bgFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header_TitleBackground.tga]],
+				edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header.tga]],
 				edgeSize = 32,
 				insets = {
 					left = 3,
@@ -138,19 +138,19 @@ local config = {
 			backdrop_border_color = { 1, 1, 1, 1 },
 			texture = {
 				left = {
-					texture = path .. [[textures\DiabolicUI_Tooltip_TitleDecoration.tga]],
+					texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_TitleDecoration.tga]],
 					offset = -5,
 					size = { 32, 64 },
 					texcoord = { 0, 31/128, 0, 1 }
 				},
 				right = {
-					texture = path .. [[textures\DiabolicUI_Tooltip_TitleDecoration.tga]],
+					texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_TitleDecoration.tga]],
 					offset = 12,
 					size = { 64, 64 },
 					texcoord = { 32/128, 95/128, 0, 1 }
 				},
 				top = {
-					texture = path .. [[textures\DiabolicUI_Tooltip_TitleDecoration.tga]],
+					texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_TitleDecoration.tga]],
 					offset = 5,
 					size = { 32, 64 },
 					texcoord = { 96/128, 1, 0, 1 }
@@ -166,7 +166,7 @@ local config = {
 			insets = { 29, 29, 29, 29 },
 			backdrop = {
 				bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-				edgeFile = path .. [[textures\DiabolicUI_Tooltip_Body.tga]],
+				edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Body.tga]],
 				edgeSize = 32,
 				insets = {
 					left = 3,
@@ -192,7 +192,7 @@ local config = {
 			insets = { 28, 28, 28, 28 }, -- left, right, top, bottom
 			backdrop = {
 				bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-				edgeFile = path .. [[textures\DiabolicUI_Tooltip_Footer.tga]],
+				edgeFile = path .. [[textures\tooltips\DiabolicUI_Tooltip_Footer.tga]],
 				edgeSize = 16,
 				insets = {
 					left = 3,
@@ -214,9 +214,9 @@ local config = {
 				},
 				texture_size = { 256, 128 },
 				texture = {
-					normal = path .. [[textures\DiabolicUI_UIButton_193x55_Normal.tga]],
-					highlight = path .. [[textures\DiabolicUI_UIButton_193x55_Highlight.tga]],
-					pushed = path .. [[textures\DiabolicUI_UIButton_193x55_Pushed.tga]]
+					normal = path .. [[textures\ui\DiabolicUI_UIButton_193x55_Normal.tga]],
+					highlight = path .. [[textures\ui\DiabolicUI_UIButton_193x55_Highlight.tga]],
+					pushed = path .. [[textures\ui\DiabolicUI_UIButton_193x55_Pushed.tga]]
 				}
 				
 			}

@@ -13,13 +13,13 @@ local config = {
 				backdrop = {
 					size = { 256, 256 },
 					position = { "BOTTOMLEFT", -256 + (256 - 160)/2 -8, -(256 - 160)/2 -6},
-					texture = path .. [[textures\DiabolicUI_PlayerGlobes_150x150_Backdrop.tga]],
+					texture = path .. [[textures\unitframes\DiabolicUI_PlayerGlobes_150x150_Backdrop.tga]],
 					color = { 0, 0, 0, 1 }
 				},
 				overlay = {
 					size = { 256, 256 },
 					position = { "BOTTOMLEFT", -256 + (256 - 160)/2 -8, -(256 - 160)/2 -6},
-					texture = path .. [[textures\DiabolicUI_PlayerGlobes_150x150_Border.tga]],
+					texture = path .. [[textures\unitframes\DiabolicUI_PlayerGlobes_150x150_Border.tga]],
 					color = { 1, 1, 1, 1 }
 				}
 			},
@@ -27,13 +27,13 @@ local config = {
 				backdrop = {
 					size = { 256, 256 },
 					position = { "BOTTOMRIGHT", 256 - (256 - 160)/2 +8, -(256 - 160)/2 -6},
-					texture = path .. [[textures\DiabolicUI_PlayerGlobes_150x150_Backdrop.tga]],
+					texture = path .. [[textures\unitframes\DiabolicUI_PlayerGlobes_150x150_Backdrop.tga]],
 					color = { 0, 0, 0, 1 }
 				},
 				overlay = {
 					size = { 256, 256 },
 					position = { "BOTTOMRIGHT", 256 - (256 - 160)/2 +8, -(256 - 160)/2 -6},
-					texture = path .. [[textures\DiabolicUI_PlayerGlobes_150x150_Border.tga]],
+					texture = path .. [[textures\unitframes\DiabolicUI_PlayerGlobes_150x150_Border.tga]],
 					color = { 1, 1, 1, 1 }
 				}
 			}
@@ -70,12 +70,12 @@ local config = {
 					backdrop = {
 						size = { 512, 64 },
 						position =  { "TOPLEFT", -142, 25 },
-						texture = path .. [[textures\DiabolicUI_Target_227x15_Backdrop.tga]]
+						texture = path .. [[textures\unitframes\DiabolicUI_Target_227x15_Backdrop.tga]]
 					},
 					border = {
 						size = { 512, 64 },
 						position =  { "TOPLEFT", -142, 25 },
-						texture = path .. [[textures\DiabolicUI_Target_227x15_Border.tga]]
+						texture = path .. [[textures\unitframes\DiabolicUI_Target_227x15_Border.tga]]
 					}
 				},
 				left = {
@@ -93,24 +93,24 @@ local config = {
 								texture = path .. [[statusbars\DiabolicUI_StatusBar_128x128_SparkVertical_Warcraft.tga]],
 								flash = { 2.75, 1.25, .45, .95 },
 								flash_size = { 64, 16 },
-								flash_texture = path .. [[textures\DiabolicUI_Tooltip_Header_TitleBackground.tga]]
+								flash_texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header_TitleBackground.tga]]
 							},
 							layers = {
 								gradient = {
 									alpha = .85,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Gradient.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Gradient.tga]]
 								},
 								moon = {
 									alpha = .5,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Moon.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Moon.tga]]
 								},
 								smoke = {
 									alpha = .5,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Smoke.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Smoke.tga]]
 								},
 								shade = {
 									alpha = .9,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Shade.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Shade.tga]]
 								}
 							}
 						}
@@ -130,24 +130,24 @@ local config = {
 								texture = path .. [[statusbars\DiabolicUI_StatusBar_128x128_SparkVertical_Warcraft.tga]],
 								flash = { 2.75, 1.25, .45, .95 },
 								flash_size = { 64, 16 },
-								flash_texture = path .. [[textures\DiabolicUI_Tooltip_Header_TitleBackground.tga]]
+								flash_texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header_TitleBackground.tga]]
 							},
 							layers = {
 								gradient = {
 									alpha = .85,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Gradient.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Gradient.tga]]
 								},
 								moon = {
 									alpha = .75,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Moon.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Moon.tga]]
 								},
 								smoke = {
 									alpha = .5,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Smoke.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Smoke.tga]]
 								},
 								shade = {
 									alpha = .75,
-									texture = path .. [[textures\DiabolicUI_HealthGlobe512x512_Shade.tga]]
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Shade.tga]]
 								}
 							}
 						}
@@ -210,29 +210,29 @@ local config = {
 					position = { "TOP", 0, 53 },
 					layers = {
 						backdrop = {
-							single = path .. [[textures\DiabolicUI_Target_305x15_Backdrop.tga]],
-							double = path .. [[textures\DiabolicUI_Target_305x15_Backdrop2Bars.tga]]
+							single = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Backdrop.tga]],
+							double = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Backdrop2Bars.tga]]
 						},
 						border = {
 							standard_single = {
-								normal = path .. [[textures\DiabolicUI_Target_305x15_Border.tga]],
-								highlight = path .. [[textures\DiabolicUI_Target_305x15_BorderHighlight.tga]],
-								threat = path .. [[textures\DiabolicUI_Target_305x15_Glow.tga]]
+								normal = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Border.tga]],
+								highlight = path .. [[textures\unitframes\DiabolicUI_Target_305x15_BorderHighlight.tga]],
+								threat = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Glow.tga]]
 							},
 							standard_double = {
-								normal = path .. [[textures\DiabolicUI_Target_305x15_Border2Bars.tga]],
-								highlight = path .. [[textures\DiabolicUI_Target_305x15_Border2BarsHighlight.tga]],
-								threat = path .. [[textures\DiabolicUI_Target_305x15_Glow2Bars.tga]]
+								normal = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Border2Bars.tga]],
+								highlight = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Border2BarsHighlight.tga]],
+								threat = path .. [[textures\unitframes\DiabolicUI_Target_305x15_Glow2Bars.tga]]
 							},
 							boss_single = {
-								normal = path .. [[textures\DiabolicUI_Target_305x15_BorderBoss.tga]],
-								highlight = path .. [[textures\DiabolicUI_Target_305x15_BorderBossHighlight.tga]],
-								threat = path .. [[textures\DiabolicUI_Target_305x15_GlowBoss.tga]]
+								normal = path .. [[textures\unitframes\DiabolicUI_Target_305x15_BorderBoss.tga]],
+								highlight = path .. [[textures\unitframes\DiabolicUI_Target_305x15_BorderBossHighlight.tga]],
+								threat = path .. [[textures\unitframes\DiabolicUI_Target_305x15_GlowBoss.tga]]
 							},
 							boss_double = {
-								normal = path .. [[textures\DiabolicUI_Target_305x15_BorderBoss2Bars.tga]],
-								highlight = path .. [[textures\DiabolicUI_Target_305x15_BorderBoss2BarsHighlight.tga]],
-								threat = path .. [[textures\DiabolicUI_Target_305x15_GlowBoss2Bars.tga]]
+								normal = path .. [[textures\unitframes\DiabolicUI_Target_305x15_BorderBoss2Bars.tga]],
+								highlight = path .. [[textures\unitframes\DiabolicUI_Target_305x15_BorderBoss2BarsHighlight.tga]],
+								threat = path .. [[textures\unitframes\DiabolicUI_Target_305x15_GlowBoss2Bars.tga]]
 							}
 						}
 					}
@@ -244,15 +244,15 @@ local config = {
 				backdrop = {
 					texture_size = { 256, 64 },
 					texture_position = { "TOPLEFT", -71 + (148-114)/2, 25 -(35-15)/2 },
-					texture = path .. [[textures\DiabolicUI_Target_114x15_Backdrop.tga]]
+					texture = path .. [[textures\unitframes\DiabolicUI_Target_114x15_Backdrop.tga]]
 				},
 				border = {
 					texture_size = { 256, 64 },
 					texture_position = { "TOPLEFT", -71 + (148-114)/2, 25 -(35-15)/2 },
 					textures = {
-						normal = path .. [[textures\DiabolicUI_Target_114x15_Border.tga]],
-						highlight = path .. [[textures\DiabolicUI_Target_114x15_Highlight.tga]],
-						threat = path .. [[textures\DiabolicUI_Target_114x15_Glow.tga]]
+						normal = path .. [[textures\unitframes\DiabolicUI_Target_114x15_Border.tga]],
+						highlight = path .. [[textures\unitframes\DiabolicUI_Target_114x15_Highlight.tga]],
+						threat = path .. [[textures\unitframes\DiabolicUI_Target_114x15_Glow.tga]]
 					}
 				},
 				health = {
@@ -276,15 +276,15 @@ local config = {
 				backdrop = {
 					texture_size = { 256, 64 },
 					texture_position = { "TOPLEFT", -83, 24 -(70 + 8)},
-					texture = path .. [[textures\DiabolicUI_Target_80x15_Backdrop.tga]]
+					texture = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Backdrop.tga]]
 				},
 				border = {
 					texture_size = { 256, 64 },
 					texture_position = { "TOPLEFT", -83, 24 -(70 + 8)},
 					textures = {
-						normal = path .. [[textures\DiabolicUI_Target_80x15_Border.tga]],
-						highlight = path .. [[textures\DiabolicUI_Target_80x15_Highlight.tga]],
-						threat = path .. [[textures\DiabolicUI_Target_80x15_Glow.tga]]
+						normal = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Border.tga]],
+						highlight = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Highlight.tga]],
+						threat = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Glow.tga]]
 					}
 				},
 				health = {
@@ -303,10 +303,10 @@ local config = {
 					texture_size = { 128, 128 }, 
 					texture_position = { "CENTER", 0, 0 },
 					textures = {
-						backdrop = path .. [[textures\DiabolicUI_Target_80x80_PortraitBackdrop.tga]],
-						border = path .. [[textures\DiabolicUI_Target_80x80_PortraitBorder.tga]],
-						highlight = path .. [[textures\DiabolicUI_Target_80x80_PortraitBorderHighlight.tga]],
-						threat = path .. [[textures\DiabolicUI_Target_80x80_PortraitGlow.tga]]
+						backdrop = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitBackdrop.tga]],
+						border = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitBorder.tga]],
+						highlight = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitBorderHighlight.tga]],
+						threat = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitGlow.tga]]
 					}
 				},
 				name = {
@@ -321,15 +321,15 @@ local config = {
 				backdrop = {
 					texture_size = { 256, 64 },
 					texture_position = { "TOPLEFT", -83, 24 -(70 + 8)},
-					texture = path .. [[textures\DiabolicUI_Target_80x15_Backdrop.tga]]
+					texture = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Backdrop.tga]]
 				},
 				border = {
 					texture_size = { 256, 64 },
 					texture_position = { "TOPLEFT", -83, 24 -(70 + 8)},
 					textures = {
-						normal = path .. [[textures\DiabolicUI_Target_80x15_Border.tga]],
-						highlight = path .. [[textures\DiabolicUI_Target_80x15_Highlight.tga]],
-						threat = path .. [[textures\DiabolicUI_Target_80x15_Glow.tga]]
+						normal = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Border.tga]],
+						highlight = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Highlight.tga]],
+						threat = path .. [[textures\unitframes\DiabolicUI_Target_80x15_Glow.tga]]
 					}
 				},
 				health = {
@@ -348,10 +348,10 @@ local config = {
 					texture_size = { 128, 128 }, 
 					texture_position = { "CENTER", 0, 0 },
 					textures = {
-						backdrop = path .. [[textures\DiabolicUI_Target_80x80_PortraitBackdrop.tga]],
-						border = path .. [[textures\DiabolicUI_Target_80x80_PortraitBorder.tga]],
-						highlight = path .. [[textures\DiabolicUI_Target_80x80_PortraitBorderHighlight.tga]],
-						threat = path .. [[textures\DiabolicUI_Target_80x80_PortraitGlow.tga]]
+						backdrop = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitBackdrop.tga]],
+						border = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitBorder.tga]],
+						highlight = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitBorderHighlight.tga]],
+						threat = path .. [[textures\unitframes\DiabolicUI_Target_80x80_PortraitGlow.tga]]
 					}
 				},
 				name = {
