@@ -114,6 +114,7 @@ local config = {
 		},
 		damage = {
 			path = path .. "Coalition.ttf",
+			-- floating combat text is numeric, so this font is safe for every locale
 			locales = {
 				enUS = true,
 				enGB = true,
@@ -123,7 +124,10 @@ local config = {
 				frFR = true,
 				itIT = true,
 				ptBR = true,
-				ptPT = true
+				ptPT = true,
+				ruRU = true,
+				koKR = true,
+				zhTW = true
 			}
 		}
 	}

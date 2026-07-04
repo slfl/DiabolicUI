@@ -7,6 +7,7 @@ local isLatin = ({ enUS  = true, enGB = true, deDE = true, esES = true, esMX = t
 Module.SetUp = function(self)
 	-- shortcuts to the fonts
 	local config = self:GetStaticConfig("Fonts")
+
 	self.fonts = {
 		text_normal = config.fonts.text_normal.path,
 		text_narrow = config.fonts.text_narrow.path,
