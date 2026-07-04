@@ -151,12 +151,68 @@ local RightOrb = function(self, unit)
 	
 end
 
+local PetOrb = function(self, unit)
+	local config = Module:GetStaticConfig("UnitFrames").visuals.units.player.pet
+
+	self:Size(unpack(config.size))
+	self:Place(unpack(config.position))
+
+	-- Layering (back -> front): player orb sits on LOW strata; the gargoyle
+	-- artwork sits on MEDIUM strata at frame level 10. We place the pet orb on
+	-- MEDIUM strata but at a low frame level, so it renders ABOVE the player orb
+	-- yet still BELOW the gargoyle. The orb's own overlay (border) is created at
+	-- scaffold level + 5, which stays under the gargoyle's level 10.
+	self:SetFrameStrata("MEDIUM")
+	self:SetFrameLevel(1)
+
+	-- Artwork: backdrop (behind) reusing the player globe textures
+	local Backdrop = self:CreateTexture(nil, "BACKGROUND")
+	Backdrop:SetSize(unpack(config.artwork.backdrop.size))
+	Backdrop:SetPoint(unpack(config.artwork.backdrop.position))
+	Backdrop:SetTexture(config.artwork.backdrop.texture)
+	Backdrop:SetVertexColor(unpack(config.artwork.backdrop.color))
+
+	-- Health orb
+	local orb_config = config.orbs.health
+	local Health = Orb:New(self)
+	Health:SetSize(unpack(orb_config.size))
+	Health:SetPoint(unpack(orb_config.position))
+
+	Health:SetStatusBarTexture(orb_config.layers.gradient.texture, "bar")
+	Health:SetStatusBarTexture(orb_config.layers.moon.texture, "moon")
+	Health:SetStatusBarTexture(orb_config.layers.smoke.texture, "smoke")
+	Health:SetStatusBarTexture(orb_config.layers.shade.texture, "shade")
+
+	Health:SetSparkTexture(orb_config.spark.texture)
+	Health:SetSparkSize(unpack(orb_config.spark.size))
+	Health:SetSparkOverflow(orb_config.spark.overflow)
+	Health:SetSparkFlash(unpack(orb_config.spark.flash))
+	Health:SetSparkFlashSize(unpack(orb_config.spark.flash_size))
+	Health:SetSparkFlashTexture(orb_config.spark.flash_texture)
+
+	Health.frequent = 1/120
+
+	-- Border overlay -- drawn on the orb's own overlay frame so it sits ABOVE
+	-- the orb fill (drawing it on 'self' would be hidden behind the orb).
+	local Border = Health:GetOverlay():CreateTexture(nil, "OVERLAY")
+	Border:SetSize(unpack(config.artwork.overlay.size))
+	Border:SetPoint(unpack(config.artwork.overlay.position))
+	Border:SetTexture(config.artwork.overlay.texture)
+	Border:SetVertexColor(unpack(config.artwork.overlay.color))
+
+	self.Health = Health
+
+	-- Only show the whole frame when a pet exists (visibility driver is secure-safe)
+	RegisterStateDriver(self, "visibility", "[pet]show;hide")
+end
+
 UnitFrameWidget.OnEnable = function(self)
 	local config = self:GetStaticConfig("UnitFrames").visuals.units.player
 	local db = self:GetConfig("UnitFrames") 
 
 	self.Left = UnitFrame:New("player", Engine:GetFrame(), LeftOrb) -- health / main
 	self.Right = UnitFrame:New("player", Engine:GetFrame(), RightOrb) -- power
+	self.Pet = UnitFrame:New("pet", Engine:GetFrame(), PetOrb) -- pet health orb
 	
 	-- Disable Blizzard's castbars for player 
 	self:GetHandler("BlizzardUI"):GetElement("CastBars"):Remove("player")

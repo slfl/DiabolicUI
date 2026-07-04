@@ -153,6 +153,58 @@ local config = {
 						}
 					}
 				},
+				pet = {
+					-- ~55% scale pet health orb, overlapping the upper-left of the player health orb
+					size = { 77, 77 },
+					position = { "CENTER", "Main", "BOTTOMLEFT", -161, 136 },
+					artwork = {
+						backdrop = {
+							size = { 140, 140 },
+							position = { "CENTER", 0, 0 },
+							texture = path .. [[textures\unitframes\DiabolicUI_PlayerGlobes_150x150_Backdrop.tga]],
+							color = { 0, 0, 0, 1 }
+						},
+						overlay = {
+							size = { 140, 140 },
+							position = { "CENTER", 0, 0 },
+							texture = path .. [[textures\unitframes\DiabolicUI_PlayerGlobes_150x150_Border.tga]],
+							color = { 1, 1, 1, 1 }
+						}
+					},
+					orbs = {
+						health = {
+							size = { 82, 82 },
+							position = { "CENTER" },
+							color = { 175/255, 17/255, 28/255 },
+							spark = {
+								size = { 64, 64 },
+								overflow = 4,
+								texture = path .. [[statusbars\DiabolicUI_StatusBar_128x128_SparkVertical_Warcraft.tga]],
+								flash = { 2.75, 1.25, .45, .95 },
+								flash_size = { 32, 8 },
+								flash_texture = path .. [[textures\tooltips\DiabolicUI_Tooltip_Header_TitleBackground.tga]]
+							},
+							layers = {
+								gradient = {
+									alpha = .85,
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Gradient.tga]]
+								},
+								moon = {
+									alpha = .5,
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Moon.tga]]
+								},
+								smoke = {
+									alpha = .5,
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Smoke.tga]]
+								},
+								shade = {
+									alpha = .9,
+									texture = path .. [[textures\unitframes\DiabolicUI_HealthGlobe512x512_Shade.tga]]
+								}
+							}
+						}
+					}
+				},
 				texts = {
 					health = {
 						font_object = DiabolicUnitFrameNumberNormal,
