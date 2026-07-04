@@ -320,16 +320,6 @@ local config = {
 					position = { "BOTTOM", 0, -artwork_offscreen },
 					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt1BarXP.tga]]
 				},
-				centerrep = {
-					size = { 1024, 256 },
-					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt1BarXP.tga]] -- Reuse XP texture or replace with rep-specific
-				},
-				skullrep = {
-					size = { 512, 128 },
-					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
-				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.single + bar_inset - skulloffset },
@@ -362,16 +352,6 @@ local config = {
 					position = { "BOTTOM", 0, -artwork_offscreen },
 					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt2BarsXP.tga]]
 				},
-				centerrep = {
-					size = { 1024, 256 },
-					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt2BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
-				},
-				skullrep = {
-					size = { 512, 128 },
-					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
-				},
 				skull = {
 					size = { 512, 128 },
 					position = { "BOTTOM", 0, bar_inset + buttonsize.double*2 + padding + bar_inset - skulloffset },
@@ -403,16 +383,6 @@ local config = {
 					size = { 1024, 256 },
 					position = { "BOTTOM", 0, -artwork_offscreen },
 					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt3BarsXP.tga]]
-				},
-				centerrep = {
-					size = { 1024, 256 },
-					position = { "BOTTOM", 0, -artwork_offscreen },
-					texture = path .. [[textures\actionbars\DiabolicUI_ActionBarArt3BarsXP.tga]] -- Reuse XP texture or replace with rep-specific
-				},
-				skullrep = {
-					size = { 512, 128 },
-					position = { "BOTTOM", 0, bar_inset + buttonsize.triple*3 + padding*2 + bar_inset + xpoffset_before + xpsize + xpoffset_after - skulloffset },
-					texture = path .. [[textures\actionbars\DiabolicUI_Artwork_Skull.tga]] -- Reuse skullxp texture or replace with rep-specific
 				},
 				skull = {
 					size = { 512, 128 },

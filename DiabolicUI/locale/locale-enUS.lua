@@ -90,6 +90,9 @@ L["Three"] = true
 -- xp bar
 L["Current XP: "] = true
 L["Rested Bonus: "] = true
+L["Faction: "] = true
+L["Standing: "] = true
+L["Reputation: "] = true
 L["Rested"] = true
 L["%s of normal experience\ngained from monsters."] = true
 L["Resting"] = true

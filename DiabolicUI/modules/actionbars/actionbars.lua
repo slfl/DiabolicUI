@@ -92,11 +92,6 @@ Module.LoadArtwork = function(self)
             self.artwork["bar"..i.."xp"] = new(background, config[i].centerxp)
             self.artwork["bar"..i.."skullxp"] = new(overlay, config[i].skullxp)
         end
-        -- add reputation textures
-        if config[i].centerrep then
-            self.artwork["bar"..i.."rep"] = new(background, config[i].centerrep)
-            self.artwork["bar"..i.."skullrep"] = new(overlay, config[i].skullrep)
-        end
     end
 end
 
@@ -119,8 +114,13 @@ Module.UpdateArtwork = function(self)
 
     local has_xp_bar = self:IsXPEnabled()
     local xp_bar_widget = self:GetWidget("Bar: XP")
-    local has_rep_bar = xp_bar_widget and xp_bar_widget.repData and xp_bar_widget.repData.isRep
-    
+    local has_rep_bar = xp_bar_widget and xp_bar_widget.repData and xp_bar_widget.repData.isRep or false
+
+    -- The XP-styled artwork (BarXP.tga) is used whenever the progress bar is
+    -- visible for ANY reason: experience (1-79) OR a watched reputation (80).
+    -- Otherwise the plain artwork (Bar.tga) is used.
+    local show_xp_art = has_xp_bar or has_rep_bar
+
     local mode
     if state == "possess" or state == "vehicle" then
         mode = "vehicle"
@@ -133,44 +133,27 @@ Module.UpdateArtwork = function(self)
             -- Always show left and right textures
             self.artwork["bar"..i.."left"]:Show()
             self.artwork["bar"..i.."right"]:Show()
-            
-            -- Default: show standard textures
-            self.artwork["bar"..i]:Show()
-            self.artwork["bar"..i.."skull"]:Show()
-            
-            -- Show XP textures if XP bar is active
-            if has_xp_bar and self.artwork["bar"..i.."xp"] then
+
+            if show_xp_art and self.artwork["bar"..i.."xp"] then
+                -- progress bar visible -> XP-styled artwork
                 self.artwork["bar"..i.."xp"]:Show()
                 self.artwork["bar"..i.."skullxp"]:Show()
                 self.artwork["bar"..i]:Hide()
                 self.artwork["bar"..i.."skull"]:Hide()
-            elseif self.artwork["bar"..i.."xp"] then
-                self.artwork["bar"..i.."xp"]:Hide()
-                self.artwork["bar"..i.."skullxp"]:Hide()
-            end
-            
-            -- Show reputation textures if reputation bar is active
-            if has_rep_bar and self.artwork["bar"..i.."rep"] then
-                self.artwork["bar"..i.."rep"]:Show()
-                self.artwork["bar"..i.."skullrep"]:Show()
-                if not has_xp_bar then
-                    -- If no XP bar, reputation replaces standard textures
-                    self.artwork["bar"..i]:Hide()
-                    self.artwork["bar"..i.."skull"]:Hide()
+            else
+                -- no progress bar -> plain artwork
+                self.artwork["bar"..i]:Show()
+                self.artwork["bar"..i.."skull"]:Show()
+                if self.artwork["bar"..i.."xp"] then
+                    self.artwork["bar"..i.."xp"]:Hide()
+                    self.artwork["bar"..i.."skullxp"]:Hide()
                 end
-            elseif self.artwork["bar"..i.."rep"] then
-                self.artwork["bar"..i.."rep"]:Hide()
-                self.artwork["bar"..i.."skullrep"]:Hide()
             end
         else
             -- Hide all textures for non-active modes
             if self.artwork["bar"..i.."xp"] then
                 self.artwork["bar"..i.."xp"]:Hide()
                 self.artwork["bar"..i.."skullxp"]:Hide()
-            end
-            if self.artwork["bar"..i.."rep"] then
-                self.artwork["bar"..i.."rep"]:Hide()
-                self.artwork["bar"..i.."skullrep"]:Hide()
             end
             self.artwork["bar"..i]:Hide()
             self.artwork["bar"..i.."skull"]:Hide()
