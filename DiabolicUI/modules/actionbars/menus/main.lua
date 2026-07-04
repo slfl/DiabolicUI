@@ -788,7 +788,23 @@ MenuWidget.OnEnable = function(self)
 	
 	local floor = math.floor
 	
+	-- Reads the saved setting and shows/hides the readout accordingly.
+	-- Exposed on the module so the options panel checkbox can call it live.
+	Module.UpdatePerformanceVisibility = function()
+		local ui_db = Engine:GetConfig("UI")
+		if ui_db.show_performance then
+			Performance:Show()
+		else
+			Performance:Hide()
+		end
+	end
+	Module.UpdatePerformanceVisibility()
+	
 	MicroMenuButton:SetScript("OnUpdate", function(self, elapsed) 
+		-- skip all work entirely when the readout is turned off
+		if not Engine:GetConfig("UI").show_performance then
+			return
+		end
 		self.elapsed = (self.elapsed or 0) + elapsed
 		if self.elapsed > performance_hz then
 			local _, _, chat_latency, cast_latency = GetNetStats()

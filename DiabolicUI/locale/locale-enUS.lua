@@ -116,3 +116,8 @@ L["Manual"] = true
 L["You can re-enable the auto positioning by typing |cff448800/diabolic autoposition|r in the chat at any time."] = true
 L["Auto positioning of chat windows has been enabled."] = true
 L["Auto positioning of chat windows has been disabled."] = true
+
+-- Options panel
+L["Additional interface options."] = true
+L["Show FPS and latency"] = true
+L["Toggles the performance readout (frames per second and latency) on the micro menu."] = true

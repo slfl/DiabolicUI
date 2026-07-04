@@ -116,3 +116,8 @@ L["Manual"] = "Вручную"
 L["You can re-enable the auto positioning by typing |cff448800/diabolic autoposition|r in the chat at any time."] = "Вы можете снова включить автоматическое позиционирование, набрав |cff448800/diabolic autoposition|r в чате в любое время."
 L["Auto positioning of chat windows has been enabled."] = "Включено автоматическое позиционирование окон чата."
 L["Auto positioning of chat windows has been disabled."] = "Выключено автоматическое позиционирование окон чата."
+
+-- Options panel
+L["Additional interface options."] = "Дополнительные настройки интерфейса."
+L["Show FPS and latency"] = "Показывать FPS и задержку"
+L["Toggles the performance readout (frames per second and latency) on the micro menu."] = "Включает/выключает показ производительности (кадры в секунду и задержку) на микроменю."

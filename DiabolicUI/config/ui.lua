@@ -226,7 +226,8 @@ local config = {
 
 local db = {
 	autoscale = true, -- whether or not to automatically scale the UI
-	hasbeenqueried = false -- whether or not the user has been asked about the previous
+	hasbeenqueried = false, -- whether or not the user has been asked about the previous
+	show_performance = true -- show the FPS / latency readout on the micro menu
 }
 
 Engine:NewStaticConfig("UI", config)

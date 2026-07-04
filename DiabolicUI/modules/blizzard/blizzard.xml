@@ -8,6 +8,7 @@
 <Script file='ghostframe.lua'/>
 <Script file='levelup.lua'/>
 <Script file='mirrortimers.lua'/>
+<Script file='options.lua'/>
 <Script file='popups.lua'/>
 <Script file='tooltips.lua'/>
 <Script file='totembar.lua'/>
