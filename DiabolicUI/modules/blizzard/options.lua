@@ -76,6 +76,46 @@ Module.OnEnable = function(self)
 		nil
 	)
 
+	-- Checkbox: class-colored health orb
+	local classcolor = CreateCheckbox(
+		panel,
+		"ClassHealthColor",
+		L["Class colored health orb"],
+		L["Colors the player health orb using your class color instead of the default red."],
+		function()
+			return Engine:GetConfig("UI").class_health_color
+		end,
+		function(checked)
+			Engine:GetConfig("UI").class_health_color = checked
+			local UnitFrames = Engine:GetModule("UnitFrames", true)
+			if UnitFrames and UnitFrames.RefreshHealthColor then
+				UnitFrames:RefreshHealthColor()
+			end
+		end,
+		perf
+	)
+
+	-- Sub-option: also color the pet health orb
+	local classcolorpet = CreateCheckbox(
+		panel,
+		"ClassHealthColorPet",
+		L["Also color the pet health orb"],
+		L["Also colors the pet health orb using your class color."],
+		function()
+			return Engine:GetConfig("UI").class_health_color_pet
+		end,
+		function(checked)
+			Engine:GetConfig("UI").class_health_color_pet = checked
+			local UnitFrames = Engine:GetModule("UnitFrames", true)
+			if UnitFrames and UnitFrames.RefreshHealthColor then
+				UnitFrames:RefreshHealthColor()
+			end
+		end,
+		classcolor
+	)
+	-- indent the sub-option slightly to show it belongs to the one above
+	classcolorpet:SetPoint("TOPLEFT", classcolor, "BOTTOMLEFT", 16, -8)
+
 	-- Register the panel in the Interface -> AddOns list
 	InterfaceOptions_AddCategory(panel)
 

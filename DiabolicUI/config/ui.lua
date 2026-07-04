@@ -227,7 +227,9 @@ local config = {
 local db = {
 	autoscale = true, -- whether or not to automatically scale the UI
 	hasbeenqueried = false, -- whether or not the user has been asked about the previous
-	show_performance = true -- show the FPS / latency readout on the micro menu
+	show_performance = true, -- show the FPS / latency readout on the micro menu
+	class_health_color = false, -- color the player health orb by class color
+	class_health_color_pet = false -- also color the pet health orb by the owner's class color
 }
 
 Engine:NewStaticConfig("UI", config)

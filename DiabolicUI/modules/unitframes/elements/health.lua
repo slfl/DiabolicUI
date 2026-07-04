@@ -121,8 +121,37 @@ Update = function(self, event, ...)
 	Health:SetValue(health)
 
 	if object_type == "Orb" then
-		for i,v in pairs(colors.orb) do
-			Health:SetStatusBarColor(unpack(v))
+		-- Optional class-colored health orb. We only swap the RGB of each layer
+		-- and keep its original alpha and layer name, so all the visual effects
+		-- (moon, smoke, gradient, spark) are preserved -- only the hue changes.
+		local ui_db
+		local ok = pcall(function() ui_db = Engine:GetConfig("UI") end)
+		local use_class = false
+		if ok and ui_db then
+			if unit == "player" and ui_db.class_health_color then
+				use_class = true
+			elseif unit == "pet" and ui_db.class_health_color and ui_db.class_health_color_pet then
+				use_class = true
+			end
+		end
+
+		if use_class then
+			-- pet belongs to the player, so both use the player's class color
+			local _, class = UnitClass("player")
+			local cc = colors.class[class] or colors.class.UNKNOWN
+			for i,v in pairs(colors.orb) do
+				local layer = v[5]
+				if layer == "shade" then
+					-- shade is the dark shading layer; leave it untouched
+					Health:SetStatusBarColor(unpack(v))
+				else
+					Health:SetStatusBarColor(cc[1], cc[2], cc[3], v[4], layer)
+				end
+			end
+		else
+			for i,v in pairs(colors.orb) do
+				Health:SetStatusBarColor(unpack(v))
+			end
 		end
 	elseif object_type == "StatusBar" then
 		local r, g, b

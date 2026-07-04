@@ -121,3 +121,7 @@ L["Auto positioning of chat windows has been disabled."] = true
 L["Additional interface options."] = true
 L["Show FPS and latency"] = true
 L["Toggles the performance readout (frames per second and latency) on the micro menu."] = true
+L["Class colored health orb"] = true
+L["Colors the player health orb using your class color instead of the default red."] = true
+L["Also color the pet health orb"] = true
+L["Also colors the pet health orb using your class color."] = true

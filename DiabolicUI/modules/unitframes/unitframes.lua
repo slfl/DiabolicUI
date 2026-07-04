@@ -7,6 +7,19 @@ local unpack = unpack
 -- WoW API
 local CreateFrame = CreateFrame
 
+-- Forces the player and pet health orbs to recolor immediately.
+-- Called from the options panel when a class-color checkbox is toggled.
+Module.RefreshHealthColor = function(self)
+	local Player = self:GetWidget("Unit: Player", true)
+	if not Player then return end
+	if Player.Left and Player.Left.UpdateAllElements then
+		Player.Left:UpdateAllElements()
+	end
+	if Player.Pet and Player.Pet.UpdateAllElements then
+		Player.Pet:UpdateAllElements()
+	end
+end
+
 Module.LoadArtWork = function(self)
 	local config = self.config.visuals.artwork
 	local db = self.db
