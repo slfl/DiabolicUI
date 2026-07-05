@@ -149,175 +149,143 @@ local function CreateDropdown(parent, name, label, options, get, set, anchorTo, 
 	return dd, labelText
 end
 
+-- Creates a child options panel registered under the main DiabolicUI category.
+local function CreateSubPanel(nameKey, title)
+	local p = CreateFrame("Frame", "DiabolicUIOptions"..nameKey, UIParent)
+	p.name = title
+	p.parent = "DiabolicUI"
+
+	local heading = p:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	heading:SetPoint("TOPLEFT", 16, -16)
+	heading:SetText(title)
+	p.heading = heading
+
+	return p
+end
+
+-- Wraps a panel in a scroll frame and returns the scroll content frame.
+local function MakeScrollable(panel, topAnchor)
+	local scroll = CreateFrame("ScrollFrame", panel:GetName().."Scroll", panel, "UIPanelScrollFrameTemplate")
+	scroll:SetPoint("TOPLEFT", topAnchor, "BOTTOMLEFT", 0, -12)
+	scroll:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -32, 16)
+
+	local content = CreateFrame("Frame", panel:GetName().."Content", scroll)
+	content:SetSize(1, 1)
+	scroll:SetScrollChild(content)
+	scroll:SetScript("OnSizeChanged", function(f, w, h) content:SetWidth(w) end)
+	return content
+end
+
 Module.OnEnable = function(self)
+	-- ==============================================================
+	-- MAIN PANEL: just the DiabolicUI logo
+	-- ==============================================================
 	local panel = CreateFrame("Frame", "DiabolicUIOptionsPanel", UIParent)
 	panel.name = "DiabolicUI"
 
-	-- Title
-	local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-	title:SetPoint("TOPLEFT", 16, -16)
-	title:SetText("DiabolicUI")
+	local logo = panel:CreateTexture(nil, "ARTWORK")
+	logo:SetTexture([[Interface\AddOns\DiabolicUI\media\textures\ui\DiabolicUI_Logo.tga]])
+	-- logo art is 1024x512 (2:1); show it at a tidy size, centered near the top
+	logo:SetSize(384, 192)
+	logo:SetPoint("TOP", panel, "TOP", 0, -40)
 
-	-- Subtitle
-	local sub = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-	sub:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
-	sub:SetPoint("RIGHT", panel, "RIGHT", -32, 0)
-	sub:SetJustifyH("LEFT")
-	sub:SetText(L["Additional interface options."])
+	local ver = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	ver:SetPoint("TOP", logo, "BOTTOM", 0, -8)
+	ver:SetText("v2.0")
 
-	-- Scrollable content area (so all the options fit on smaller screens)
-	local scroll = CreateFrame("ScrollFrame", "DiabolicUIOptionsScroll", panel, "UIPanelScrollFrameTemplate")
-	scroll:SetPoint("TOPLEFT", sub, "BOTTOMLEFT", 0, -12)
-	scroll:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -32, 16)
+	InterfaceOptions_AddCategory(panel)
+	self.panel = panel
 
-	local content = CreateFrame("Frame", "DiabolicUIOptionsContent", scroll)
-	content:SetSize(1, 1) -- height grows as we anchor controls; width set below
-	scroll:SetScrollChild(content)
-	-- match content width to the scroll viewport
-	scroll:SetScript("OnSizeChanged", function(f, w, h)
-		content:SetWidth(w)
-	end)
+	-- ==============================================================
+	-- SUB-PANEL: Command Bar (FPS, coords, buttons, class orb)
+	-- ==============================================================
+	local cmd = CreateSubPanel("CommandBar", L["Command bar"])
+	local cmdContent = MakeScrollable(cmd, cmd.heading)
 
-	-- all controls below are parented to `content` instead of `panel`
-	local panel_content = content
-
-	-- Checkbox: FPS / latency readout
-	local perf = CreateCheckbox(
-		panel_content,
-		"Performance",
+	local perf = CreateCheckbox(cmdContent, "Performance",
 		L["Show FPS and latency"],
 		L["Toggles the performance readout (frames per second and latency) on the micro menu."],
-		function()
-			return Engine:GetConfig("UI", "character").show_performance
-		end,
+		function() return Engine:GetConfig("UI", "character").show_performance end,
 		function(checked)
 			Engine:GetConfig("UI", "character").show_performance = checked
-			-- apply immediately if the action bars module is ready
 			local ActionBars = Engine:GetModule("ActionBars", true)
-			if ActionBars and ActionBars.UpdatePerformanceVisibility then
-				ActionBars:UpdatePerformanceVisibility()
-			end
-		end,
-		nil
-	)
+			if ActionBars and ActionBars.UpdatePerformanceVisibility then ActionBars:UpdatePerformanceVisibility() end
+		end, nil)
 
-	-- Checkbox: player coordinates
-	local coords = CreateCheckbox(
-		panel_content,
-		"Coordinates",
+	local coords = CreateCheckbox(cmdContent, "Coordinates",
 		L["Show player coordinates"],
 		L["Shows your map coordinates in the lower-left corner."],
-		function()
-			return Engine:GetConfig("UI", "character").show_coordinates
-		end,
+		function() return Engine:GetConfig("UI", "character").show_coordinates end,
 		function(checked)
 			Engine:GetConfig("UI", "character").show_coordinates = checked
 			local ActionBars = Engine:GetModule("ActionBars", true)
-			if ActionBars and ActionBars.UpdateCoordinatesVisibility then
-				ActionBars:UpdateCoordinatesVisibility()
-			end
-		end,
-		perf
-	)
+			if ActionBars and ActionBars.UpdateCoordinatesVisibility then ActionBars:UpdateCoordinatesVisibility() end
+		end, perf)
 
-	-- Checkbox: menu / bags / chat / friends buttons
-	local buttons = CreateCheckbox(
-		panel_content,
-		"ShowButtons",
+	local buttons = CreateCheckbox(cmdContent, "ShowButtons",
 		L["Show menu buttons"],
 		L["Shows the menu, bags, chat and friends buttons. Turn off for a cleaner interface."],
-		function()
-			return Engine:GetConfig("UI", "character").show_buttons
-		end,
+		function() return Engine:GetConfig("UI", "character").show_buttons end,
 		function(checked)
 			Engine:GetConfig("UI", "character").show_buttons = checked
 			local ActionBars = Engine:GetModule("ActionBars", true)
-			if ActionBars and ActionBars.UpdateButtonsVisibility then
-				ActionBars:UpdateButtonsVisibility()
-			end
-		end,
-		coords
-	)
+			if ActionBars and ActionBars.UpdateButtonsVisibility then ActionBars:UpdateButtonsVisibility() end
+		end, coords)
 
-	-- Checkbox: class-colored health orb
-	local classcolor = CreateCheckbox(
-		panel_content,
-		"ClassHealthColor",
+	local classcolor = CreateCheckbox(cmdContent, "ClassHealthColor",
 		L["Class colored health orb"],
 		L["Colors the player health orb using your class color instead of the default red."],
-		function()
-			return Engine:GetConfig("UI", "character").class_health_color
-		end,
+		function() return Engine:GetConfig("UI", "character").class_health_color end,
 		function(checked)
 			Engine:GetConfig("UI", "character").class_health_color = checked
 			local UnitFrames = Engine:GetModule("UnitFrames", true)
-			if UnitFrames and UnitFrames.RefreshHealthColor then
-				UnitFrames:RefreshHealthColor()
-			end
-		end,
-		buttons
-	)
+			if UnitFrames and UnitFrames.RefreshHealthColor then UnitFrames:RefreshHealthColor() end
+		end, buttons)
 
-	-- Sub-option: also color the pet health orb
-	local classcolorpet = CreateCheckbox(
-		panel_content,
-		"ClassHealthColorPet",
+	local classcolorpet = CreateCheckbox(cmdContent, "ClassHealthColorPet",
 		L["Also color the pet health orb"],
 		L["Also colors the pet health orb using your class color."],
-		function()
-			return Engine:GetConfig("UI", "character").class_health_color_pet
-		end,
+		function() return Engine:GetConfig("UI", "character").class_health_color_pet end,
 		function(checked)
 			Engine:GetConfig("UI", "character").class_health_color_pet = checked
 			local UnitFrames = Engine:GetModule("UnitFrames", true)
-			if UnitFrames and UnitFrames.RefreshHealthColor then
-				UnitFrames:RefreshHealthColor()
-			end
-		end,
-		classcolor
-	)
-	-- indent the sub-option slightly to show it belongs to the one above
+			if UnitFrames and UnitFrames.RefreshHealthColor then UnitFrames:RefreshHealthColor() end
+		end, classcolor)
 	classcolorpet:SetPoint("TOPLEFT", classcolor, "BOTTOMLEFT", 16, -8)
 
-	-- Checkbox: custom minimap on/off
-	local minimap = CreateCheckbox(
-		panel_content,
-		"CustomMinimap",
-		L["Custom minimap"],
-		L["Shows the custom square minimap. Turn off to use another minimap addon. Requires a relog to take effect."],
-		function()
-			return Engine:GetConfig("Minimap", "character").enabled
-		end,
-		function(checked)
-			Engine:GetConfig("Minimap", "character").enabled = checked
-			print("|cff4488ffDiabolicUI:|r "..L["The minimap change will take effect after your next relog."])
-		end,
-		classcolorpet
-	)
-	-- reset the indent (this one is a top-level option again)
-	minimap:SetPoint("TOPLEFT", classcolorpet, "BOTTOMLEFT", -16, -8)
+	cmdContent:SetHeight(300)
+	InterfaceOptions_AddCategory(cmd)
 
-	-- helper: minimap config + live apply
+	-- ==============================================================
+	-- SUB-PANEL: Minimap
+	-- ==============================================================
+	local mm = CreateSubPanel("MinimapPanel", L["Minimap"])
+	local mmContent = MakeScrollable(mm, mm.heading)
+
 	local function mmdb() return Engine:GetConfig("Minimap", "character") end
 	local function applyMinimap()
 		local Minimap = Engine:GetModule("Minimap", true)
 		if Minimap and Minimap.ApplySettings then Minimap:ApplySettings() end
 	end
 
-	-- Sub: 24-hour clock
-	local clock24 = CreateCheckbox(
-		panel_content, "Clock24",
+	local minimap = CreateCheckbox(mmContent, "CustomMinimap",
+		L["Custom minimap"],
+		L["Shows the custom square minimap. Turn off to use another minimap addon. Requires a relog to take effect."],
+		function() return mmdb().enabled end,
+		function(checked)
+			mmdb().enabled = checked
+			print("|cff4488ffDiabolicUI:|r "..L["The minimap change will take effect after your next relog."])
+		end, nil)
+
+	local clock24 = CreateCheckbox(mmContent, "Clock24",
 		L["24-hour clock"],
 		L["Use a 24-hour clock (15:55) instead of 12-hour (3:55 PM)."],
 		function() return mmdb().use24hrClock end,
 		function(checked) mmdb().use24hrClock = checked; applyMinimap() end,
-		minimap
-	)
+		minimap)
 	clock24:SetPoint("TOPLEFT", minimap, "BOTTOMLEFT", 16, -8)
 
-	-- Sub: date format dropdown (day / day.month / day.month.year)
-	local dateFormat = CreateDropdown(
-		panel_content, "DateFormat",
+	local dateFormat = CreateDropdown(mmContent, "DateFormat",
 		L["Date format"],
 		{
 			{ value = "d",   text = L["Day only"] },
@@ -326,12 +294,9 @@ Module.OnEnable = function(self)
 		},
 		function() return mmdb().date_format end,
 		function(v) mmdb().date_format = v; applyMinimap() end,
-		clock24
-	)
+		clock24)
 
-	-- Sub: date separator dropdown (dot / colon / slash)
-	local dateSep = CreateDropdown(
-		panel_content, "DateSeparator",
+	local dateSep = CreateDropdown(mmContent, "DateSeparator",
 		L["Date separator"],
 		{
 			{ value = ".", text = L["Dot (.)"] },
@@ -340,63 +305,71 @@ Module.OnEnable = function(self)
 		},
 		function() return mmdb().date_separator end,
 		function(v) mmdb().date_separator = v; applyMinimap() end,
-		clock24, dateFormat  -- anchorTo (unused when rightOf set), rightOf = beside date format
-	)
-	-- anchor following controls below the date format dropdown (left column)
-	local dateSlash = dateFormat
+		clock24, dateFormat)
 
-	-- Sub: show addon buttons
-	local mmButtons = CreateCheckbox(
-		panel_content, "MinimapButtons",
+	local mmButtons = CreateCheckbox(mmContent, "MinimapButtons",
 		L["Show addon buttons"],
 		L["Show the collapsible addon-button holder under the minimap."],
 		function() return mmdb().show_buttons end,
 		function(checked) mmdb().show_buttons = checked; applyMinimap() end,
-		dateSlash
-	)
-	mmButtons:SetPoint("TOPLEFT", dateSlash, "BOTTOMLEFT", 12, -10)
+		dateFormat)
+	mmButtons:SetPoint("TOPLEFT", dateFormat, "BOTTOMLEFT", 12, -10)
 
-	-- Sub: show vignette
-	local shade = CreateCheckbox(
-		panel_content, "MinimapShade",
+	local shade = CreateCheckbox(mmContent, "MinimapShade",
 		L["Show vignette"],
 		L["Show a dark vignette overlay on the minimap."],
 		function() return mmdb().show_shade end,
 		function(checked) mmdb().show_shade = checked; applyMinimap() end,
-		mmButtons
-	)
+		mmButtons)
 	shade:SetPoint("TOPLEFT", mmButtons, "BOTTOMLEFT", 0, -8)
 
-	-- Sub: vignette strength slider
-	local shadeSlider = CreateSlider(
-		panel_content, "MinimapShadeAlpha",
+	local shadeSlider = CreateSlider(mmContent, "MinimapShadeAlpha",
 		L["Vignette strength"],
 		L["Adjust the vignette opacity."],
 		0, 1, 0.05,
 		function() return mmdb().shade_alpha end,
 		function(v) mmdb().shade_alpha = v; applyMinimap() end,
 		function(v) return ("%d%%"):format(v * 100) end,
-		shade
-	)
+		shade)
 
-	-- Sub: minimap opacity slider (5 steps 0..100)
-	local alphaSlider = CreateSlider(
-		panel_content, "MinimapAlpha",
+	local alphaSlider = CreateSlider(mmContent, "MinimapAlpha",
 		L["Minimap opacity"],
 		L["Adjust the overall minimap opacity."],
 		0, 1, 0.25,
 		function() return mmdb().map_alpha end,
 		function(v) mmdb().map_alpha = v; applyMinimap() end,
 		function(v) return ("%d%%"):format(v * 100) end,
-		shadeSlider
-	)
+		shadeSlider)
 
-	-- Give the scroll content enough height to hold everything, so the
-	-- scrollbar appears and all options are reachable.
-	content:SetHeight(860)
+	mmContent:SetHeight(520)
+	InterfaceOptions_AddCategory(mm)
 
-	-- Register the panel in the Interface -> AddOns list
-	InterfaceOptions_AddCategory(panel)
+	-- ==============================================================
+	-- SUB-PANEL: About
+	-- ==============================================================
+	local about = CreateSubPanel("About", L["About"])
+	local ay = -60
+	local function AboutLine(labelKey, value, color)
+		local row = about:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+		row:SetPoint("TOPLEFT", 32, ay)
+		row:SetText(labelKey)
+		local val = about:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+		val:SetPoint("LEFT", row, "LEFT", 110, 0)
+		val:SetText(value)
+		if color then val:SetTextColor(color[1], color[2], color[3]) end
+		ay = ay - 26
+	end
 
-	self.panel = panel
+	local aboutTitle = about:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	aboutTitle:SetPoint("TOPLEFT", 16, -44)
+	aboutTitle:SetText(L["A Diablo-style UI modification."])
+
+	AboutLine(L["Version"], "v2.0")
+	AboutLine(L["Author"], "Mansi")
+	AboutLine(L["Category"], L["Interface"])
+	AboutLine(L["License"], L["Free / open"])
+	AboutLine(L["Email"], "slfl@mail.ru", { .3, .6, 1 })
+	AboutLine(L["Client"], "WotLK 3.3.5a")
+
+	InterfaceOptions_AddCategory(about)
 end
