@@ -113,11 +113,17 @@ local OnMouseWheel = function(self, delta)
 	end
 end
 
--- Right-click opens the tracking menu (same behaviour as the default minimap)
+-- Left-click sets a minimap ping (visible to your group); right-click opens
+-- the tracking menu (same behaviour as the default minimap).
 local OnMouseUp = function(self, button)
 	if button == "RightButton" then
 		if MiniMapTrackingDropDown then
 			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self, 0, 0)
+		end
+	elseif button == "LeftButton" then
+		-- Minimap_OnClick handles the ping that group members can see
+		if Minimap_OnClick then
+			Minimap_OnClick(self)
 		end
 	end
 end
