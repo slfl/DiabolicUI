@@ -1,15 +1,14 @@
-﻿## Interface: 30300
+## Interface: 30300
 ## Name: DiabolicUI
-## Title: |TInterface\Addons\DiabolicUI\media\diabolic-lettermark.tga:16:16:0:0:512:512:90:422:90:422|t |cffaa0022Diabolic|r|cfffafafaUI|r |cffcccccc1.0|r
-## Notes: |cff666666By Lars Norberg|r |n|n|cff4488ffPayPal|r|cffffffff:|r |n|cfffffffflars@larsnorbergofficial.com|r |n|n|cff4488ffPayPal.Me|r|cffffffff:|r|n|cffffffffwww.paypal.me/larsnorberg|r
-## Author: Lars Norberg
-## Version: 1.0-wotlk
+## Title: |cffaa0022Diabolic|r|cfffafafaUI|r |cffcccccc2.0|r
+## Notes: |cff666666UI-модификация в стиле Diablo|r |n|n|cff4488ffОригинал:|r |cffffffffLars Norberg|r |n|cff4488ffМод и доработки:|r |cffffffffMansi|r
+## Author: Mansi (based on DiabolicUI by Lars Norberg)
+## Version: 2.0
 ## DefaultState: Enabled
 ## SavedVariables: DiabolicUI_DB
-## X-eMail: lars@larsnorbergofficial.com
-## X-Website: http://www.larsnorbergofficial.com
-## X-Donate: PayPal:lars@larsnorbergofficial.com
-## X-License: The MIT License (MIT)
+## X-eMail: slfl@mail.ru
+## X-License: Free / open (original DiabolicUI is MIT, (c) Lars Norberg)
+## X-Original-Author: Lars Norberg
 ## X-Category: Interface Enhancements
 
 ### localization

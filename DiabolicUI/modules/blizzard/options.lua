@@ -452,6 +452,7 @@ Module.OnEnable = function(self)
 
 	AboutLine(L["Version"], "v2.0")
 	AboutLine(L["Author"], "Mansi")
+	AboutLine(L["Original"], "Lars Norberg")
 	AboutLine(L["Category"], L["Interface"])
 	AboutLine(L["License"], L["Free / open"])
 	AboutLine(L["Email"], "slfl@mail.ru", { .3, .6, 1 })

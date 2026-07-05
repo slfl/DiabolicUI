@@ -181,3 +181,4 @@ L["Applies the dark Diablo chat styling, buttons and copy window. Requires a rel
 L["The chat change will take effect after your next relog."] = true
 L["Hide friends button"] = true
 L["Hides the friends (Social) button above the chat. The one by the input line stays."] = true
+L["Original"] = true
