@@ -782,7 +782,7 @@ MenuWidget.OnEnable = function(self)
 	MicroMenuButton.Performance = Performance
 	
 	local performance_string = "%d%s - %d%s"
-	local performance_hz = 1
+	local performance_hz = 0.1
 	local MILLISECONDS_ABBR = MILLISECONDS_ABBR
 	local FPS_ABBR = FPS_ABBR
 	
