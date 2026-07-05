@@ -190,3 +190,7 @@ L["Use local time"] = true
 L["Show your computer's local time instead of the server time."] = true
 L["Show artwork"] = true
 L["Shows the decorative angel and demon artwork on the sides of the command bar."] = true
+L["Show resources"] = true
+L["Always"] = true
+L["In combat only"] = true
+L["Never"] = true

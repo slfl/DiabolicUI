@@ -20,6 +20,18 @@ Module.RefreshHealthColor = function(self)
 	end
 end
 
+-- Refreshes the orb value visibility (always / never / combat).
+Module.RefreshResourceDisplay = function(self)
+	local Player = self:GetWidget("Unit: Player", true)
+	if not Player then return end
+	if Player.Left and Player.Left.UpdateAllElements then
+		Player.Left:UpdateAllElements()
+	end
+	if Player.Right and Player.Right.UpdateAllElements then
+		Player.Right:UpdateAllElements()
+	end
+end
+
 Module.LoadArtWork = function(self)
 	local config = self.config.visuals.artwork
 	local db = self.db
@@ -82,4 +94,9 @@ Module.OnEnable = function(self)
 	BlizzardUI:GetElement("Menu_Option"):Remove(true, "InterfaceOptionsCombatPanelEnemyCastBarsOnPortrait")
 --	BlizzardUI:GetElement("Menu_Option"):Remove(true, "InterfaceOptionsCombatPanelEnemyCastBarsOnNameplates")
 
+	-- refresh orb value visibility when combat starts/ends (for "combat" mode)
+	local combatWatcher = CreateFrame("Frame")
+	combatWatcher:RegisterEvent("PLAYER_REGEN_ENABLED")
+	combatWatcher:RegisterEvent("PLAYER_REGEN_DISABLED")
+	combatWatcher:SetScript("OnEvent", function() self:RefreshResourceDisplay() end)
 end

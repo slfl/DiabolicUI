@@ -265,7 +265,23 @@ Module.OnEnable = function(self)
 		end, classcolorpet)
 	artwork:SetPoint("TOPLEFT", classcolorpet, "BOTTOMLEFT", -16, -8)
 
-	cmdContent:SetHeight(340)
+	-- orb value display mode
+	local resources = CreateDropdown(cmdContent, "ResourceDisplay",
+		L["Show resources"],
+		{
+			{ value = "always", text = L["Always"] },
+			{ value = "combat", text = L["In combat only"] },
+			{ value = "never",  text = L["Never"] },
+		},
+		function() return Engine:GetConfig("UI", "character").resource_display end,
+		function(v)
+			Engine:GetConfig("UI", "character").resource_display = v
+			local UnitFrames = Engine:GetModule("UnitFrames", true)
+			if UnitFrames and UnitFrames.RefreshResourceDisplay then UnitFrames:RefreshResourceDisplay() end
+		end,
+		artwork)
+
+	cmdContent:SetHeight(420)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================

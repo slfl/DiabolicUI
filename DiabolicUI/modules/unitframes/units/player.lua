@@ -49,9 +49,14 @@ local LeftOrb = function(self, unit)
 	Health.Value.showMaximum = true
 	
 	Health.PostUpdate = function(self)
-		local min, max = self:GetMinMaxValues()
-		local value = self:GetValue()
+		local mode = Engine:GetConfig("UI", "character").resource_display
+		if mode == "never" then
+			self.Value:Hide()
+		elseif mode == "combat" then
+			if UnitAffectingCombat("player") then self.Value:Show() else self.Value:Hide() end
+		else -- "always"
 			self.Value:Show()
+		end
 	end
 	
 	-- CastBar
@@ -142,9 +147,14 @@ local RightOrb = function(self, unit)
 	Power.frequent = 1/120
 	
 	Power.PostUpdate = function(self)
-		local min, max = self:GetMinMaxValues()
-		local value = self:GetValue()
+		local mode = Engine:GetConfig("UI", "character").resource_display
+		if mode == "never" then
+			self.Value:Hide()
+		elseif mode == "combat" then
+			if UnitAffectingCombat("player") then self.Value:Show() else self.Value:Hide() end
+		else -- "always"
 			self.Value:Show()
+		end
 	end
 	
 	self.Power = Power
