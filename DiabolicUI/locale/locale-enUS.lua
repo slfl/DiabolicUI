@@ -127,3 +127,5 @@ L["Also color the pet health orb"] = true
 L["Also colors the pet health orb using your class color."] = true
 L["Show player coordinates"] = true
 L["Shows your map coordinates in the lower-left corner."] = true
+L["Show menu buttons"] = true
+L["Shows the menu, bags, chat and friends buttons. Turn off for a cleaner interface."] = true

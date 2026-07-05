@@ -63,10 +63,10 @@ Module.OnEnable = function(self)
 		L["Show FPS and latency"],
 		L["Toggles the performance readout (frames per second and latency) on the micro menu."],
 		function()
-			return Engine:GetConfig("UI").show_performance
+			return Engine:GetConfig("UI", "character").show_performance
 		end,
 		function(checked)
-			Engine:GetConfig("UI").show_performance = checked
+			Engine:GetConfig("UI", "character").show_performance = checked
 			-- apply immediately if the action bars module is ready
 			local ActionBars = Engine:GetModule("ActionBars", true)
 			if ActionBars and ActionBars.UpdatePerformanceVisibility then
@@ -83,16 +83,35 @@ Module.OnEnable = function(self)
 		L["Show player coordinates"],
 		L["Shows your map coordinates in the lower-left corner."],
 		function()
-			return Engine:GetConfig("UI").show_coordinates
+			return Engine:GetConfig("UI", "character").show_coordinates
 		end,
 		function(checked)
-			Engine:GetConfig("UI").show_coordinates = checked
+			Engine:GetConfig("UI", "character").show_coordinates = checked
 			local ActionBars = Engine:GetModule("ActionBars", true)
 			if ActionBars and ActionBars.UpdateCoordinatesVisibility then
 				ActionBars:UpdateCoordinatesVisibility()
 			end
 		end,
 		perf
+	)
+
+	-- Checkbox: menu / bags / chat / friends buttons
+	local buttons = CreateCheckbox(
+		panel,
+		"ShowButtons",
+		L["Show menu buttons"],
+		L["Shows the menu, bags, chat and friends buttons. Turn off for a cleaner interface."],
+		function()
+			return Engine:GetConfig("UI", "character").show_buttons
+		end,
+		function(checked)
+			Engine:GetConfig("UI", "character").show_buttons = checked
+			local ActionBars = Engine:GetModule("ActionBars", true)
+			if ActionBars and ActionBars.UpdateButtonsVisibility then
+				ActionBars:UpdateButtonsVisibility()
+			end
+		end,
+		coords
 	)
 
 	-- Checkbox: class-colored health orb
@@ -102,16 +121,16 @@ Module.OnEnable = function(self)
 		L["Class colored health orb"],
 		L["Colors the player health orb using your class color instead of the default red."],
 		function()
-			return Engine:GetConfig("UI").class_health_color
+			return Engine:GetConfig("UI", "character").class_health_color
 		end,
 		function(checked)
-			Engine:GetConfig("UI").class_health_color = checked
+			Engine:GetConfig("UI", "character").class_health_color = checked
 			local UnitFrames = Engine:GetModule("UnitFrames", true)
 			if UnitFrames and UnitFrames.RefreshHealthColor then
 				UnitFrames:RefreshHealthColor()
 			end
 		end,
-		coords
+		buttons
 	)
 
 	-- Sub-option: also color the pet health orb
@@ -121,10 +140,10 @@ Module.OnEnable = function(self)
 		L["Also color the pet health orb"],
 		L["Also colors the pet health orb using your class color."],
 		function()
-			return Engine:GetConfig("UI").class_health_color_pet
+			return Engine:GetConfig("UI", "character").class_health_color_pet
 		end,
 		function(checked)
-			Engine:GetConfig("UI").class_health_color_pet = checked
+			Engine:GetConfig("UI", "character").class_health_color_pet = checked
 			local UnitFrames = Engine:GetModule("UnitFrames", true)
 			if UnitFrames and UnitFrames.RefreshHealthColor then
 				UnitFrames:RefreshHealthColor()

@@ -328,6 +328,39 @@ Module.OnInit = function(self, event, ...)
     end
 end
 
+-- Shows or hides the menu/bags and chat/friends buttons based on the setting.
+-- These are secure frames, so we can't Hide/Show them during combat -- if the
+-- player is in combat we defer the change until they leave combat.
+Module.UpdateButtonsVisibility = function(self)
+    local show = Engine:GetConfig("UI", "character").show_buttons
+
+    local menu = self:GetWidget("Controller: Menu"):GetFrame()
+    local chat = self:GetWidget("Controller: Chat"):GetFrame()
+
+    if InCombatLockdown() then
+        -- can't touch secure frames in combat; retry once combat ends
+        if not self._buttonsVisibilityDeferred then
+            self._buttonsVisibilityDeferred = true
+            local waiter = CreateFrame("Frame")
+            waiter:RegisterEvent("PLAYER_REGEN_ENABLED")
+            waiter:SetScript("OnEvent", function(w)
+                w:UnregisterEvent("PLAYER_REGEN_ENABLED")
+                Module._buttonsVisibilityDeferred = nil
+                Module:UpdateButtonsVisibility()
+            end)
+        end
+        return
+    end
+
+    if show then
+        menu:Show()
+        chat:Show()
+    else
+        menu:Hide()
+        chat:Hide()
+    end
+end
+
 Module.OnEnable = function(self, event, ...)
     local BlizzardUI = self:GetHandler("BlizzardUI")
     BlizzardUI:GetElement("ActionBars"):Disable()
@@ -347,4 +380,7 @@ Module.OnEnable = function(self, event, ...)
     -- apply all module settings
     -- this also fires off the enabling and positioning of the actionbars
     self:ApplySettings()
+
+    -- apply the saved show/hide state for the menu & chat buttons
+    self:UpdateButtonsVisibility()
 end

@@ -774,10 +774,18 @@ MenuWidget.OnEnable = function(self)
 
 	-- Texts
 	---------------------------------------------
-	local Performance = MicroMenuButton:CreateFontString()
+	-- The performance readout is anchored near the micro-menu button, but it is
+	-- parented to UICenter (not the button) so that hiding the menu buttons does
+	-- NOT hide the FPS/latency text. Its update driver lives on its own frame for
+	-- the same reason (a hidden frame's OnUpdate never fires).
+	local UICenterFrame = Engine:GetFrame()
+
+	local Performance = UICenterFrame:CreateFontString()
 	Performance:SetDrawLayer("ARTWORK")
 	Performance:SetFontObject(micro_menu_config.performance.font_object)
-	Performance:SetPoint(unpack(micro_menu_config.performance.position))
+	-- config position is { point, xoffset, yoffset } relative to the menu button
+	local perf_point, perf_x, perf_y = unpack(micro_menu_config.performance.position)
+	Performance:SetPoint(perf_point, MicroMenuButton, perf_point, perf_x, perf_y)
 	
 	MicroMenuButton.Performance = Performance
 	
@@ -791,7 +799,7 @@ MenuWidget.OnEnable = function(self)
 	-- Reads the saved setting and shows/hides the readout accordingly.
 	-- Exposed on the module so the options panel checkbox can call it live.
 	Module.UpdatePerformanceVisibility = function()
-		local ui_db = Engine:GetConfig("UI")
+		local ui_db = Engine:GetConfig("UI", "character")
 		if ui_db.show_performance then
 			Performance:Show()
 		else
@@ -800,9 +808,10 @@ MenuWidget.OnEnable = function(self)
 	end
 	Module.UpdatePerformanceVisibility()
 	
-	MicroMenuButton:SetScript("OnUpdate", function(self, elapsed) 
+	local PerfFrame = CreateFrame("Frame", nil, UICenterFrame)
+	PerfFrame:SetScript("OnUpdate", function(self, elapsed) 
 		-- skip all work entirely when the readout is turned off
-		if not Engine:GetConfig("UI").show_performance then
+		if not Engine:GetConfig("UI", "character").show_performance then
 			return
 		end
 		self.elapsed = (self.elapsed or 0) + elapsed
@@ -812,7 +821,7 @@ MenuWidget.OnEnable = function(self)
 			if not cast_latency or cast_latency == 0 then
 				cast_latency = chat_latency
 			end
-			self.Performance:SetFormattedText(performance_string, cast_latency, MILLISECONDS_ABBR, fps, FPS_ABBR)
+			Performance:SetFormattedText(performance_string, cast_latency, MILLISECONDS_ABBR, fps, FPS_ABBR)
 			self.elapsed = 0
 		end
 	end)
@@ -841,7 +850,7 @@ MenuWidget.OnEnable = function(self)
 	local coordinates_hz = 0.01
 
 	Module.UpdateCoordinatesVisibility = function()
-		if Engine:GetConfig("UI").show_coordinates then
+		if Engine:GetConfig("UI", "character").show_coordinates then
 			Coordinates:Show()
 		else
 			Coordinates:Hide()
@@ -856,7 +865,7 @@ MenuWidget.OnEnable = function(self)
 	CoordFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	CoordFrame:RegisterEvent("ZONE_CHANGED")
 	CoordFrame:SetScript("OnEvent", function(self, event)
-		if Engine:GetConfig("UI").show_coordinates
+		if Engine:GetConfig("UI", "character").show_coordinates
 		and SetMapToCurrentZone
 		and not (WorldMapFrame and WorldMapFrame:IsShown())
 		and not InCombatLockdown() then
@@ -865,7 +874,7 @@ MenuWidget.OnEnable = function(self)
 	end)
 
 	CoordFrame:SetScript("OnUpdate", function(self, elapsed)
-		if not Engine:GetConfig("UI").show_coordinates then
+		if not Engine:GetConfig("UI", "character").show_coordinates then
 			return
 		end
 		self.elapsed = (self.elapsed or 0) + elapsed

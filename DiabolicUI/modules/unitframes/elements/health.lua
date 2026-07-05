@@ -125,7 +125,7 @@ Update = function(self, event, ...)
 		-- and keep its original alpha and layer name, so all the visual effects
 		-- (moon, smoke, gradient, spark) are preserved -- only the hue changes.
 		local ui_db
-		local ok = pcall(function() ui_db = Engine:GetConfig("UI") end)
+		local ok = pcall(function() ui_db = Engine:GetConfig("UI", "character") end)
 		local use_class = false
 		if ok and ui_db then
 			if unit == "player" and ui_db.class_health_color then
