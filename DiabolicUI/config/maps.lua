@@ -92,7 +92,10 @@ local config = {
 				expanded_hover   = { 33/64, 63/64, 33/64, 62/64 }  -- bottom-right
 			},
 			-- disabled texture is 32x32 with content at 1..31 x 1..30
-			texcoord_disabled = { 1/32, 31/32, 1/32, 30/32 }
+			texcoord_disabled = { 1/32, 31/32, 1/32, 30/32 },
+			-- shown over the toggle when there is new mail
+			mail_icon = [[Interface\Minimap\TRACKING\Mailbox]],
+			mail_icon_size = 22
 		},
 		-- each collected addon button is wrapped in this border, laid out to the
 		-- LEFT of the toggle button

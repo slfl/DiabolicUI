@@ -262,11 +262,29 @@ Module.OnInit = function(self)
 	tex:SetAllPoints(toggle)
 	toggle.tex = tex
 
-	-- updates the button texture based on state (disabled / expanded / hover)
+	-- mail icon overlay: shown ON TOP of the toggle when there's new mail
+	local mailIcon = toggle:CreateTexture(nil, "OVERLAY")
+	mailIcon:SetSize(btn_config.toggle.mail_icon_size or 20, btn_config.toggle.mail_icon_size or 20)
+	mailIcon:SetPoint("CENTER", toggle, "CENTER", 0, 0)
+	mailIcon:SetTexture(btn_config.toggle.mail_icon)
+	mailIcon:Hide()
+	toggle.mailIcon = mailIcon
+
+	-- updates the button texture based on state (mail / disabled / expanded / hover)
 	toggle.expanded = false
 	toggle.hovered = false
 	Module.UpdateToggleTexture = function(mod)
 		local tc = btn_config.toggle
+
+		-- NEW MAIL: hide the toggle art entirely, show ONLY the mail icon
+		if HasNewMail() then
+			tex:Hide()
+			toggle.mailIcon:Show()
+			return
+		end
+		toggle.mailIcon:Hide()
+		tex:Show()
+
 		-- no addon buttons collected -> disabled texture
 		if #collectedButtons == 0 then
 			tex:SetTexture(tc.texture_disabled)
@@ -283,8 +301,28 @@ Module.OnInit = function(self)
 		tex:SetTexCoord(unpack(tc.texcoords[key]))
 	end
 
-	toggle:SetScript("OnEnter", function() toggle.hovered = true; Module:UpdateToggleTexture() end)
-	toggle:SetScript("OnLeave", function() toggle.hovered = false; Module:UpdateToggleTexture() end)
+	toggle:SetScript("OnEnter", function()
+		toggle.hovered = true
+		Module:UpdateToggleTexture()
+		-- show sender info only when there's mail
+		if HasNewMail() then
+			GameTooltip:SetOwner(toggle, "ANCHOR_LEFT")
+			GameTooltip:AddLine(HAVE_MAIL or "You have new mail!")
+			local s1, s2, s3 = GetLatestThreeSenders()
+			if s1 or s2 or s3 then
+				GameTooltip:AddLine(" ")
+				if s1 then GameTooltip:AddLine(s1, 1, 1, 1) end
+				if s2 then GameTooltip:AddLine(s2, 1, 1, 1) end
+				if s3 then GameTooltip:AddLine(s3, 1, 1, 1) end
+			end
+			GameTooltip:Show()
+		end
+	end)
+	toggle:SetScript("OnLeave", function()
+		toggle.hovered = false
+		Module:UpdateToggleTexture()
+		GameTooltip:Hide()
+	end)
 
 	-- panel that holds the collected addon buttons (hidden by default)
 	local panel = CreateFrame("Frame", nil, self.frame.visibility)
@@ -345,6 +383,11 @@ end
 
 Module.GetFrame = function(self)
 	return self.frame
+end
+
+-- Refreshes the toggle when mail status changes (it shows the mail icon).
+Module.UpdateMail = function(self)
+	if self.UpdateToggleTexture then self:UpdateToggleTexture() end
 end
 
 -- Applies the vignette (shade) on/off and its strength.
@@ -576,6 +619,14 @@ Module.OnEnable = function(self)
 	zoneWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
 	zoneWatcher:SetScript("OnEvent", function() self:UpdateZone() end)
 	self:UpdateZone()
+
+	-- new-mail indicator updates on mail events
+	local mailWatcher = CreateFrame("Frame")
+	mailWatcher:RegisterEvent("UPDATE_PENDING_MAIL")
+	mailWatcher:RegisterEvent("MAIL_INBOX_UPDATE")
+	mailWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
+	mailWatcher:SetScript("OnEvent", function() self:UpdateMail() end)
+	self:UpdateMail()
 
 	-- Info line (name/level/clock) refreshes on a light timer for the clock
 	local infoTimer = CreateFrame("Frame")
