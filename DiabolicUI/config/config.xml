@@ -4,6 +4,7 @@
 <Script file="auras.lua"/>
 <Script file="blizzard.lua"/>
 <Script file="fonts.lua"/>
+<Script file="maps.lua"/>
 <Script file="objectives.lua"/>
 <Script file="tooltips.lua"/>
 <Script file="ui.lua"/>
