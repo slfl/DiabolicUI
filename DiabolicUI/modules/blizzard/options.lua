@@ -76,6 +76,25 @@ Module.OnEnable = function(self)
 		nil
 	)
 
+	-- Checkbox: player coordinates
+	local coords = CreateCheckbox(
+		panel,
+		"Coordinates",
+		L["Show player coordinates"],
+		L["Shows your map coordinates in the lower-left corner."],
+		function()
+			return Engine:GetConfig("UI").show_coordinates
+		end,
+		function(checked)
+			Engine:GetConfig("UI").show_coordinates = checked
+			local ActionBars = Engine:GetModule("ActionBars", true)
+			if ActionBars and ActionBars.UpdateCoordinatesVisibility then
+				ActionBars:UpdateCoordinatesVisibility()
+			end
+		end,
+		perf
+	)
+
 	-- Checkbox: class-colored health orb
 	local classcolor = CreateCheckbox(
 		panel,
@@ -92,7 +111,7 @@ Module.OnEnable = function(self)
 				UnitFrames:RefreshHealthColor()
 			end
 		end,
-		perf
+		coords
 	)
 
 	-- Sub-option: also color the pet health orb

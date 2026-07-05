@@ -125,3 +125,5 @@ L["Class colored health orb"] = true
 L["Colors the player health orb using your class color instead of the default red."] = true
 L["Also color the pet health orb"] = true
 L["Also colors the pet health orb using your class color."] = true
+L["Show player coordinates"] = true
+L["Shows your map coordinates in the lower-left corner."] = true

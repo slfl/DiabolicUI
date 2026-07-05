@@ -818,5 +818,82 @@ MenuWidget.OnEnable = function(self)
 	end)
 
 
+	-- Player coordinates (lower-left, under the chat/friends buttons)
+	---------------------------------------------
+	local GetPlayerMapPosition = GetPlayerMapPosition
+	local SetMapToCurrentZone = SetMapToCurrentZone
+	local WorldMapFrame = WorldMapFrame
+
+	-- UICenter spans the whole screen, so its BOTTOMLEFT is the actual lower-left
+	-- corner. The chat/friends buttons sit at BOTTOMLEFT + (20, 30) with height
+	-- 55 (so their bottom edge is at y=30). We place the coordinates just below
+	-- them, mirroring how the FPS/latency readout sits under its button.
+	local UICenter = Engine:GetFrame()
+
+	local Coordinates = UICenter:CreateFontString()
+	Coordinates:SetDrawLayer("ARTWORK")
+	Coordinates:SetFontObject(DiabolicDialogSmallGray)
+	Coordinates:SetPoint("BOTTOMLEFT", UICenter, "BOTTOMLEFT", 20, 10)
+	Coordinates:SetJustifyH("LEFT")
+
+	local CoordFrame = CreateFrame("Frame", nil, UICenter)
+	local coordinates_string = "%.3f  %.3f"
+	local coordinates_hz = 0.01
+
+	Module.UpdateCoordinatesVisibility = function()
+		if Engine:GetConfig("UI").show_coordinates then
+			Coordinates:Show()
+		else
+			Coordinates:Hide()
+		end
+	end
+	Module.UpdateCoordinatesVisibility()
+
+	-- Keep the world map pointed at the current zone so GetPlayerMapPosition
+	-- returns valid data. We only do this on zone changes, and never while the
+	-- player has the map open (so we don't disrupt their view) or in combat.
+	CoordFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	CoordFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	CoordFrame:RegisterEvent("ZONE_CHANGED")
+	CoordFrame:SetScript("OnEvent", function(self, event)
+		if Engine:GetConfig("UI").show_coordinates
+		and SetMapToCurrentZone
+		and not (WorldMapFrame and WorldMapFrame:IsShown())
+		and not InCombatLockdown() then
+			SetMapToCurrentZone()
+		end
+	end)
+
+	CoordFrame:SetScript("OnUpdate", function(self, elapsed)
+		if not Engine:GetConfig("UI").show_coordinates then
+			return
+		end
+		self.elapsed = (self.elapsed or 0) + elapsed
+		if self.elapsed > coordinates_hz then
+			self.elapsed = 0
+			local x, y = GetPlayerMapPosition("player")
+			if x and y and (x ~= 0 or y ~= 0) then
+				Coordinates:SetFormattedText(coordinates_string, x * 100, y * 100)
+			else
+				-- coords unavailable (map not synced to current zone) -- try to sync
+				-- once, safely: not in combat, not while the map is open
+				if SetMapToCurrentZone
+				and not (WorldMapFrame and WorldMapFrame:IsShown())
+				and not InCombatLockdown() then
+					SetMapToCurrentZone()
+					local nx, ny = GetPlayerMapPosition("player")
+					if nx and ny and (nx ~= 0 or ny ~= 0) then
+						Coordinates:SetFormattedText(coordinates_string, nx * 100, ny * 100)
+					else
+						Coordinates:SetText("")
+					end
+				else
+					Coordinates:SetText("")
+				end
+			end
+		end
+	end)
+
+
 end
 

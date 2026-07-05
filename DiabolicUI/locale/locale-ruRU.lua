@@ -125,3 +125,5 @@ L["Class colored health orb"] = "Классовый цвет орба здоро
 L["Colors the player health orb using your class color instead of the default red."] = "Окрашивает орб здоровья игрока в цвет класса вместо стандартного красного."
 L["Also color the pet health orb"] = "Также красить орб питомца"
 L["Also colors the pet health orb using your class color."] = "Также окрашивает орб здоровья питомца в цвет вашего класса."
+L["Show player coordinates"] = "Показывать координаты персонажа"
+L["Shows your map coordinates in the lower-left corner."] = "Показывает координаты на карте в левом нижнем углу."
