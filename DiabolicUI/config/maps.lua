@@ -3,8 +3,14 @@ local path = ([[Interface\AddOns\%s\media\]]):format(Addon)
 
 -- Saved (per-character-able) settings
 local db = {
-	useGameTime = false,
-	use24hrClock = true
+	enabled = true,          -- master switch: build our custom minimap or leave it alone
+	use24hrClock = true,     -- true = 24h (15:55), false = 12h (3:55 PM)
+	date_separator = ".",    -- "." or "/" between date parts
+	date_format = "dm",      -- "d" = day, "dm" = day.month, "dmy" = day.month.year
+	show_buttons = true,     -- show the addon-button toggle under the map
+	show_shade = false,      -- show the dark vignette over the map
+	shade_alpha = 0.5,       -- vignette strength (0..1)
+	map_alpha = 1.0          -- overall minimap opacity (0..1)
 }
 
 -- Static layout config

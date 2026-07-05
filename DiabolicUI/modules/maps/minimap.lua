@@ -129,8 +129,17 @@ local OnMouseUp = function(self, button)
 end
 
 Module.OnInit = function(self)
-	self.db = self:GetConfig("Minimap")
+	self.db = self:GetConfig("Minimap", "character")
 	self.config = self:GetStaticConfig("Minimap")
+
+	-- master switch: if disabled, leave the Minimap alone so another addon can
+	-- take it over. We restore the default round mask (in case we set the square
+	-- one in a previous session) and then build nothing.
+	if not self.db.enabled then
+		self._disabled = true
+		Minimap:SetMaskTexture([[Textures\MinimapMask]])
+		return
+	end
 
 	local config = self.config
 
@@ -151,9 +160,6 @@ Module.OnInit = function(self)
 	Minimap:SetSize(unpack(config.map.size))
 	Minimap:SetFrameLevel(self.frame.visibility:GetFrameLevel() + 2)
 
-	Minimap:HookScript("OnHide", function() self.frame.visibility:Hide() end)
-	Minimap:HookScript("OnShow", function() self.frame.visibility:Show() end)
-
 	-- SQUARE shape: a plain white mask makes the map render as a square
 	Minimap:SetMaskTexture(config.map.mask)
 
@@ -168,12 +174,16 @@ Module.OnInit = function(self)
 	self.frame.border:SetBackdropBorderColor(unpack(config.border.color))
 	self.frame.border:SetFrameLevel(Minimap:GetFrameLevel() + 1)
 
-	-- Dark vignette over the whole map (Diablo-style) -- DISABLED for now,
-	-- will be re-enabled once the rest of the minimap is finished.
-	-- self.frame.shade = self.frame.visibility:CreateTexture(nil, "OVERLAY")
-	-- self.frame.shade:SetAllPoints(Minimap)
-	-- self.frame.shade:SetTexture(config.shade.texture)
-	-- self.frame.shade:SetAlpha(config.shade.alpha)
+	-- Dark vignette over the whole map (Diablo-style), controlled by settings
+	-- Dark vignette over the whole map (Diablo-style), on its own frame ABOVE
+	-- the Minimap so it actually renders on top of the map blips.
+	local shadeFrame = CreateFrame("Frame", nil, self.frame.visibility)
+	shadeFrame:SetAllPoints(Minimap)
+	shadeFrame:SetFrameLevel(Minimap:GetFrameLevel() + 3)
+	self.frame.shadeFrame = shadeFrame
+	self.frame.shade = shadeFrame:CreateTexture(nil, "OVERLAY")
+	self.frame.shade:SetAllPoints(shadeFrame)
+	self.frame.shade:SetTexture(config.shade.texture)
 
 	-- mousewheel zoom + right-click tracking
 	Minimap:EnableMouseWheel(true)
@@ -298,24 +308,90 @@ Module.UpdateZone = function(self)
 	Zone:SetTextColor(c[1], c[2], c[3])
 end
 
--- Updates the "Name (level)" part and the "HH:MM / DD.MM" clock part
+-- Updates the "Name (level)" part and the clock/date part per settings
 Module.UpdateInfo = function(self)
 	local colors = self.config.text.colors
 	local c = colors.normal
+	local db = self.db
 
 	local name = UnitName("player") or ""
 	local level = UnitLevel("player") or 0
 	self.frame.info:SetFormattedText("%s (%d)", name, level)
 	self.frame.info:SetTextColor(c[1], c[2], c[3])
 
-	local clock = date("%H:%M")
-	local day = date("%d.%m")
+	-- clock: 24h or 12h
+	local clock
+	if db.use24hrClock then
+		clock = date("%H:%M")
+	else
+		clock = date("%I:%M %p")
+	end
+
+	-- date: day / day+month / day+month+year, with chosen separator
+	local sep = db.date_separator or "."
+	local dfmt
+	if db.date_format == "d" then
+		dfmt = "%d"
+	elseif db.date_format == "dmy" then
+		dfmt = "%d" .. sep .. "%m" .. sep .. "%y"
+	else -- "dm"
+		dfmt = "%d" .. sep .. "%m"
+	end
+	local day = date(dfmt)
+
 	self.frame.clock:SetFormattedText("%s / %s", clock, day)
 	self.frame.clock:SetTextColor(c[1], c[2], c[3])
 end
 
 Module.GetFrame = function(self)
 	return self.frame
+end
+
+-- Applies the vignette (shade) on/off and its strength.
+Module.UpdateShade = function(self)
+	if not self.frame or not self.frame.shade then return end
+	local db = self.db
+	if db.show_shade then
+		self.frame.shade:SetAlpha(db.shade_alpha or 0.5)
+		self.frame.shade:Show()
+	else
+		self.frame.shade:Hide()
+	end
+end
+
+-- Shows/hides the addon-button toggle under the map.
+Module.UpdateButtonVisibility = function(self)
+	if not self.buttonToggle then return end
+	if self.db.show_buttons then
+		self.buttonToggle:Show()
+	else
+		self.buttonToggle:Hide()
+		if self.buttonPanel then self.buttonPanel:Hide() end
+	end
+end
+
+-- Applies the overall minimap opacity.
+-- At 0% we HIDE the visibility frame (which holds the map, blips and texts) --
+-- setting alpha alone leaves the minimap blips (NPC dots, quest !/? icons)
+-- visible, since they don't inherit the parent's alpha.
+Module.UpdateMapAlpha = function(self)
+	if not self.frame or not self.frame.visibility then return end
+	local a = self.db.map_alpha or 1
+	if a <= 0 then
+		self.frame.visibility:Hide()
+	else
+		self.frame.visibility:Show()
+		self.frame:SetAlpha(a)
+	end
+end
+
+-- Applies all live-updatable settings at once.
+Module.ApplySettings = function(self)
+	if self._disabled then return end
+	self:UpdateInfo()
+	self:UpdateShade()
+	self:UpdateButtonVisibility()
+	self:UpdateMapAlpha()
 end
 
 -- Attempts to "square" a third-party minimap button: hide its round border /
@@ -477,6 +553,11 @@ end
 
 
 Module.OnEnable = function(self)
+	-- master switch off: don't touch Blizzard's minimap at all
+	if self._disabled then
+		return
+	end
+
 	-- Hide Blizzard's default minimap chrome (border, buttons, cluster, etc.)
 	self:GetHandler("BlizzardUI"):GetElement("Minimap"):Disable()
 
@@ -507,6 +588,11 @@ Module.OnEnable = function(self)
 		end
 	end)
 	self:UpdateInfo()
+
+	-- apply the saved sub-option settings (shade, buttons, alpha)
+	self:UpdateShade()
+	self:UpdateButtonVisibility()
+	self:UpdateMapAlpha()
 
 	-- Collect addon minimap buttons. Many addons create their buttons AFTER we
 	-- load, so we collect on entering world and then a few more times on a short
