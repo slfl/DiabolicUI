@@ -253,7 +253,19 @@ Module.OnEnable = function(self)
 		end, classcolor)
 	classcolorpet:SetPoint("TOPLEFT", classcolor, "BOTTOMLEFT", 16, -8)
 
-	cmdContent:SetHeight(300)
+	-- decorative angel/demon side artwork
+	local artwork = CreateCheckbox(cmdContent, "ShowArtwork",
+		L["Show artwork"],
+		L["Shows the decorative angel and demon artwork on the sides of the command bar."],
+		function() return Engine:GetConfig("UI", "character").show_artwork end,
+		function(checked)
+			Engine:GetConfig("UI", "character").show_artwork = checked
+			local ActionBars = Engine:GetModule("ActionBars", true)
+			if ActionBars and ActionBars.UpdateArtworkVisibility then ActionBars:UpdateArtworkVisibility() end
+		end, classcolorpet)
+	artwork:SetPoint("TOPLEFT", classcolorpet, "BOTTOMLEFT", -16, -8)
+
+	cmdContent:SetHeight(340)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================
@@ -285,6 +297,13 @@ Module.OnEnable = function(self)
 		minimap)
 	clock24:SetPoint("TOPLEFT", minimap, "BOTTOMLEFT", 16, -8)
 
+	local localTime = CreateCheckbox(mmContent, "LocalTime",
+		L["Use local time"],
+		L["Show your computer's local time instead of the server time."],
+		function() return mmdb().use_local_time end,
+		function(checked) mmdb().use_local_time = checked; applyMinimap() end,
+		clock24)
+
 	local dateFormat = CreateDropdown(mmContent, "DateFormat",
 		L["Date format"],
 		{
@@ -294,7 +313,7 @@ Module.OnEnable = function(self)
 		},
 		function() return mmdb().date_format end,
 		function(v) mmdb().date_format = v; applyMinimap() end,
-		clock24)
+		localTime)
 
 	local dateSep = CreateDropdown(mmContent, "DateSeparator",
 		L["Date separator"],

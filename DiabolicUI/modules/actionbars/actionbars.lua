@@ -130,9 +130,14 @@ Module.UpdateArtwork = function(self)
     
     for _,i in ipairs(self.artwork_modes) do
         if i == mode then
-            -- Always show left and right textures
-            self.artwork["bar"..i.."left"]:Show()
-            self.artwork["bar"..i.."right"]:Show()
+            -- Show left and right (angel/demon) unless the user disabled artwork
+            if Engine:GetConfig("UI", "character").show_artwork ~= false then
+                self.artwork["bar"..i.."left"]:Show()
+                self.artwork["bar"..i.."right"]:Show()
+            else
+                self.artwork["bar"..i.."left"]:Hide()
+                self.artwork["bar"..i.."right"]:Hide()
+            end
 
             if show_xp_art and self.artwork["bar"..i.."xp"] then
                 -- progress bar visible -> XP-styled artwork
@@ -331,6 +336,13 @@ end
 -- Shows or hides the menu/bags and chat/friends buttons based on the setting.
 -- These are secure frames, so we can't Hide/Show them during combat -- if the
 -- player is in combat we defer the change until they leave combat.
+Module.UpdateArtworkVisibility = function(self)
+    -- artwork show/hide is driven by UpdateArtwork reading the setting
+    if self.artwork then
+        self:UpdateArtwork()
+    end
+end
+
 Module.UpdateButtonsVisibility = function(self)
     local show = Engine:GetConfig("UI", "character").show_buttons
 

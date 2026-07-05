@@ -231,7 +231,8 @@ local db = {
 	show_coordinates = false, -- show the player coordinates in the lower-left corner
 	show_buttons = true, -- show the menu / bags / chat / friends buttons
 	class_health_color = false, -- color the player health orb by class color
-	class_health_color_pet = false -- also color the pet health orb by the owner's class color
+	class_health_color_pet = false, -- also color the pet health orb by the owner's class color
+	show_artwork = true -- show the decorative angel/demon side artwork
 }
 
 Engine:NewStaticConfig("UI", config)

@@ -1,10 +1,13 @@
 local Addon, Engine = ...
 local Module = Engine:NewModule("Minimap", "HIGH")
+local L = Engine:GetLocale()
 
 -- Lua API
 local unpack = unpack
 local date = date
 local format = string.format
+local time = time
+local GetGameTime = GetGameTime
 
 -- WoW API
 local CreateFrame = CreateFrame
@@ -199,42 +202,94 @@ Module.OnInit = function(self)
 	--   [ Name (level) ]  [ HH:MM / DD.MM ]
 	-- The time/date sits at the right edge; the name is to its left.
 
-	-- Time/date (right side, clickable -> calendar)
-	local Clock = self.frame.visibility:CreateFontString(nil, "OVERLAY")
-	Clock:SetFont(text_config.info.font.path, text_config.info.font.size, text_config.info.font.style)
-	Clock:SetShadowOffset(unpack(text_config.info.shadow.offset))
-	Clock:SetShadowColor(unpack(text_config.info.shadow.color))
-	Clock:SetJustifyH("RIGHT")
-	Clock:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 6)
-	self.frame.clock = Clock
+	-- The clock line is split into: [ time ] / [ date ]
+	--   time  -> click opens the clock/timer manager, hover shows server+local time
+	--   date  -> click opens the calendar
+	-- The name (level) sits to the left of the whole thing.
 
-	-- Name (level) -- to the LEFT of the clock, not clickable
+	-- Date (rightmost, clickable -> calendar)
+	local DateText = self.frame.visibility:CreateFontString(nil, "OVERLAY")
+	DateText:SetFont(text_config.info.font.path, text_config.info.font.size, text_config.info.font.style)
+	DateText:SetShadowOffset(unpack(text_config.info.shadow.offset))
+	DateText:SetShadowColor(unpack(text_config.info.shadow.color))
+	DateText:SetJustifyH("RIGHT")
+	DateText:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 6)
+	self.frame.date = DateText
+
+	-- separator " / "
+	local Sep = self.frame.visibility:CreateFontString(nil, "OVERLAY")
+	Sep:SetFont(text_config.info.font.path, text_config.info.font.size, text_config.info.font.style)
+	Sep:SetShadowOffset(unpack(text_config.info.shadow.offset))
+	Sep:SetShadowColor(unpack(text_config.info.shadow.color))
+	Sep:SetText(" / ")
+	Sep:SetPoint("BOTTOMRIGHT", DateText, "BOTTOMLEFT", 0, 0)
+	local c = text_config.colors.normal
+	Sep:SetTextColor(c[1], c[2], c[3])
+
+	-- Time (clickable -> clock/timer manager)
+	local TimeText = self.frame.visibility:CreateFontString(nil, "OVERLAY")
+	TimeText:SetFont(text_config.info.font.path, text_config.info.font.size, text_config.info.font.style)
+	TimeText:SetShadowOffset(unpack(text_config.info.shadow.offset))
+	TimeText:SetShadowColor(unpack(text_config.info.shadow.color))
+	TimeText:SetJustifyH("RIGHT")
+	TimeText:SetPoint("BOTTOMRIGHT", Sep, "BOTTOMLEFT", 0, 0)
+	self.frame.time = TimeText
+
+	-- keep a "clock" alias pointing at the leftmost element for anchoring others
+	self.frame.clock = TimeText
+
+	-- Name (level) -- to the LEFT of the time, not clickable
 	local Info = self.frame.visibility:CreateFontString(nil, "OVERLAY")
 	Info:SetFont(text_config.info.font.path, text_config.info.font.size, text_config.info.font.style)
 	Info:SetShadowOffset(unpack(text_config.info.shadow.offset))
 	Info:SetShadowColor(unpack(text_config.info.shadow.color))
 	Info:SetJustifyH("RIGHT")
-	Info:SetPoint("BOTTOMRIGHT", Clock, "BOTTOMLEFT", -4, 0)
+	Info:SetPoint("BOTTOMRIGHT", TimeText, "BOTTOMLEFT", -4, 0)
 	self.frame.info = Info
 
-	-- Clickable overlay ONLY on the time/date -> opens the calendar.
-	local infoButton = CreateFrame("Button", nil, self.frame.visibility)
-	infoButton:SetAllPoints(Clock)
-	infoButton:SetFrameLevel(self.frame.visibility:GetFrameLevel() + 5)
-	infoButton:RegisterForClicks("LeftButtonUp")
-	infoButton:SetScript("OnClick", function()
-		if ToggleCalendar then
-			ToggleCalendar()
+	-- shared tooltip builder: server time, local time, date
+	local function ShowTimeTooltip(owner)
+		GameTooltip:SetOwner(owner, "ANCHOR_BOTTOMLEFT")
+		local h24 = self.db.use24hrClock
+		local sh, sm = GetGameTime()
+		local serverStr
+		if h24 then
+			serverStr = format("%02d:%02d", sh, sm)
+		else
+			serverStr = date("%I:%M %p", time({ year = 2000, month = 1, day = 1, hour = sh, min = sm }))
 		end
-	end)
-	infoButton:SetScript("OnEnter", function(b)
-		GameTooltip:SetOwner(b, "ANCHOR_BOTTOMLEFT")
-		GameTooltip:AddLine(date("%A, %d.%m.%Y"))
-		GameTooltip:AddLine("|cff00ff00Click|r to open the calendar.", 1, 1, 1)
+		local localStr = h24 and date("%H:%M") or date("%I:%M %p")
+		GameTooltip:AddLine(L["Time"] or "Time")
+		GameTooltip:AddDoubleLine(L["Server time"] or "Server time", serverStr, 1, 1, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Local time"] or "Local time", localStr, 1, 1, 1, 1, 1, 1)
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddDoubleLine(L["Today"] or "Today", date("%d.%m.%Y"), 1, 1, 1, 1, 1, 1)
 		GameTooltip:Show()
+	end
+
+	-- click button over the TIME -> clock/timer manager
+	local timeButton = CreateFrame("Button", nil, self.frame.visibility)
+	timeButton:SetAllPoints(TimeText)
+	timeButton:SetFrameLevel(self.frame.visibility:GetFrameLevel() + 5)
+	timeButton:RegisterForClicks("LeftButtonUp")
+	timeButton:SetScript("OnClick", function()
+		if ToggleTimeManager then ToggleTimeManager() end
 	end)
-	infoButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	self.frame.infoButton = infoButton
+	timeButton:SetScript("OnEnter", function(b) ShowTimeTooltip(b) end)
+	timeButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	self.frame.timeButton = timeButton
+
+	-- click button over the DATE -> calendar
+	local dateButton = CreateFrame("Button", nil, self.frame.visibility)
+	dateButton:SetAllPoints(DateText)
+	dateButton:SetFrameLevel(self.frame.visibility:GetFrameLevel() + 5)
+	dateButton:RegisterForClicks("LeftButtonUp")
+	dateButton:SetScript("OnClick", function()
+		if ToggleCalendar then ToggleCalendar() end
+	end)
+	dateButton:SetScript("OnEnter", function(b) ShowTimeTooltip(b) end)
+	dateButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	self.frame.dateButton = dateButton
 
 	-- Zone name (top line) -- sits above the info line
 	local Zone = self.frame.visibility:CreateFontString(nil, "OVERLAY")
@@ -242,7 +297,7 @@ Module.OnInit = function(self)
 	Zone:SetShadowOffset(unpack(text_config.zone.shadow.offset))
 	Zone:SetShadowColor(unpack(text_config.zone.shadow.color))
 	Zone:SetJustifyH("RIGHT")
-	Zone:SetPoint("BOTTOMRIGHT", Clock, "TOPRIGHT", 0, 4)
+	Zone:SetPoint("BOTTOMRIGHT", DateText, "TOPRIGHT", 0, 4)
 	self.frame.zone = Zone
 
 	-- ------------------------------------------------------------------
@@ -357,15 +412,23 @@ Module.UpdateInfo = function(self)
 	self.frame.info:SetFormattedText("%s (%d)", name, level)
 	self.frame.info:SetTextColor(c[1], c[2], c[3])
 
-	-- clock: 24h or 12h
+	-- TIME: server or local, 24h or 12h
 	local clock
-	if db.use24hrClock then
-		clock = date("%H:%M")
+	if db.use_local_time then
+		clock = db.use24hrClock and date("%H:%M") or date("%I:%M %p")
 	else
-		clock = date("%I:%M %p")
+		-- server time via GetGameTime
+		local sh, sm = GetGameTime()
+		if db.use24hrClock then
+			clock = format("%02d:%02d", sh, sm)
+		else
+			clock = date("%I:%M %p", time({ year = 2000, month = 1, day = 1, hour = sh, min = sm }))
+		end
 	end
+	self.frame.time:SetText(clock)
+	self.frame.time:SetTextColor(c[1], c[2], c[3])
 
-	-- date: day / day+month / day+month+year, with chosen separator
+	-- DATE: day / day+month / day+month+year, with chosen separator (always local)
 	local sep = db.date_separator or "."
 	local dfmt
 	if db.date_format == "d" then
@@ -375,10 +438,8 @@ Module.UpdateInfo = function(self)
 	else -- "dm"
 		dfmt = "%d" .. sep .. "%m"
 	end
-	local day = date(dfmt)
-
-	self.frame.clock:SetFormattedText("%s / %s", clock, day)
-	self.frame.clock:SetTextColor(c[1], c[2], c[3])
+	self.frame.date:SetText(date(dfmt))
+	self.frame.date:SetTextColor(c[1], c[2], c[3])
 end
 
 Module.GetFrame = function(self)

@@ -5,6 +5,7 @@ local path = ([[Interface\AddOns\%s\media\]]):format(Addon)
 local db = {
 	enabled = true,          -- master switch: build our custom minimap or leave it alone
 	use24hrClock = true,     -- true = 24h (15:55), false = 12h (3:55 PM)
+	use_local_time = true,   -- true = local PC time, false = server time
 	date_separator = ".",    -- "." or "/" between date parts
 	date_format = "dm",      -- "d" = day, "dm" = day.month, "dmy" = day.month.year
 	show_buttons = true,     -- show the addon-button toggle under the map
