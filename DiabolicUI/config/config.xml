@@ -5,6 +5,7 @@
 <Script file="blizzard.lua"/>
 <Script file="fonts.lua"/>
 <Script file="maps.lua"/>
+<Script file="chat.lua"/>
 <Script file="objectives.lua"/>
 <Script file="tooltips.lua"/>
 <Script file="ui.lua"/>

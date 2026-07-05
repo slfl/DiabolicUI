@@ -345,6 +345,92 @@ Module.OnEnable = function(self)
 	InterfaceOptions_AddCategory(mm)
 
 	-- ==============================================================
+	-- SUB-PANEL: Chat (timestamp settings)
+	-- ==============================================================
+	local chat = CreateSubPanel("ChatPanel", L["Chat"])
+	local chatContent = MakeScrollable(chat, chat.heading)
+
+	local function chdb() return Engine:GetConfig("Chat", "character").timestamp end
+	local function chstyle2() return Engine:GetConfig("Chat", "character").style end
+
+	-- Master switch: enhanced chat styling (applies on relog)
+	local enhanced = CreateCheckbox(chatContent, "EnhancedChat",
+		L["Enhanced chat"],
+		L["Applies the dark Diablo chat styling, buttons and copy window. Requires a relog to take effect."],
+		function() return chstyle2().enabled end,
+		function(checked)
+			chstyle2().enabled = checked
+			print("|cff4488ffDiabolicUI:|r "..L["The chat change will take effect after your next relog."])
+		end,
+		nil)
+
+	local ts_enabled = CreateCheckbox(chatContent, "ChatTimestamp",
+		L["Show message timestamp"],
+		L["Shows the time before each chat message."],
+		function() return chdb().enabled end,
+		function(checked) chdb().enabled = checked end,
+		enhanced)
+
+	local ts_format = CreateDropdown(chatContent, "ChatTimestampFormat",
+		L["Timestamp format"],
+		{
+			{ value = "HH:MM",    text = "15:55" },
+			{ value = "HH:MM:SS", text = "15:55:30" },
+		},
+		function() return chdb().format end,
+		function(v) chdb().format = v end,
+		ts_enabled)
+
+	local ts_brackets = CreateCheckbox(chatContent, "ChatTimestampBrackets",
+		L["Wrap time in brackets"],
+		L["Wraps the timestamp in square brackets, e.g. [15:55]."],
+		function() return chdb().brackets end,
+		function(checked) chdb().brackets = checked end,
+		ts_format)
+	ts_brackets:SetPoint("TOPLEFT", ts_format, "BOTTOMLEFT", 16, -12)
+
+	local ts_note = chatContent:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall")
+	ts_note:SetPoint("TOPLEFT", ts_brackets, "BOTTOMLEFT", 0, -14)
+	ts_note:SetText(L["Timestamp changes apply to new messages."])
+
+	-- style helpers
+	local function chstyle() return Engine:GetConfig("Chat", "character").style end
+	local function applyChatStyle()
+		local Chat = Engine:GetModule("Chat", true)
+		if Chat and Chat.ApplyStyle then Chat:ApplyStyle() end
+	end
+
+	-- show/hide chat buttons
+	local ch_buttons = CreateCheckbox(chatContent, "ChatShowButtons",
+		L["Show chat buttons"],
+		L["Shows the up / down / bottom scroll buttons on the chat window."],
+		function() return chstyle().show_buttons end,
+		function(checked) chstyle().show_buttons = checked; applyChatStyle() end,
+		nil)
+	ch_buttons:SetPoint("TOPLEFT", ts_note, "BOTTOMLEFT", 0, -20)
+
+	-- hide the top friends ("Social") button
+	local ch_friends = CreateCheckbox(chatContent, "ChatHideFriends",
+		L["Hide friends button"],
+		L["Hides the friends (Social) button above the chat. The one by the input line stays."],
+		function() return chstyle().hide_friends_button end,
+		function(checked) chstyle().hide_friends_button = checked; applyChatStyle() end,
+		ch_buttons)
+
+	-- dark background strength slider
+	local ch_bg = CreateSlider(chatContent, "ChatBgAlpha",
+		L["Background darkness"],
+		L["Adjust the darkness of the chat background."],
+		0, 1, 0.05,
+		function() return chstyle().bg_alpha end,
+		function(v) chstyle().bg_alpha = v; applyChatStyle() end,
+		function(v) return ("%d%%"):format(v * 100) end,
+		ch_friends)
+
+	chatContent:SetHeight(480)
+	InterfaceOptions_AddCategory(chat)
+
+	-- ==============================================================
 	-- SUB-PANEL: About
 	-- ==============================================================
 	local about = CreateSubPanel("About", L["About"])
