@@ -98,6 +98,11 @@ local config = {
 			mail_icon = [[Interface\Minimap\TRACKING\Mailbox]],
 			mail_icon_size = 22
 		},
+		-- battlefield/PvP queue icon: icon only, sat on the map's top-left corner
+		battlefield = {
+			size = { 28, 28 },
+			icon_size = 28
+		},
 		-- each collected addon button is wrapped in this border, laid out to the
 		-- LEFT of the toggle button
 		icon = {

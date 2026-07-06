@@ -451,6 +451,35 @@ Module.UpdateMail = function(self)
 	if self.UpdateToggleTexture then self:UpdateToggleTexture() end
 end
 
+-- Puts the battlefield/PvP icon (icon only, no round border) on the map's
+-- top-left frame corner. Re-anchors after Blizzard repositions it.
+Module.StyleBattlefield = function(self)
+	local bf = MiniMapBattlefieldFrame
+	if not bf then return end
+	local cfg = self.config.buttons.battlefield
+	local Minimap = _G.Minimap
+
+	if not bf._duiStyled then
+		bf._duiStyled = true
+
+		-- hide the round border, keep just the icon
+		if MiniMapBattlefieldBorder then MiniMapBattlefieldBorder:Hide() end
+
+		if MiniMapBattlefieldIcon then
+			MiniMapBattlefieldIcon:ClearAllPoints()
+			MiniMapBattlefieldIcon:SetPoint("CENTER", bf, "CENTER", 0, 0)
+			MiniMapBattlefieldIcon:SetSize(cfg.icon_size, cfg.icon_size)
+		end
+
+		bf:SetSize(cfg.size[1], cfg.size[2])
+		bf:SetFrameLevel(Minimap:GetFrameLevel() + 6)
+	end
+
+	-- (re)anchor: center the icon ON the map's top-left frame corner
+	bf:ClearAllPoints()
+	bf:SetPoint("CENTER", self.frame.border, "TOPLEFT", 0, 0)
+end
+
 -- Applies the vignette (shade) on/off and its strength.
 Module.UpdateShade = function(self)
 	if not self.frame or not self.frame.shade then return end
@@ -689,7 +718,15 @@ Module.OnEnable = function(self)
 	mailWatcher:SetScript("OnEvent", function() self:UpdateMail() end)
 	self:UpdateMail()
 
-	-- Info line (name/level/clock) refreshes on a light timer for the clock
+	-- battlefield/PvP icon: move into the map corner + square border, and keep it
+	-- there after Blizzard repositions it
+	self:StyleBattlefield()
+	if BattlefieldFrame_UpdatePositions then
+		hooksecurefunc("BattlefieldFrame_UpdatePositions", function() self:StyleBattlefield() end)
+	end
+	if MiniMapBattlefieldFrame then
+		MiniMapBattlefieldFrame:HookScript("OnShow", function() self:StyleBattlefield() end)
+	end
 	local infoTimer = CreateFrame("Frame")
 	infoTimer.elapsed = 0
 	infoTimer:SetScript("OnUpdate", function(f, e)
