@@ -75,6 +75,7 @@ Module.OnInit = function(self)
 --	self:GetWidget("Unit: Focus"):Enable()
 --	self:GetWidget("Unit: Target"):Enable()
 --	self:GetWidget("Unit: ToT"):Enable()
+	self:GetWidget("Unit: Boss"):Enable()
 	
 end
 
