@@ -233,7 +233,10 @@ local db = {
 	class_health_color = false, -- color the player health orb by class color
 	class_health_color_pet = false, -- also color the pet health orb by the owner's class color
 	show_artwork = true, -- show the decorative angel/demon side artwork
-	resource_display = "always" -- when to show orb values: "always" / "never" / "combat"
+	resource_display = "always", -- when to show orb values: "always" / "never" / "combat"
+	worldstate_enabled = true, -- show the battlefield status block (left of minimap)
+	worldstate_capturebar = true, -- show the capture-point bar
+	worldstate_faction_color = true -- color the status text by faction
 }
 
 Engine:NewStaticConfig("UI", config)

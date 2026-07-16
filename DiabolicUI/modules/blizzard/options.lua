@@ -466,6 +466,42 @@ Module.OnEnable = function(self)
 	InterfaceOptions_AddCategory(chat)
 
 	-- ==============================================================
+	-- SUB-PANEL: Battlefield (world state / capture bar)
+	-- ==============================================================
+	local bf = CreateSubPanel("BattlefieldPanel", L["Battlefield"])
+	local bfContent = MakeScrollable(bf, bf.heading)
+
+	local function bfdb() return Engine:GetConfig("UI", "character") end
+	local function applyBf()
+		local WS = Engine:GetModule("WorldState", true)
+		if WS and WS.RefreshWorldState then WS:RefreshWorldState() end
+	end
+
+	local bf_enabled = CreateCheckbox(bfContent, "WorldStateEnabled",
+		L["Show battlefield status"],
+		L["Shows the battlefield status text (bases, victory points) to the left of the minimap."],
+		function() return bfdb().worldstate_enabled end,
+		function(checked) bfdb().worldstate_enabled = checked; applyBf() end,
+		nil)
+
+	local bf_bar = CreateCheckbox(bfContent, "WorldStateCaptureBar",
+		L["Show capture bar"],
+		L["Shows the capture-point bar with the sliding Alliance / Horde indicator."],
+		function() return bfdb().worldstate_capturebar end,
+		function(checked) bfdb().worldstate_capturebar = checked; applyBf() end,
+		bf_enabled)
+
+	local bf_color = CreateCheckbox(bfContent, "WorldStateFactionColor",
+		L["Color text by faction"],
+		L["Colors the status text blue for Alliance and red for Horde."],
+		function() return bfdb().worldstate_faction_color end,
+		function(checked) bfdb().worldstate_faction_color = checked; applyBf() end,
+		bf_bar)
+
+	bfContent:SetHeight(260)
+	InterfaceOptions_AddCategory(bf)
+
+	-- ==============================================================
 	-- SUB-PANEL: About
 	-- ==============================================================
 	local about = CreateSubPanel("About", L["About"])

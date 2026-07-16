@@ -42,18 +42,28 @@ Module.UpdateRows = function(self)
 	local holder = self.holder
 	if not holder then return end
 
+	-- master switch: hide the whole block when disabled
+	local db = Engine:GetConfig("UI", "character")
+	if not db.worldstate_enabled then
+		holder:Hide()
+		return
+	end
+
 	local rows = self.rows
 	local num = GetNumWorldStateUI()
 	local shown = 0
 
 	for i = 1, num do
 		-- NOTE: on this 3.3.5 build the return order is shifted vs retail docs.
-		-- The phrase ("Базы: X ...") arrives in the 3rd value, and the icon PATH
-		-- in the 4th. We use the path only to detect the faction for coloring.
-		local uiType, barState, rowText, iconPath, _, _, _, _, extendedUI = GetWorldStateUIInfo(i)
+		-- Returns: uiType, state, text(phrase), icon(path), ..., extendedUI
+		-- state == 1 means the row is CURRENTLY relevant; state == 0 means the
+		-- game keeps the slot but it should be hidden (stale timer, inactive
+		-- faction control, unused "Состояние: 0" placeholders, etc).
+		local uiType, state, rowText, iconPath, _, _, _, extendedUI = GetWorldStateUIInfo(i)
 
-		-- rows with an extended UI (capture bars) are handled elsewhere; skip here
-		if (not extendedUI or extendedUI == 0) and rowText and rowText ~= "" then
+		-- only show plain text rows that are active (state 1) and not capture points
+		local isCapturePoint = (extendedUI and extendedUI ~= 0 and extendedUI ~= "")
+		if state and state == 1 and not isCapturePoint and rowText and rowText ~= "" then
 			shown = shown + 1
 
 			-- create the row on demand
@@ -84,7 +94,7 @@ Module.UpdateRows = function(self)
 
 			-- color the text by faction (detected from the icon path)
 			local c = config.colors.neutral
-			if iconPath then
+			if db.worldstate_faction_color and iconPath then
 				if iconPath:find("Alliance") then
 					c = config.colors.alliance
 				elseif iconPath:find("Horde") then
@@ -116,8 +126,17 @@ Module.UpdateCaptureBars = function(self, textRowsShown)
 	local holder = self.holder
 	local bars = self.bars
 	local bcfg = config.bar
-	local num = GetNumWorldStateUI()
 	local shownBars = 0
+
+	-- capture bar can be disabled independently
+	local db = Engine:GetConfig("UI", "character")
+	if not db.worldstate_capturebar then
+		for i = 1, #bars do bars[i]:Hide() end
+		self.numBars = 0
+		return
+	end
+
+	local num = GetNumWorldStateUI()
 
 	for i = 1, num do
 		local uiType, state, rowText, iconPath, _, _, _, extendedUI, s1, s2 = GetWorldStateUIInfo(i)
@@ -206,6 +225,11 @@ Module.UpdateCaptureBars = function(self, textRowsShown)
 		bars[i]:Hide()
 	end
 	self.numBars = shownBars
+end
+
+-- Public: re-apply settings live (called from the options panel).
+Module.RefreshWorldState = function(self)
+	self:UpdateRows()
 end
 
 Module.OnEnable = function(self)
