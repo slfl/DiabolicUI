@@ -103,6 +103,11 @@ local config = {
 			size = { 28, 28 },
 			icon_size = 28
 		},
+		-- dungeon finder (LFG) icon: same treatment, top-left corner of the map
+		lfg = {
+			size = { 34, 34 },
+			icon_size = 34
+		},
 		-- each collected addon button is wrapped in this border, laid out to the
 		-- LEFT of the toggle button
 		icon = {

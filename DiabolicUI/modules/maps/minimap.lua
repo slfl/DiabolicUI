@@ -480,6 +480,44 @@ Module.StyleBattlefield = function(self)
 	bf:SetPoint("CENTER", self.frame.border, "TOPLEFT", 0, 0)
 end
 
+-- Puts the dungeon finder (LFG) icon on the map's top-left corner, same as the
+-- battlefield icon. The game shows/hides MiniMapLFGFrame itself (queue/in-run),
+-- so we only restyle and re-anchor it.
+Module.StyleLFG = function(self)
+	local lf = MiniMapLFGFrame
+	if not lf then return end
+	local cfg = self.config.buttons.lfg
+	local Minimap = _G.Minimap
+
+	if not lf._duiStyled then
+		lf._duiStyled = true
+
+		-- reparent onto our (visible) minimap frame; the default parent chain
+		-- leaves it "not-visible" even when the game :Show()s it
+		lf:SetParent(self.frame.visibility)
+		lf:SetFrameLevel(Minimap:GetFrameLevel() + 6)
+		lf:SetAlpha(1)
+
+		-- hide the round border, keep just the icon
+		if MiniMapLFGFrameBorder then MiniMapLFGFrameBorder:Hide() end
+
+		if MiniMapLFGFrameIcon then
+			MiniMapLFGFrameIcon:ClearAllPoints()
+			MiniMapLFGFrameIcon:SetPoint("CENTER", lf, "CENTER", 0, 0)
+			MiniMapLFGFrameIcon:SetSize(cfg.icon_size, cfg.icon_size)
+			MiniMapLFGFrameIcon:SetAlpha(1)
+			MiniMapLFGFrameIcon:Show()
+		end
+
+		lf:SetSize(cfg.size[1], cfg.size[2])
+	end
+
+	-- (re)anchor: center the icon ON the map's top-left frame corner
+	-- (same spot as the battlefield icon, as requested)
+	lf:ClearAllPoints()
+	lf:SetPoint("CENTER", self.frame.border, "TOPLEFT", 0, 0)
+end
+
 -- Applies the vignette (shade) on/off and its strength.
 Module.UpdateShade = function(self)
 	if not self.frame or not self.frame.shade then return end
@@ -727,6 +765,42 @@ Module.OnEnable = function(self)
 	if MiniMapBattlefieldFrame then
 		MiniMapBattlefieldFrame:HookScript("OnShow", function() self:StyleBattlefield() end)
 	end
+
+	-- dungeon finder (LFG) icon: same corner treatment; the game controls its
+	-- visibility (shown in queue / in a dungeon), we just restyle + re-anchor it
+	self:StyleLFG()
+	if MiniMapLFGFrame then
+		MiniMapLFGFrame:HookScript("OnShow", function() self:StyleLFG() end)
+	end
+	local lfgWatcher = CreateFrame("Frame")
+	lfgWatcher:RegisterEvent("LFG_UPDATE")
+	lfgWatcher:RegisterEvent("LFG_PROPOSAL_SHOW")
+	lfgWatcher:RegisterEvent("LFG_ROLE_CHECK_SHOW")
+	lfgWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
+	lfgWatcher:SetScript("OnEvent", function() self:StyleLFG() end)
+
+	-- Debug: /duilfg reports which LFG-related frames exist and their state
+	SLASH_DUILFG1 = "/duilfg"
+	SlashCmdList["DUILFG"] = function()
+		local names = {
+			"MiniMapLFGFrame", "MiniMapLFGFrameIcon", "MiniMapLFGFrameBorder",
+			"LFGMinimapFrame", "MiniMapMeetingStoneFrame", "QueueStatusMinimapButton",
+			"MiniMapBattlefieldFrame",
+		}
+		print("|cff4488ffLFG frame probe:|r")
+		for _, n in ipairs(names) do
+			local f = _G[n]
+			if f then
+				local shown = (f.IsShown and f:IsShown()) and "shown" or "hidden"
+				local vis = (f.IsVisible and f:IsVisible()) and "visible" or "not-visible"
+				print(format("  |cff00ff00%s|r EXISTS (%s, %s)", n, shown, vis))
+			else
+				print(format("  |cffff5555%s|r nil", n))
+			end
+		end
+		print("GetLFGMode="..tostring(GetLFGMode and GetLFGMode() or "n/a"))
+	end
+
 	local infoTimer = CreateFrame("Frame")
 	infoTimer.elapsed = 0
 	infoTimer:SetScript("OnUpdate", function(f, e)
