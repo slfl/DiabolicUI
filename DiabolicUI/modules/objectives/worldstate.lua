@@ -54,16 +54,16 @@ Module.UpdateRows = function(self)
 	local shown = 0
 
 	for i = 1, num do
-		-- NOTE: on this 3.3.5 build the return order is shifted vs retail docs.
-		-- Returns: uiType, state, text(phrase), icon(path), ..., extendedUI
-		-- state == 1 means the row is CURRENTLY relevant; state == 0 means the
-		-- game keeps the slot but it should be hidden (stale timer, inactive
-		-- faction control, unused "Состояние: 0" placeholders, etc).
-		local uiType, state, rowText, iconPath, _, _, _, extendedUI = GetWorldStateUIInfo(i)
+		-- Returns (verified against Blizzard's WorldStateFrame.lua):
+		-- uiType, state, text, icon, dynamicIcon, tooltip, dynamicTooltip,
+		--         extendedUI, extendedUIState1, 2, 3
+		-- state: 0 = hidden, 1 = shown, 2 = shown + flashing (flag taken/carried),
+		--        3 = shown with dynamic icon button (no flash)
+		local uiType, state, rowText, iconPath, dynamicIcon, _, _, extendedUI = GetWorldStateUIInfo(i)
 
-		-- only show plain text rows that are active (state 1) and not capture points
 		local isCapturePoint = (extendedUI and extendedUI ~= 0 and extendedUI ~= "")
-		if state and state == 1 and not isCapturePoint and rowText and rowText ~= "" then
+		local visible = state and (state == 1 or state == 2 or state == 3)
+		if visible and not isCapturePoint and rowText and rowText ~= "" then
 			shown = shown + 1
 
 			-- create the row on demand
@@ -80,6 +80,12 @@ Module.UpdateRows = function(self)
 				row.text:SetJustifyV("MIDDLE")
 				row.text:SetShadowOffset(1, -1)
 				row.text:SetShadowColor(0, 0, 0, 1)
+
+				-- dynamic icon (e.g. Warsong flag carrier), to the RIGHT of the text
+				row.dynIcon = row:CreateTexture(nil, "OVERLAY")
+				row.dynIcon:SetSize(config.row_height - 4, config.row_height - 4)
+				row.dynIcon:SetPoint("LEFT", row.text, "RIGHT", 4, 0)
+				row.dynIcon:Hide()
 
 				rows[shown] = row
 			end
@@ -103,6 +109,15 @@ Module.UpdateRows = function(self)
 			end
 			row.text:SetTextColor(c[1], c[2], c[3])
 			row.text:SetText(CleanText(rowText))
+
+			-- show the dynamic icon (flag carrier etc.) when present
+			if dynamicIcon and dynamicIcon ~= "" then
+				row.dynIcon:SetTexture(dynamicIcon)
+				row.dynIcon:Show()
+			else
+				row.dynIcon:Hide()
+			end
+
 			row:Show()
 		end
 	end
@@ -266,8 +281,12 @@ Module.OnEnable = function(self)
 	-- refresh on the relevant events + a light timer for countdowns
 	local watcher = CreateFrame("Frame")
 	watcher:RegisterEvent("UPDATE_WORLD_STATES")
+	watcher:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
 	watcher:RegisterEvent("PLAYER_ENTERING_WORLD")
+	watcher:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND")
 	watcher:RegisterEvent("WORLD_STATE_UI_TIMER_UPDATE")
+	watcher:RegisterEvent("ZONE_CHANGED")
+	watcher:RegisterEvent("ZONE_CHANGED_INDOORS")
 	watcher:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	watcher:SetScript("OnEvent", function() self:UpdateRows() end)
 

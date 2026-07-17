@@ -13,7 +13,8 @@ local path = ([[Interface\AddOns\%s\media\]]):format(Addon)
 local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 
-local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES or 5
+-- WotLK has 4 boss frames (confirmed against Blizzard's TargetFrame.lua)
+local MAX_BOSS_FRAMES = MAX_BOSS_FRAMES or 4
 
 -- proportions mirror the target frame (scaled down to be narrower)
 local scale = 0.62
@@ -137,6 +138,8 @@ local Style = function(self, unit)
 	self.Power.PostUpdate = function() UpdateLayout(self) end
 	self.Health.PostUpdate = function() UpdateLayout(self) end
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", function() UpdateLayout(self) end)
+	-- fired when bosses engage / change (the proper boss-frame trigger in WotLK)
+	self:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT", function() UpdateLayout(self) end)
 	self:RegisterEvent("UNIT_MAXPOWER", function(_, evtUnit)
 		if evtUnit == self.unit then UpdateLayout(self) end
 	end)
