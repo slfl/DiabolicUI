@@ -25,7 +25,7 @@ local config = {
 	power   = { 274 * scale, 10 * scale, y = -(3 + 22) * scale },  -- power bar
 	art     = { 512 * scale, 128 * scale, y_single = 53 * scale, y_double = 53 * scale },
 	spacing = 24,
-	first_offset = { -24, -20 },
+	first_offset = { -24, 0 }, -- from minimap BOTTOMLEFT: x left, y up
 	health_texture = path .. [[statusbars\DiabolicUI_StatusBar_512x64_Dark_Warcraft.tga]],
 	power_texture  = path .. [[statusbars\DiabolicUI_StatusBar_512x64_Dark_Warcraft.tga]],
 	border_single  = path .. [[textures\unitframes\DiabolicUI_Target_305x15_BorderBoss.tga]],
@@ -187,13 +187,15 @@ UnitFrameWidget.OnEnable = function(self)
 		local frame = UnitFrame:New("boss"..i, anchorParent, Style)
 		frame:ClearAllPoints()
 		if i == 1 then
+			-- anchor the first boss frame to the BOTTOM-left of the minimap;
+			-- further bosses stack upward so they grow away from the quest text
 			if Minimap then
-				frame:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", config.first_offset[1], config.first_offset[2])
+				frame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMLEFT", config.first_offset[1], config.first_offset[2])
 			else
-				frame:SetPoint("TOPRIGHT", anchorParent, "TOPRIGHT", -20, -200)
+				frame:SetPoint("BOTTOMRIGHT", anchorParent, "BOTTOMRIGHT", -20, 200)
 			end
 		else
-			frame:SetPoint("TOPRIGHT", self.frames[i-1], "BOTTOMRIGHT", 0, -config.spacing)
+			frame:SetPoint("BOTTOMRIGHT", self.frames[i-1], "TOPRIGHT", 0, config.spacing)
 		end
 		self.frames[i] = frame
 	end
