@@ -236,7 +236,8 @@ local db = {
 	resource_display = "always", -- when to show orb values: "always" / "never" / "combat"
 	worldstate_enabled = true, -- show the battlefield status block (left of minimap)
 	worldstate_capturebar = true, -- show the capture-point bar
-	worldstate_faction_color = true -- color the status text by faction
+	worldstate_faction_color = true, -- color the status text by faction
+	vehicle_position = nil -- saved {point, x, y} for the vehicle seat frame (nil = default)
 }
 
 Engine:NewStaticConfig("UI", config)

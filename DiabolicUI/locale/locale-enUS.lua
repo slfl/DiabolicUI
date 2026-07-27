@@ -201,3 +201,6 @@ L["Show capture bar"] = true
 L["Shows the capture-point bar with the sliding Alliance / Horde indicator."] = true
 L["Color text by faction"] = true
 L["Colors the status text blue for Alliance and red for Horde."] = true
+L["Vehicle frame"] = true
+L["Unlock"] = true
+L["Lock"] = true

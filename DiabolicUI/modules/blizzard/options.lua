@@ -281,7 +281,31 @@ Module.OnEnable = function(self)
 		end,
 		artwork)
 
-	cmdContent:SetHeight(420)
+	-- vehicle seat frame: label + a lock/unlock button to drag it into place
+	local vehLabel = cmdContent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	vehLabel:SetPoint("TOPLEFT", resources, "BOTTOMLEFT", 0, -24)
+	vehLabel:SetText(L["Vehicle frame"])
+
+	local vehButton = CreateFrame("Button", "DiabolicUIVehicleMoveButton", cmdContent, "UIPanelButtonTemplate")
+	vehButton:SetSize(160, 24)
+	vehButton:SetPoint("LEFT", vehLabel, "RIGHT", 12, 0)
+	local function refreshVehButton()
+		local V = Engine:GetModule("Vehicle", true)
+		if V and V:IsUnlocked() then
+			vehButton:SetText(L["Lock"])
+		else
+			vehButton:SetText(L["Unlock"])
+		end
+	end
+	vehButton:SetScript("OnClick", function()
+		local V = Engine:GetModule("Vehicle", true)
+		if not V then return end
+		V:SetUnlocked(not V:IsUnlocked())
+		refreshVehButton()
+	end)
+	refreshVehButton()
+
+	cmdContent:SetHeight(480)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================
