@@ -25,8 +25,9 @@ local PLATE_HEIGHT = 34
 local CAST_HEIGHT_FRAC  = 1/3                     -- cast height = 1/3 of HP bar
 local CAST_COLOR        = { 0.20, 0.80, 0.25 }    -- interruptible cast (green)
 local CAST_COLOR_NOINT  = { 1.00, 0.50, 0.10 }    -- non-interruptible cast (orange)
-local HL_PAD            = 3                        -- mouseover glow padding
-local HL_COLOR          = { 1.00, 0.82, 0.20, 0.55 } -- glow tint (r,g,b,a)
+local HL_ENABLE         = false                   -- mouseover highlight on/off (off for now)
+local HL_PAD            = 0                        -- highlight padding (0 = exactly the HP bar)
+local HL_COLOR          = { 1.00, 1.00, 1.00, 0.15 } -- subtle white sheen on hover (r,g,b,a)
 
 -- A 3.3.5 nameplate is an anonymous WorldFrame child whose first two children
 -- are both StatusBars (health + cast). Name/level/border are the plate's regions.
@@ -205,11 +206,15 @@ local function skinPlate(frame)
 	-- mouseover glow: HIGHLIGHT layer, so the engine shows it on hover by
 	-- itself. Re-anchor it to our health window and tint it.
 	if p.highlight then
-		p.highlight:SetTexture([[Interface\Tooltips\Nameplate-Glow]])
-		p.highlight:ClearAllPoints()
-		p.highlight:SetPoint("TOPLEFT", hb, "TOPLEFT", -HL_PAD, HL_PAD)
-		p.highlight:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", HL_PAD, -HL_PAD)
-		p.highlight:SetVertexColor(HL_COLOR[1], HL_COLOR[2], HL_COLOR[3], HL_COLOR[4])
+		if HL_ENABLE then
+			p.highlight:SetTexture(1, 1, 1)      -- solid fill confined to the HP bar
+			p.highlight:ClearAllPoints()
+			p.highlight:SetPoint("TOPLEFT", hb, "TOPLEFT", -HL_PAD, HL_PAD)
+			p.highlight:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", HL_PAD, -HL_PAD)
+			p.highlight:SetVertexColor(HL_COLOR[1], HL_COLOR[2], HL_COLOR[3], HL_COLOR[4])
+		else
+			p.highlight:SetTexture(nil)          -- disabled: nothing shows on hover
+		end
 	end
 
 	-- plates get recycled for new units and the game re-shows the default chrome;
