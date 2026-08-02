@@ -204,3 +204,7 @@ L["Colors the status text blue for Alliance and red for Horde."] = true
 L["Vehicle frame"] = true
 L["Unlock"] = true
 L["Lock"] = true
+
+-- Minimap: instance difficulty tags (shown in the zone text)
+L["N"] = true
+L["HC"] = true

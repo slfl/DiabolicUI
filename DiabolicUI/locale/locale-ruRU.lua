@@ -204,3 +204,7 @@ L["Colors the status text blue for Alliance and red for Horde."] = "Окраши
 L["Vehicle frame"] = "Фрейм транспорта"
 L["Unlock"] = "Разблокировать"
 L["Lock"] = "Заблокировать"
+
+-- Minimap: instance difficulty tags (shown in the zone text)
+L["N"] = "об"
+L["HC"] = "хм"

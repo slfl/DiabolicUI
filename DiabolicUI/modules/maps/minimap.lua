@@ -17,13 +17,7 @@ local GetZonePVPInfo = GetZonePVPInfo
 local UnitName = UnitName
 local UnitLevel = UnitLevel
 local IsResting = IsResting
-local GetRaidDifficulty = GetRaidDifficulty
-local GetDungeonDifficulty = GetDungeonDifficulty
-local GetNumRaidMembers = GetNumRaidMembers
-
--- Difficulty flag placement on the minimap's top-left corner (tune to taste)
-local DIFF_X, DIFF_Y = 0, 0      -- flag TOPLEFT offset from the Minimap TOPLEFT
-local DIFF_SCALE     = 0.80      -- flag scale (1.0 = original Blizzard size)
+local GetInstanceInfo = GetInstanceInfo
 
 -- Returns the color key for the current zone's pvp status
 local GetZoneColorKey = function()
@@ -403,7 +397,23 @@ end
 Module.UpdateZone = function(self)
 	local colors = self.config.text.colors
 	local Zone = self.frame.zone
-	Zone:SetText(GetMinimapZoneText() or "")
+	local zoneText = GetMinimapZoneText() or ""
+
+	-- inside a 5-man/raid instance: append its difficulty in parentheses,
+	-- e.g. "Ruby Sanctum (25 хм)". Nothing is appended in the open world.
+	local _, instanceType, difficulty, _, maxPlayers, playerDifficulty, isDynamicInstance = GetInstanceInfo()
+	if (instanceType == "party" or instanceType == "raid") and maxPlayers and maxPlayers > 0 then
+		local heroic
+		if instanceType == "party" then
+			heroic = (difficulty == 2)
+		else -- raid: 1=10N 2=25N 3=10H 4=25H, dynamic raids flag heroic separately
+			heroic = (difficulty > 2) or (isDynamicInstance and playerDifficulty == 1)
+		end
+		local tag = heroic and (L["HC"] or "HC") or (L["N"] or "N")
+		zoneText = format("%s (%d %s)", zoneText, maxPlayers, tag)
+	end
+
+	Zone:SetText(zoneText)
 	local c = colors[GetZoneColorKey()] or colors.normal
 	Zone:SetTextColor(c[1], c[2], c[3])
 end
@@ -523,76 +533,6 @@ Module.StyleLFG = function(self)
 	-- (same spot as the battlefield icon, as requested)
 	lf:ClearAllPoints()
 	lf:SetPoint("CENTER", self.frame.border, "TOPLEFT", 0, 0)
-end
-
--- Raid/dungeon difficulty flag on the minimap's top-left corner. Uses the
--- original Blizzard flag texture + texcoords (pulled from FrameXML), but is
--- driven by the *selected* difficulty (GetRaidDifficulty / GetDungeonDifficulty)
--- so it stays visible in the open world, unlike the default frame which only
--- shows while you are inside an instance.
-Module.SetupDifficulty = function(self)
-	if self.difficulty then return end
-	local Minimap = _G.Minimap
-
-	-- suppress Blizzard's own instance-difficulty flag so it can't double up
-	if MiniMapInstanceDifficulty then
-		MiniMapInstanceDifficulty:Hide()
-		MiniMapInstanceDifficulty:HookScript("OnShow", function(f) f:Hide() end)
-	end
-
-	local flag = CreateFrame("Frame", nil, self.frame.visibility)
-	flag:SetSize(38, 46)
-	flag:SetFrameLevel(Minimap:GetFrameLevel() + 6)
-	flag:SetScale(DIFF_SCALE)
-	flag:SetPoint("TOPLEFT", Minimap, "TOPLEFT", DIFF_X, DIFF_Y)
-
-	local tex = flag:CreateTexture(nil, "ARTWORK")
-	tex:SetTexture([[Interface\Minimap\UI-DungeonDifficulty-Button]])
-	tex:SetSize(64, 46)
-	tex:SetPoint("CENTER", flag, "CENTER", 0, 0)
-	flag.texture = tex
-
-	flag.text = flag:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-
-	flag:RegisterEvent("PLAYER_ENTERING_WORLD")
-	flag:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
-	flag:RegisterEvent("UPDATE_INSTANCE_INFO")
-	flag:RegisterEvent("PARTY_MEMBERS_CHANGED")
-	flag:RegisterEvent("RAID_ROSTER_UPDATE")
-	flag:SetScript("OnEvent", function() self:UpdateDifficulty() end)
-
-	self.difficulty = flag
-	self:UpdateDifficulty()
-end
-
--- Reads the currently selected difficulty and paints the flag (player count +
--- normal/heroic banner art). Raid difficulty when in a raid, dungeon otherwise.
-Module.UpdateDifficulty = function(self)
-	local flag = self.difficulty
-	if not flag then return end
-
-	local players, isHeroic
-	if GetNumRaidMembers() > 0 then
-		local d = GetRaidDifficulty()        -- 1=10N, 2=25N, 3=10H, 4=25H
-		players = (d == 2 or d == 4) and 25 or 10
-		isHeroic = (d >= 3)
-	else
-		local d = GetDungeonDifficulty()     -- 1=5N, 2=5H
-		players = 5
-		isHeroic = (d == 2)
-	end
-
-	flag.text:SetText(players)
-	local xOffset = (players >= 10 and players <= 19) and -1 or 0
-	flag.text:ClearAllPoints()
-	if isHeroic then
-		flag.texture:SetTexCoord(0, 0.25, 0.0703125, 0.4140625)
-		flag.text:SetPoint("CENTER", flag, "CENTER", xOffset, -9)
-	else
-		flag.texture:SetTexCoord(0, 0.25, 0.5703125, 0.9140625)
-		flag.text:SetPoint("CENTER", flag, "CENTER", xOffset, 5)
-	end
-	flag:Show()
 end
 
 -- Applies the vignette (shade) on/off and its strength.
@@ -822,6 +762,8 @@ Module.OnEnable = function(self)
 	zoneWatcher:RegisterEvent("ZONE_CHANGED_INDOORS")
 	zoneWatcher:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	zoneWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
+	zoneWatcher:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
+	zoneWatcher:RegisterEvent("UPDATE_INSTANCE_INFO")
 	zoneWatcher:SetScript("OnEvent", function() self:UpdateZone() end)
 	self:UpdateZone()
 
@@ -856,8 +798,12 @@ Module.OnEnable = function(self)
 	lfgWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
 	lfgWatcher:SetScript("OnEvent", function() self:StyleLFG() end)
 
-	-- raid/dungeon difficulty flag on the map's top-left corner
-	self:SetupDifficulty()
+	-- we show difficulty in the zone text now; suppress Blizzard's own minimap
+	-- instance-difficulty flag so it doesn't reappear inside instances
+	if MiniMapInstanceDifficulty then
+		MiniMapInstanceDifficulty:Hide()
+		MiniMapInstanceDifficulty:HookScript("OnShow", function(f) f:Hide() end)
+	end
 
 	-- Debug: /duilfg reports which LFG-related frames exist and their state
 	SLASH_DUILFG1 = "/duilfg"
