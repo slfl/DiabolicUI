@@ -77,6 +77,7 @@ local config = {
 			"HealBBGButton",
 			"HealBBg",
 			"HealBotMinimapButton",
+			"QDKP2GUI_MiniBtn",   -- QDKP2 (parented to UIParent, name misses patterns)
 		},
 		-- the expand/collapse toggle button (bottom-right of the map)
 		toggle = {

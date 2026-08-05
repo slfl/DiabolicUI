@@ -66,6 +66,12 @@ local buttonPatterns = {
 	"MinimapIcon",
 	"[-_]Minimap[-_]",
 	"Minimap$",
+	-- common non-standard namings the above miss
+	"MiniBtn",      -- e.g. QDKP2GUI_MiniBtn
+	"MiniButton",
+	"MinimapBtn",
+	"MMButton",     -- e.g. *_MMButton
+	"MMBtn",
 }
 
 local function nameMatchesButtonPattern(name)
@@ -701,6 +707,18 @@ Module.CollectButtons = function(self)
 
 	-- 2) direct children of the Minimap that look like addon buttons
 	for _, child in ipairs({ Minimap:GetChildren() }) do
+		if not isButtonCollected(child) and isMinimapButton(child) then
+			collectedMap[child] = true
+			self:WrapButton(child)
+			tinsert(collectedButtons, child)
+		end
+	end
+
+	-- 2b) children of UIParent that look like addon buttons. Some addons (e.g.
+	-- QDKP2) parent their minimap button to UIParent instead of the Minimap, so
+	-- the scan above never sees them. Name-pattern gated, so overlays and other
+	-- non-button frames are not grabbed.
+	for _, child in ipairs({ UIParent:GetChildren() }) do
 		if not isButtonCollected(child) and isMinimapButton(child) then
 			collectedMap[child] = true
 			self:WrapButton(child)
