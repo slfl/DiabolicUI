@@ -50,6 +50,9 @@ local ipairs = ipairs
 local pairs = pairs
 
 local collectedButtons = {}
+
+-- Seconds of no interaction before the addon-button panel auto-collapses.
+local BUTTON_AUTOCLOSE = 12
 local collectedMap = {}
 
 local doNothing = function() end
@@ -395,6 +398,29 @@ Module.OnInit = function(self)
 	self.buttonPanel = panel
 
 	toggle:SetScript("OnClick", function() self:ToggleButtons() end)
+
+	-- auto-collapse the panel after BUTTON_AUTOCLOSE seconds of no interaction.
+	-- OnUpdate only ticks while the panel is shown; hovering the toggle or any
+	-- collected button resets the countdown so it won't close while in use.
+	panel.timer = 0
+	panel:SetScript("OnUpdate", function(f, e)
+		local hovered = self.buttonToggle:IsMouseOver()
+		if not hovered then
+			for _, b in ipairs(collectedButtons) do
+				local h = b._holder
+				if h and h:IsMouseOver() then hovered = true break end
+			end
+		end
+		if hovered then
+			f.timer = 0
+			return
+		end
+		f.timer = f.timer + e
+		if f.timer >= BUTTON_AUTOCLOSE and f:IsShown() then
+			f.timer = 0
+			self:ToggleButtons()
+		end
+	end)
 
 	self:UpdateToggleTexture()
 end
@@ -752,6 +778,7 @@ Module.ToggleButtons = function(self)
 		self.buttonToggle.expanded = false
 	else
 		self.buttonPanel:Show()
+		self.buttonPanel.timer = 0
 		self.buttonToggle.expanded = true
 	end
 	self:UpdateToggleTexture()
