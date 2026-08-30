@@ -208,3 +208,9 @@ L["Lock"] = true
 -- Minimap: instance difficulty tags (shown in the zone text)
 L["N"] = true
 L["HC"] = true
+
+-- Durability frame mover (options)
+L["Durability frame"] = true
+
+-- Objectives tracker mover (options)
+L["Objectives tracker"] = true

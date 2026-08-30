@@ -208,3 +208,9 @@ L["Lock"] = "Заблокировать"
 -- Minimap: instance difficulty tags (shown in the zone text)
 L["N"] = "об"
 L["HC"] = "хм"
+
+-- Durability frame mover (options)
+L["Durability frame"] = "Фрейм прочности"
+
+-- Objectives tracker mover (options)
+L["Objectives tracker"] = "Панель заданий"

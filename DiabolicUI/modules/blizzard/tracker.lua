@@ -142,6 +142,10 @@ Module.StyleWatchFrame = function(self)
 	WatchFrameHolder:SetPoint("BOTTOM", UICenter, "BOTTOM", 0, 160 + 60)
 	WatchFrameHolder:SetPoint("RIGHT", Pet, "LEFT", -30, 0)
 
+	-- keep references so the mover can reposition the holder later
+	self.trackerHolder = WatchFrameHolder
+	self.trackerDefault = { UICenter = UICenter, Pet = Pet }
+
 	WatchFrame:ClearAllPoints()
 	WatchFrame:SetPoint("TOP", WatchFrameHolder, "TOP")
 	WatchFrame:SetPoint("RIGHT", WatchFrameHolder, "RIGHT")
@@ -261,6 +265,96 @@ Module.UpdateTrackerTitle = function(self)
 	--	end
 end
 
+-- ============================================================
+-- Movable objectives tracker (unlock / drag / lock; saved per character).
+-- We move the *holder* (an insecure frame) and never touch WatchFrame:SetPoint,
+-- so this can't trigger the combat taint documented at the top of this file.
+-- ============================================================
+local TRACKER_W = 204
+
+local function trackerDB()
+	return Engine:GetConfig("UI", "character")
+end
+
+-- Apply the saved (single-point) or default (stretched) holder position.
+Module.RepositionTracker = function(self)
+	local holder = self.trackerHolder
+	if not holder then return end
+	local pos = trackerDB().tracker_position
+	holder:ClearAllPoints()
+	holder:SetWidth(TRACKER_W)
+	if pos then
+		holder:SetHeight(pos.h or 500)
+		holder:SetPoint(pos.point, UIParent, pos.point, pos.x, pos.y)
+	else
+		local d = self.trackerDefault
+		holder:SetPoint("TOP", d.UICenter, "TOP", 0, -326)
+		holder:SetPoint("BOTTOM", d.UICenter, "BOTTOM", 0, 160 + 60)
+		holder:SetPoint("RIGHT", d.Pet, "LEFT", -30, 0)
+	end
+end
+
+local function saveTrackerPos(self)
+	local holder = self.trackerHolder
+	local point, _, _, x, y = holder:GetPoint()
+	trackerDB().tracker_position = { point = point, x = x, y = y, h = holder:GetHeight() }
+end
+
+Module.SetTrackerUnlocked = function(self, unlocked)
+	local holder = self.trackerHolder
+	if not holder then return end
+
+	if not self.trackerOverlay then
+		local o = CreateFrame("Frame", nil, UIParent)
+		o:SetAllPoints(holder)
+		o:SetFrameStrata("DIALOG")
+		o:EnableMouse(true)
+		o:SetMovable(true)
+		o:RegisterForDrag("LeftButton")
+
+		local bg = o:CreateTexture(nil, "BACKGROUND")
+		bg:SetAllPoints(o)
+		bg:SetTexture(0, 0.6, 1, 0.35)
+		o.bg = bg
+
+		local label = o:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+		label:SetPoint("TOP", o, "TOP", 0, -10)
+		label:SetText("Панель заданий")
+		o.label = label
+
+		o:SetScript("OnDragStart", function(self2) self2:StartMoving() end)
+		o:SetScript("OnDragStop", function(self2)
+			self2:StopMovingOrSizing()
+			-- switch the holder to a single fixed-size anchor at the drop spot
+			local point, _, _, x, y = self2:GetPoint()
+			local h = holder:GetHeight()
+			holder:ClearAllPoints()
+			holder:SetWidth(TRACKER_W)
+			holder:SetHeight(h)
+			holder:SetPoint(point, UIParent, point, x, y)
+			saveTrackerPos(self)
+			self2:ClearAllPoints()
+			self2:SetAllPoints(holder)
+		end)
+
+		self.trackerOverlay = o
+	end
+
+	self.trackerUnlocked = unlocked
+	if unlocked then
+		self.trackerOverlay:ClearAllPoints()
+		self.trackerOverlay:SetAllPoints(holder)
+		self.trackerOverlay:Show()
+	else
+		self.trackerOverlay:Hide()
+		self:RepositionTracker()
+	end
+end
+
+Module.IsTrackerUnlocked = function(self)
+	return self.trackerUnlocked == true
+end
+
 Module.OnEnable = function(self)
 	-- If QuestHelper is enabled, we bail!
 	if Engine:IsAddOnEnabled("QuestHelper") then
@@ -272,5 +366,8 @@ Module.OnEnable = function(self)
 	-- The ObjectiveTracker is an addon in WoD and higher, 
 	-- while the WatchFrame was a part of FrameXML prior to that.
 	self:StyleWatchFrame()
+
+	-- apply the saved custom position, if the user has moved the tracker
+	self:RepositionTracker()
 end
 

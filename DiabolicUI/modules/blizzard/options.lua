@@ -305,7 +305,55 @@ Module.OnEnable = function(self)
 	end)
 	refreshVehButton()
 
-	cmdContent:SetHeight(480)
+	-- durability frame: label + a lock/unlock button to drag it into place
+	local durabLabel = cmdContent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	durabLabel:SetPoint("TOPLEFT", vehLabel, "BOTTOMLEFT", 0, -24)
+	durabLabel:SetText(L["Durability frame"])
+
+	local durabButton = CreateFrame("Button", "DiabolicUIDurabilityMoveButton", cmdContent, "UIPanelButtonTemplate")
+	durabButton:SetSize(160, 24)
+	durabButton:SetPoint("LEFT", durabLabel, "RIGHT", 12, 0)
+	local function refreshDurabButton()
+		local D = Engine:GetModule("DurabilityFrame", true)
+		if D and D:IsUnlocked() then
+			durabButton:SetText(L["Lock"])
+		else
+			durabButton:SetText(L["Unlock"])
+		end
+	end
+	durabButton:SetScript("OnClick", function()
+		local D = Engine:GetModule("DurabilityFrame", true)
+		if not D then return end
+		D:SetUnlocked(not D:IsUnlocked())
+		refreshDurabButton()
+	end)
+	refreshDurabButton()
+
+	-- objectives tracker: label + a lock/unlock button to drag it into place
+	local trackLabel = cmdContent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	trackLabel:SetPoint("TOPLEFT", durabLabel, "BOTTOMLEFT", 0, -24)
+	trackLabel:SetText(L["Objectives tracker"])
+
+	local trackButton = CreateFrame("Button", "DiabolicUITrackerMoveButton", cmdContent, "UIPanelButtonTemplate")
+	trackButton:SetSize(160, 24)
+	trackButton:SetPoint("LEFT", trackLabel, "RIGHT", 12, 0)
+	local function refreshTrackButton()
+		local T = Engine:GetModule("ObjectivesTracker", true)
+		if T and T:IsTrackerUnlocked() then
+			trackButton:SetText(L["Lock"])
+		else
+			trackButton:SetText(L["Unlock"])
+		end
+	end
+	trackButton:SetScript("OnClick", function()
+		local T = Engine:GetModule("ObjectivesTracker", true)
+		if not T then return end
+		T:SetTrackerUnlocked(not T:IsTrackerUnlocked())
+		refreshTrackButton()
+	end)
+	refreshTrackButton()
+
+	cmdContent:SetHeight(560)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================
