@@ -214,3 +214,30 @@ L["Durability frame"] = true
 
 -- Objectives tracker mover (options)
 L["Objectives tracker"] = true
+
+-- AFK (away mode) options
+L["Away mode"] = true
+L["Enable away screen"] = true
+L["Enable away screen tip"] = true
+L["Orbit the camera"] = true
+L["Orbit the camera tip"] = true
+L["Camera orbit speed"] = true
+L["Camera orbit speed tip"] = true
+L["Show player model"] = true
+L["Show player model tip"] = true
+L["Rotate the model"] = true
+L["Rotate the model tip"] = true
+L["Model rotation speed"] = true
+L["Model rotation speed tip"] = true
+L["Model size"] = true
+L["Model size tip"] = true
+L["Model angle"] = true
+L["Model angle tip"] = true
+L["Show name"] = true
+L["Show name tip"] = true
+L["Show level"] = true
+L["Show level tip"] = true
+L["Show guild"] = true
+L["Show guild tip"] = true
+L["Show hint"] = true
+L["Show hint tip"] = true

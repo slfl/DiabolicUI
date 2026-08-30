@@ -574,6 +574,92 @@ Module.OnEnable = function(self)
 	InterfaceOptions_AddCategory(bf)
 
 	-- ==============================================================
+	-- SUB-PANEL: Away mode (AFK)
+	-- ==============================================================
+	local afkp = CreateSubPanel("AwayMode", L["Away mode"])
+	local afkContent = MakeScrollable(afkp, afkp.heading)
+
+	local function afkCfg()
+		local M = Engine:GetModule("AFK", true)
+		return M and M:GetSettings() or {}
+	end
+	local function afkApply()
+		local M = Engine:GetModule("AFK", true)
+		if M and M.Refresh then M:Refresh() end
+	end
+
+	local a_enabled = CreateCheckbox(afkContent, "AFKEnabled",
+		L["Enable away screen"], L["Enable away screen tip"],
+		function() return afkCfg().enabled end,
+		function(c) afkCfg().enabled = c; afkApply() end, nil)
+
+	local a_orbit = CreateCheckbox(afkContent, "AFKOrbit",
+		L["Orbit the camera"], L["Orbit the camera tip"],
+		function() return afkCfg().orbit end,
+		function(c) afkCfg().orbit = c; afkApply() end, a_enabled)
+
+	local a_camspeed = CreateSlider(afkContent, "AFKCamSpeed",
+		L["Camera orbit speed"], L["Camera orbit speed tip"],
+		0.01, 0.15, 0.005,
+		function() return afkCfg().cam_speed end,
+		function(v) afkCfg().cam_speed = v; afkApply() end,
+		function(v) return string.format("%.3f", v) end, a_orbit)
+
+	local a_model = CreateCheckbox(afkContent, "AFKShowModel",
+		L["Show player model"], L["Show player model tip"],
+		function() return afkCfg().show_model end,
+		function(c) afkCfg().show_model = c; afkApply() end, a_camspeed)
+
+	local a_rotate = CreateCheckbox(afkContent, "AFKRotateModel",
+		L["Rotate the model"], L["Rotate the model tip"],
+		function() return afkCfg().rotate_model end,
+		function(c) afkCfg().rotate_model = c; afkApply() end, a_model)
+
+	local a_mspeed = CreateSlider(afkContent, "AFKModelSpeed",
+		L["Model rotation speed"], L["Model rotation speed tip"],
+		0.1, 3.0, 0.1,
+		function() return afkCfg().model_speed end,
+		function(v) afkCfg().model_speed = v; afkApply() end,
+		function(v) return string.format("%.1f", v) end, a_rotate)
+
+	local a_msize = CreateSlider(afkContent, "AFKModelSize",
+		L["Model size"], L["Model size tip"],
+		120, 600, 10,
+		function() return afkCfg().model_size end,
+		function(v) afkCfg().model_size = v; afkApply() end,
+		function(v) return tostring(floor(v)) end, a_mspeed)
+
+	local a_mangle = CreateSlider(afkContent, "AFKModelAngle",
+		L["Model angle"], L["Model angle tip"],
+		0, 6.2, 0.1,
+		function() return afkCfg().model_facing end,
+		function(v) afkCfg().model_facing = v; afkApply() end,
+		function(v) return string.format("%.1f", v) end, a_msize)
+
+	local a_name = CreateCheckbox(afkContent, "AFKShowName",
+		L["Show name"], L["Show name tip"],
+		function() return afkCfg().show_name end,
+		function(c) afkCfg().show_name = c; afkApply() end, a_mangle)
+
+	local a_level = CreateCheckbox(afkContent, "AFKShowLevel",
+		L["Show level"], L["Show level tip"],
+		function() return afkCfg().show_level end,
+		function(c) afkCfg().show_level = c; afkApply() end, a_name)
+
+	local a_guild = CreateCheckbox(afkContent, "AFKShowGuild",
+		L["Show guild"], L["Show guild tip"],
+		function() return afkCfg().show_guild end,
+		function(c) afkCfg().show_guild = c; afkApply() end, a_level)
+
+	local a_hint = CreateCheckbox(afkContent, "AFKShowHint",
+		L["Show hint"], L["Show hint tip"],
+		function() return afkCfg().show_hint end,
+		function(c) afkCfg().show_hint = c; afkApply() end, a_guild)
+
+	afkContent:SetHeight(640)
+	InterfaceOptions_AddCategory(afkp)
+
+	-- ==============================================================
 	-- SUB-PANEL: About
 	-- ==============================================================
 	local about = CreateSubPanel("About", L["About"])
