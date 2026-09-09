@@ -17,6 +17,8 @@ local IsInInstance     = IsInInstance
 local MoveViewLeftStart, MoveViewLeftStop = MoveViewLeftStart, MoveViewLeftStop
 local Screenshot       = Screenshot
 local SetCVar          = SetCVar
+local GetPlayerInfoByGUID = GetPlayerInfoByGUID
+local RAID_CLASS_COLORS   = RAID_CLASS_COLORS
 local tinsert, tconcat = table.insert, table.concat
 local TWO_PI           = math.pi * 2
 
@@ -34,6 +36,7 @@ local DEFAULTS = {
 	show_level   = true,
 	show_guild   = true,
 	show_hint    = true,
+	show_whispers = true,     -- show incoming whispers on the away screen
 }
 
 local function cfg()
@@ -52,6 +55,32 @@ Module.GetSettings = function() return cfg() end
 -- keys that must NOT end AFK mode on their own
 local ignoreKeys = { LALT = true, RALT = true, LSHIFT = true, RSHIFT = true, LCTRL = true, RCTRL = true }
 local printKeys  = { PRINTSCREEN = true }
+
+-- whisper panel geometry (relative to the overlay TOPLEFT)
+local CHAT_X, CHAT_Y = 40, -110
+local CHAT_W, CHAT_H = 460, 420
+
+-- class colour for a sender, looked up from the chat event's GUID (arg12).
+-- Falls back to light blue when the class is unknown (e.g. Battle.net whispers,
+-- or a player the client hasn't cached).
+local function classColorHex(guid)
+	if guid and guid ~= "" and GetPlayerInfoByGUID then
+		local ok, _, class = pcall(GetPlayerInfoByGUID, guid)   -- 2nd return = english class
+		if ok then
+			local c = class and RAID_CLASS_COLORS and RAID_CLASS_COLORS[class]
+			if c then
+				return ("|cff%.2x%.2x%.2x"):format(c.r * 255, c.g * 255, c.b * 255)
+			end
+		end
+	end
+	return "|cff40c0f0"
+end
+
+-- incoming-whisper handler for the scrolling message frame
+local function onWhisper(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
+	local color = classColorHex(arg12)
+	self:AddMessage(("%s%s|r  %s"):format(color, arg2 or "?", arg1 or ""))
+end
 
 local function shouldShow()
 	local a = cfg()
@@ -110,6 +139,19 @@ Module.Build = function(self)
 	hint:SetText("Нажмите любую клавишу, чтобы вернуться")
 	f.hintText = hint
 
+	-- incoming-whisper panel (top-left): newest on top, older pushed downward
+	local chat = CreateFrame("ScrollingMessageFrame", nil, f)
+	chat:SetPoint("TOPLEFT", f, "TOPLEFT", CHAT_X, CHAT_Y)
+	chat:SetSize(CHAT_W, CHAT_H)
+	chat:SetFontObject(GameFontNormal)
+	chat:SetJustifyH("LEFT")
+	chat:SetFading(false)          -- keep messages on screen while away
+	chat:SetMaxLines(100)
+	chat:SetInsertMode("TOP")
+	chat:SetScript("OnEvent", onWhisper)
+	chat:Hide()
+	f.chat = chat
+
 	self.frame = f
 	return f
 end
@@ -157,11 +199,27 @@ Module.ApplyContent = function(self, f)
 	if a.show_hint then f.hintText:Show() else f.hintText:Hide() end
 end
 
+Module.ApplyChat = function(self, f, clear)
+	local a = cfg()
+	local c = f.chat
+	if not c then return end
+	if a.show_whispers then
+		if clear then c:Clear() end
+		c:RegisterEvent("CHAT_MSG_WHISPER")
+		c:RegisterEvent("CHAT_MSG_BN_WHISPER")
+		c:Show()
+	else
+		c:UnregisterAllEvents()
+		c:Hide()
+	end
+end
+
 Module.Enter = function(self)
 	if self.active then return end
 	local f = self:Build()
 	self:ApplyContent(f)
 	self:ApplyModel(f)
+	self:ApplyChat(f, true)
 
 	self.active = true
 	UIParent:Hide()
@@ -181,6 +239,7 @@ Module.Leave = function(self)
 	self.active = false
 	if self.orbiting then MoveViewLeftStop() self.orbiting = false end
 	if self.frame then
+		if self.frame.chat then self.frame.chat:UnregisterAllEvents() end
 		self.frame:EnableKeyboard(false)
 		self.frame:Hide()
 	end
@@ -192,6 +251,7 @@ Module.Refresh = function(self)
 	if not self.active or not self.frame then return end
 	self:ApplyContent(self.frame)
 	self:ApplyModel(self.frame)
+	self:ApplyChat(self.frame, false)
 	local a = cfg()
 	if a.orbit and not self.orbiting then
 		MoveViewLeftStart(a.cam_speed) self.orbiting = true

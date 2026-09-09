@@ -241,3 +241,5 @@ L["Show guild"] = true
 L["Show guild tip"] = true
 L["Show hint"] = true
 L["Show hint tip"] = true
+L["Show whispers"] = true
+L["Show whispers tip"] = true

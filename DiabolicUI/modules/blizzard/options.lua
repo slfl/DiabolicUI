@@ -656,7 +656,12 @@ Module.OnEnable = function(self)
 		function() return afkCfg().show_hint end,
 		function(c) afkCfg().show_hint = c; afkApply() end, a_guild)
 
-	afkContent:SetHeight(640)
+	local a_whisper = CreateCheckbox(afkContent, "AFKShowWhispers",
+		L["Show whispers"], L["Show whispers tip"],
+		function() return afkCfg().show_whispers end,
+		function(c) afkCfg().show_whispers = c; afkApply() end, a_hint)
+
+	afkContent:SetHeight(680)
 	InterfaceOptions_AddCategory(afkp)
 
 	-- ==============================================================
