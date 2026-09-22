@@ -243,3 +243,10 @@ L["Show hint"] = true
 L["Show hint tip"] = true
 L["Show whispers"] = true
 L["Show whispers tip"] = true
+
+-- XP bar text mode (options)
+L["XP bar text"] = true
+L["Hidden"] = true
+L["Percent"] = true
+L["Numbers"] = true
+L["Numbers and percent"] = true

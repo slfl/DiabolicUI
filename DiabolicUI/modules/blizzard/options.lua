@@ -353,7 +353,27 @@ Module.OnEnable = function(self)
 	end)
 	refreshTrackButton()
 
-	cmdContent:SetHeight(560)
+	-- XP/rep bar: what text to show on the bar when not hovered
+	local xpText = CreateDropdown(cmdContent, "XPBarText",
+		L["XP bar text"],
+		{
+			{ value = "off",     text = L["Hidden"] },
+			{ value = "percent", text = L["Percent"] },
+			{ value = "text",    text = L["Numbers"] },
+			{ value = "both",    text = L["Numbers and percent"] },
+		},
+		function()
+			return Engine:GetConfig("UI", "character").xp_text_mode or "percent"
+		end,
+		function(v)
+			Engine:GetConfig("UI", "character").xp_text_mode = v
+			local AB = Engine:GetModule("ActionBars", true)
+			local w = AB and AB.GetWidget and AB:GetWidget("Bar: XP")
+			if w and w.UpdateBar then w:UpdateBar() end
+		end,
+		trackLabel)
+
+	cmdContent:SetHeight(600)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================

@@ -60,6 +60,12 @@ local restedString = " (%s%% %s)"
 local shortLevelString = "%s %d"
 local repString = "%s: %s / %s - %s%%"
 
+-- resting-state (non-hover) text mode for the XP/rep bar, chosen in the options:
+-- "off" (no text), "percent", "text" (numbers only) or "both".
+local function xpTextMode()
+    return (Engine:GetConfig("UI", "character").xp_text_mode) or "percent"
+end
+
 local colorize = function(str, color)
     local r, g, b = unpack(colors[color] or colors.normal)
     return ("|cff%02X%02X%02X%s|r"):format(floor(r*255), floor(g*255), floor(b*255), str)
@@ -203,7 +209,16 @@ BarWidget.UpdateXPBar = function(self)
             self.Value:SetFormattedText(fullXPString, colorize(short(data.xp), "normal"), colorize(short(data.xpMax), "normal"), colorize(short(floor(data.xp/data.xpMax*100)), "normal"))
         end
     else
-        self.Value:SetFormattedText(shortString, colorize(short(floor(data.xp/data.xpMax*100)), "normal"))
+        local mode = xpTextMode()
+        if mode == "off" then
+            self.Value:SetText("")
+        elseif mode == "text" then
+            self.Value:SetFormattedText(longXPString, colorize(short(data.xp), "normal"), colorize(short(data.xpMax), "normal"))
+        elseif mode == "both" then
+            self.Value:SetFormattedText(fullXPString, colorize(short(data.xp), "normal"), colorize(short(data.xpMax), "normal"), colorize(short(floor(data.xp/data.xpMax*100)), "normal"))
+        else
+            self.Value:SetFormattedText(shortString, colorize(short(floor(data.xp/data.xpMax*100)), "normal"))
+        end
     end
 end
 
@@ -223,7 +238,16 @@ BarWidget.UpdateRepBar = function(self)
     if self.Controller.mouseIsOver then
         self.Value:SetFormattedText(repString, colorize(data.factionName or "Unknown", "normal"), colorize(short(data.rep), "normal"), colorize(short(data.repMax), "normal"), colorize(short(floor(data.rep/data.repMax*100)), "normal"))
     else
-        self.Value:SetFormattedText(shortString, colorize(short(floor(data.rep/data.repMax*100)), "normal"))
+        local mode = xpTextMode()
+        if mode == "off" then
+            self.Value:SetText("")
+        elseif mode == "text" then
+            self.Value:SetFormattedText(longXPString, colorize(short(data.rep), "normal"), colorize(short(data.repMax), "normal"))
+        elseif mode == "both" then
+            self.Value:SetFormattedText(fullXPString, colorize(short(data.rep), "normal"), colorize(short(data.repMax), "normal"), colorize(short(floor(data.rep/data.repMax*100)), "normal"))
+        else
+            self.Value:SetFormattedText(shortString, colorize(short(floor(data.rep/data.repMax*100)), "normal"))
+        end
     end
 end
 
