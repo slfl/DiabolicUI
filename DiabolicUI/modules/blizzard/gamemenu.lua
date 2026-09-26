@@ -7,6 +7,26 @@ local tinsert = table.insert
 
 local BLANK_TEXTURE = [[Interface\ChatFrame\ChatFrameBackground]]
 
+-- hide every original FontString of an adopted button (ours is created later)
+local function killOwnText(button)
+	for _, r in ipairs({ button:GetRegions() }) do
+		if r.GetObjectType and r:GetObjectType() == "FontString" then
+			r:SetAlpha(0)
+		end
+	end
+end
+
+local function buttonLabel(button)
+	local t = button.GetText and button:GetText()
+	if t and t ~= "" then return t end
+	for _, r in ipairs({ button:GetRegions() }) do
+		if r.GetObjectType and r:GetObjectType() == "FontString" then
+			t = r:GetText()
+			if t and t ~= "" then return t end
+		end
+	end
+end
+
 -- to avoid potential taint, we safewrap the layout method
 Module.UpdateButtonLayout = Module:Wrap(function(self)
 	local config = self.config
@@ -325,6 +345,27 @@ Module.OnInit = function(self)
 		end
 	end
 	
+	-- Custom client ("Rebuffed") buttons. Feature-detected: only added if the
+	-- client actually has them, so the classic client is untouched. Text comes
+	-- from the button itself (client-localized); original fontstrings are hidden.
+	local custom = { "GameMenuButtonHelpSupport", "GameMenuButtonRebuffed", "GameMenuButtonRebuffedStore" }
+	local insertAt
+	for i, v in ipairs(self.buttons) do
+		if v.content == GameMenuButtonKeybindings then insertAt = i + 1 break end
+	end
+	insertAt = insertAt or (#self.buttons)
+	for _, name in ipairs(custom) do
+		local b = _G[name]
+		if b then
+			tinsert(self.buttons, insertAt, {
+				content = b,
+				label = function() return buttonLabel(b) or name end,
+				run = killOwnText,
+			})
+			insertAt = insertAt + 1
+		end
+	end
+
 	-- remove store button if there's no store available
 	if GameMenuButtonStore 
 	and ((C_StorePublic and not C_StorePublic.IsEnabled())
@@ -342,8 +383,59 @@ Module.OnInit = function(self)
 
 end
 
+-- Adopt any extra buttons the client (or an addon) added to the game menu that
+-- we don't already manage — e.g. custom clients add "Help" / "Rebuffed settings".
+-- Pure feature detection: on the classic client there are none, so nothing
+-- happens. Adopted buttons keep their own OnClick; we only restyle them and fold
+-- them into our layout. Runs on every menu show, because custom clients create /
+-- re-anchor their buttons in GameMenuFrame's OnShow (after our OnEnable).
+
+Module.AdoptCustomButtons = function(self)
+	local frame = self.frame
+	if not frame or not frame.GetChildren then return end
+
+	local known = {}
+	for _, v in ipairs(self.buttons) do
+		local b = (type(v.content) == "string") and _G[v.content] or v.content
+		if b then known[b] = true end
+	end
+	if self.mouse then known[self.mouse] = true end
+	-- Blizzard buttons we deliberately removed (non-mac / no store) must stay out
+	if GameMenuButtonMacOptions then known[GameMenuButtonMacOptions] = true end
+	if GameMenuButtonStore then known[GameMenuButtonStore] = true end
+
+	-- fallback: any unknown button child of the menu (future client additions)
+	local candidates = { frame:GetChildren() }
+
+	-- insert adopted buttons just before the bottom "Continue" entry
+	local insertAt = #self.buttons + 1
+	for i, v in ipairs(self.buttons) do
+		if v.anchor == "BOTTOM" then insertAt = i break end
+	end
+
+	for _, child in ipairs(candidates) do
+		if not known[child]
+		and child.GetObjectType and child:GetObjectType() == "Button" then
+			local txt = buttonLabel(child)
+			if txt then
+				tinsert(self.buttons, insertAt, { content = child, label = txt, run = killOwnText })
+				insertAt = insertAt + 1
+				known[child] = true
+			end
+		end
+	end
+end
+
 Module.OnEnable = function(self)
 	self:StyleWindow()
+	self:AdoptCustomButtons()
 	self:StyleButtons()
+
+	-- custom clients add / re-anchor their buttons when the menu opens; our hook
+	-- runs after the original OnShow, so re-adopt and re-layout each time
+	self.frame:HookScript("OnShow", function()
+		self:AdoptCustomButtons()
+		self:StyleButtons()
+	end)
 end
 

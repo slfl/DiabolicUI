@@ -55,11 +55,23 @@ MenuWidget.Strip = function(self, button)
 	end
 	
 	-- this was first introduced in cata
-	local flash = _G[button:GetName().."Flash"]
+	local bname = button:GetName()
+	local flash = bname and _G[bname.."Flash"]
 	if flash then
 		flash:SetTexture("")
 		flash:SetAlpha(0)
 		flash:SetSize(.0001, .0001)
+	end
+
+	-- client-added buttons (e.g. Collections) keep their art in extra texture
+	-- regions; wipe every texture the button owns *before* we skin it
+	if button._duiDeepStrip then
+		for _, r in ipairs({ button:GetRegions() }) do
+			if r.GetObjectType and r:GetObjectType() == "Texture" then
+				r:SetTexture("")
+				r:SetAlpha(0)
+			end
+		end
 	end
 end
 
@@ -83,8 +95,13 @@ MenuWidget.Skin = function(self, button, config, icon)
 	button.Icon:SetSize(unpack(icon_config.size))
 	button.Icon:SetPoint(unpack(icon_config.position))
 	button.Icon:SetAlpha(icon_config.alpha)
-	button.Icon:SetTexture(icon_config.texture)
-	button.Icon:SetTexCoord(unpack(icon_config.texcoords[icon]))
+	local texcoords = icon and icon_config.texcoords[icon]
+	if texcoords then
+		button.Icon:SetTexture(icon_config.texture)
+		button.Icon:SetTexCoord(unpack(texcoords))
+	else
+		button.Icon:SetTexture("")   -- no icon assigned yet (e.g. Collections while testing)
+	end
 	
 	local position = icon_config.position
 	local position_pushed = icon_config.pushed.position
@@ -279,6 +296,12 @@ MenuWidget.OnEnable = function(self)
 	MicroMenuWindow:InsertButton(LFDMicroButton)
 	MicroMenuWindow:InsertButton(MainMenuMicroButton)
 	MicroMenuWindow:InsertButton(HelpMicroButton)
+	-- custom clients (e.g. "Rebuffed") add a Collections button; adopt it only if
+	-- present so the classic client is unaffected. No icon assigned yet (testing).
+	if CollectionsMicroButton then
+		CollectionsMicroButton._duiDeepStrip = true
+		MicroMenuWindow:InsertButton(CollectionsMicroButton)
+	end
 	MicroMenuWindow:SetRowSize(5)
 
 	button_to_icon = {
@@ -293,6 +316,9 @@ MenuWidget.OnEnable = function(self)
 		[MainMenuMicroButton] = "cogs", 
 		[HelpMicroButton] = "bug"
 	}
+	if CollectionsMicroButton then
+		button_to_icon[CollectionsMicroButton] = "mount"   -- grid row 4, col 3 (horse)
+	end
 	
 	-- Disable Blizzard texture changes and stuff from these buttons.
 	-- Also re-align their tooltips to be above our menu.
