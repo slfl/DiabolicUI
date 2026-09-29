@@ -74,6 +74,11 @@ end
 local short = function(value)
     value = tonumber(value)
     if not value then return "" end
+    -- "full numbers" option: 19850 instead of 19.9k (bar text and tooltips alike)
+    local db = Engine:GetConfig("UI", "character")
+    if db.xp_full_numbers ~= false then
+        return tostring(floor(value + .5))
+    end
     if value >= 1e6 then
         return ("%.1f"):format(value / 1e6):gsub("%.?0+([km])$", "%1") .. colorize("m", "offwhite")
     elseif value >= 1e3 or value <= -1e3 then

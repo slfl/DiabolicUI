@@ -250,3 +250,5 @@ L["Hidden"] = true
 L["Percent"] = true
 L["Numbers"] = true
 L["Numbers and percent"] = true
+L["Full numbers"] = true
+L["Full numbers tip"] = true

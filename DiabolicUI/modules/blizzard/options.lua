@@ -373,7 +373,19 @@ Module.OnEnable = function(self)
 		end,
 		trackLabel)
 
-	cmdContent:SetHeight(600)
+	-- full vs abbreviated numbers on the XP/rep bar and its tooltip
+	local xpFull = CreateCheckbox(cmdContent, "XPBarFullNumbers",
+		L["Full numbers"], L["Full numbers tip"],
+		function() return Engine:GetConfig("UI", "character").xp_full_numbers ~= false end,
+		function(c)
+			Engine:GetConfig("UI", "character").xp_full_numbers = c
+			local AB = Engine:GetModule("ActionBars", true)
+			local w = AB and AB.GetWidget and AB:GetWidget("Bar: XP")
+			if w and w.UpdateBar then w:UpdateBar() end
+		end,
+		xpText)
+
+	cmdContent:SetHeight(640)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================
