@@ -252,3 +252,12 @@ L["Numbers"] = true
 L["Numbers and percent"] = true
 L["Full numbers"] = true
 L["Full numbers tip"] = true
+
+-- Combat text font (options)
+L["Fonts"] = true
+L["Custom combat text font"] = true
+L["Custom combat text font tip"] = "Replace the font of damage and healing numbers. When off, the game's own font is used."
+L["Combat text font"] = true
+L["Combat font relog notice"] = "The damage and healing font is applied after logging out to the character screen.\nA plain interface reload (/reload) does not change it.\n\nLog out now?"
+L["Log out now"] = true
+L["Later"] = true

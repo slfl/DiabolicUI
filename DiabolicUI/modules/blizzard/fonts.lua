@@ -1,8 +1,45 @@
-local _, Engine = ...
+local ADDON, Engine = ...
 local Module = Engine:NewModule("Fonts")
 
 local gameLocale = GetLocale()
 local isLatin = ({ enUS  = true, enGB = true, deDE = true, esES = true, esMX = true, frFR = true, itIT = true, ptBR = true, ptPT = true })[gameLocale]
+
+-- Combat text font choice ------------------------------------------------------
+-- Original client values, captured before this file changes anything. They are
+-- already localized by the client (e.g. *_CYR font files on ruRU), so turning the
+-- feature off restores exactly what the game would use on its own.
+local ORIG_DAMAGE_TEXT_FONT   = DAMAGE_TEXT_FONT
+local ORIG_STANDARD_TEXT_FONT = STANDARD_TEXT_FONT
+local ORIG_COMBAT = {}
+if CombatTextFont then
+	ORIG_COMBAT.font, ORIG_COMBAT.size, ORIG_COMBAT.style = CombatTextFont:GetFont()
+	ORIG_COMBAT.sx, ORIG_COMBAT.sy = CombatTextFont:GetShadowOffset()
+	ORIG_COMBAT.sr, ORIG_COMBAT.sg, ORIG_COMBAT.sb, ORIG_COMBAT.sa = CombatTextFont:GetShadowColor()
+end
+
+-- The four stock game faces. Localized clients ship *_CYR variants, so the
+-- candidate order depends on the locale; only files that actually load are listed.
+local isCyrillic = (gameLocale == "ruRU")
+local function pick(cyr, base)
+	if isCyrillic then return { cyr, base } else return { base, cyr } end
+end
+local GAME_FONTS = {
+	{ key = "frizqt",   text = "Friz Quadrata", paths = { ORIG_STANDARD_TEXT_FONT, [[Fonts\FRIZQT___CYR.TTF]], [[Fonts\FRIZQT__.TTF]] } },
+	{ key = "arialn",   text = "Arial Narrow",  paths = { [[Fonts\ARIALN.TTF]] } },
+	{ key = "skurri",   text = "Skurri",        paths = pick([[Fonts\SKURRI_CYR.TTF]], [[Fonts\skurri.ttf]]) },
+	{ key = "morpheus", text = "Morpheus",      paths = pick([[Fonts\MORPHEUS_CYR.TTF]], [[Fonts\MORPHEUS.ttf]]) },
+}
+
+-- a font file "exists" if a probe FontString actually switches to it
+local probe
+local function fontLoads(path)
+	if not path or path == "" then return false end
+	if not probe then probe = UIParent:CreateFontString(nil, "BACKGROUND") end
+	probe:SetFont(ORIG_STANDARD_TEXT_FONT, 12)
+	probe:SetFont(path, 12)
+	local got = probe:GetFont()
+	return (got and got:lower() == path:lower()) and true or false
+end
 
 Module.SetUp = function(self)
 	-- shortcuts to the fonts
@@ -144,6 +181,68 @@ Module.HookCombatText = function(self)
 	end)
 end
 
+-- Settings live in their own top-level table of the saved variables. The engine
+-- only rebuilds its registered config keys, so this table survives untouched,
+-- and it can be read raw at our ADDON_LOADED — the earliest point where saved
+-- variables exist, and early enough for DAMAGE_TEXT_FONT (PLAYER_LOGIN is not).
+Module.GetCombatFontSettings = function(self)
+	if type(DiabolicUI_DB) ~= "table" then DiabolicUI_DB = {} end
+	local s = DiabolicUI_DB.CombatFont
+	if type(s) ~= "table" then
+		s = {}
+		DiabolicUI_DB.CombatFont = s
+	end
+	if s.enabled == nil then s.enabled = true end
+	if s.font == nil then s.font = "addon" end
+	return s
+end
+
+-- { value, text, path } for every usable font: ours first, then the game's
+Module.GetCombatFontList = function(self)
+	if self.combatFontList then return self.combatFontList end
+	local list = {
+		{ value = "addon", text = "DiabolicUI (Coalition)", path = self.fonts.damage },
+	}
+	for _, f in ipairs(GAME_FONTS) do
+		for _, path in ipairs(f.paths) do
+			if fontLoads(path) then
+				list[#list + 1] = { value = f.key, text = f.text, path = path }
+				break
+			end
+		end
+	end
+	self.combatFontList = list
+	return list
+end
+
+Module.GetCombatFontPath = function(self, key)
+	for _, f in ipairs(self:GetCombatFontList()) do
+		if f.value == key then return f.path end
+	end
+end
+
+-- DAMAGE_TEXT_FONT (numbers over targets) is only picked up by the engine on a
+-- full relog; CombatTextFont (Blizzard's scrolling combat text) updates live.
+Module.ApplyCombatFont = function(self)
+	local s = self:GetCombatFontSettings()
+	if s.enabled then
+		local path = self:GetCombatFontPath(s.font) or self.fonts.damage
+		DAMAGE_TEXT_FONT = path
+		if CombatTextFont then
+			CombatTextFont:SetFont(path, 100, "")
+			CombatTextFont:SetShadowOffset(-2.5, -2.5)
+			CombatTextFont:SetShadowColor(0, 0, 0, .35)
+		end
+	else
+		DAMAGE_TEXT_FONT = ORIG_DAMAGE_TEXT_FONT
+		if CombatTextFont and ORIG_COMBAT.font then
+			CombatTextFont:SetFont(ORIG_COMBAT.font, ORIG_COMBAT.size, ORIG_COMBAT.style)
+			CombatTextFont:SetShadowOffset(ORIG_COMBAT.sx or 0, ORIG_COMBAT.sy or 0)
+			CombatTextFont:SetShadowColor(ORIG_COMBAT.sr or 0, ORIG_COMBAT.sg or 0, ORIG_COMBAT.sb or 0, ORIG_COMBAT.sa or 0)
+		end
+	end
+end
+
 -- Fonts (especially game engine fonts) need to be set very early in the loading process, 
 -- so for this specific module we'll bypass the normal loading order, and just fire away!
 Module:SetUp()
@@ -152,12 +251,20 @@ Module:SetFontObjects()
 
 if IsAddOnLoaded("Blizzard_CombatText") then
 	Module:HookCombatText()
-else
-	Module.ADDON_LOADED = function(self, event, addon, ...)
-		if addon == "Blizzard_CombatText" then
-			self:HookCombatText()
-			self:UnregisterEvent("ADDON_LOADED")
-		end
-	end
-	Module:RegisterEvent("ADDON_LOADED")
+	Module.hookedCombatText = true
 end
+
+Module.ADDON_LOADED = function(self, event, addon, ...)
+	if addon == ADDON then
+		-- saved variables are available now: apply the user's combat font choice
+		self:ApplyCombatFont()
+		self.appliedCombatFont = true
+	elseif addon == "Blizzard_CombatText" and not self.hookedCombatText then
+		self:HookCombatText()
+		self.hookedCombatText = true
+	end
+	if self.appliedCombatFont and self.hookedCombatText then
+		self:UnregisterEvent("ADDON_LOADED")
+	end
+end
+Module:RegisterEvent("ADDON_LOADED")

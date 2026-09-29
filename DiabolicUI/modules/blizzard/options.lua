@@ -606,6 +606,67 @@ Module.OnEnable = function(self)
 	InterfaceOptions_AddCategory(bf)
 
 	-- ==============================================================
+	-- SUB-PANEL: Fonts (combat text font)
+	-- ==============================================================
+	StaticPopupDialogs["DIABOLICUI_COMBATFONT_RELOG"] = {
+		text = L["Combat font relog notice"],
+		button1 = L["Log out now"],
+		button2 = L["Later"],
+		OnAccept = function() Logout() end,
+		timeout = 0,
+		whileDead = 1,
+		hideOnEscape = 1,
+		preferredIndex = 3,
+	}
+
+	local fontp = CreateSubPanel("FontsPanel", L["Fonts"])
+	local fontContent = MakeScrollable(fontp, fontp.heading)
+
+	local function fontsModule() return Engine:GetModule("Fonts", true) end
+	local function fontCfg()
+		local F = fontsModule()
+		return F and F:GetCombatFontSettings() or {}
+	end
+	-- apply live (scrolling combat text) and tell the user a relog is needed
+	local function fontChanged()
+		local F = fontsModule()
+		if F then F:ApplyCombatFont() end
+		StaticPopup_Show("DIABOLICUI_COMBATFONT_RELOG")
+	end
+
+	local f_enabled = CreateCheckbox(fontContent, "CombatFontEnabled",
+		L["Custom combat text font"], L["Custom combat text font tip"],
+		function() return fontCfg().enabled end,
+		function(c)
+			if fontCfg().enabled == c then return end
+			fontCfg().enabled = c
+			fontChanged()
+		end, nil)
+
+	local fontOptions = {}
+	do
+		local F = fontsModule()
+		if F then
+			for _, f in ipairs(F:GetCombatFontList()) do
+				fontOptions[#fontOptions + 1] = { value = f.value, text = f.text }
+			end
+		end
+	end
+	local f_font = CreateDropdown(fontContent, "CombatFontFace",
+		L["Combat text font"], fontOptions,
+		function() return fontCfg().font end,
+		function(v)
+			if fontCfg().font == v then return end
+			fontCfg().font = v
+			fontChanged()
+		end,
+		f_enabled)
+	UIDropDownMenu_SetWidth(f_font, 180)
+
+	fontContent:SetHeight(200)
+	InterfaceOptions_AddCategory(fontp)
+
+	-- ==============================================================
 	-- SUB-PANEL: Away mode (AFK)
 	-- ==============================================================
 	local afkp = CreateSubPanel("AwayMode", L["Away mode"])
