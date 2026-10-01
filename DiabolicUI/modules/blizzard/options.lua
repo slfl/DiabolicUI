@@ -232,6 +232,16 @@ Module.OnEnable = function(self)
 			if ActionBars and ActionBars.UpdateButtonsVisibility then ActionBars:UpdateButtonsVisibility() end
 		end, coords)
 
+	local chatbtn = CreateCheckbox(cmdContent, "HideChatButton",
+		L["Hide chat button"],
+		L["Hide chat button tip"],
+		function() return Engine:GetConfig("UI", "character").hide_chat_button ~= false end,
+		function(checked)
+			Engine:GetConfig("UI", "character").hide_chat_button = checked
+			local ActionBars = Engine:GetModule("ActionBars", true)
+			if ActionBars and ActionBars.UpdateButtonsVisibility then ActionBars:UpdateButtonsVisibility() end
+		end, buttons)
+
 	local classcolor = CreateCheckbox(cmdContent, "ClassHealthColor",
 		L["Class colored health orb"],
 		L["Colors the player health orb using your class color instead of the default red."],
@@ -240,7 +250,7 @@ Module.OnEnable = function(self)
 			Engine:GetConfig("UI", "character").class_health_color = checked
 			local UnitFrames = Engine:GetModule("UnitFrames", true)
 			if UnitFrames and UnitFrames.RefreshHealthColor then UnitFrames:RefreshHealthColor() end
-		end, buttons)
+		end, chatbtn)
 
 	local classcolorpet = CreateCheckbox(cmdContent, "ClassHealthColorPet",
 		L["Also color the pet health orb"],
@@ -385,7 +395,7 @@ Module.OnEnable = function(self)
 		end,
 		xpText)
 
-	cmdContent:SetHeight(640)
+	cmdContent:SetHeight(680)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================
@@ -566,7 +576,106 @@ Module.OnEnable = function(self)
 		function(v) return ("%d%%"):format(v * 100) end,
 		ch_friends)
 
-	chatContent:SetHeight(480)
+	-- inactivity auto-hide / auto-fade
+	local function chah() return Engine:GetConfig("Chat", "character").autohide end
+	local function applyAutoHide()
+		local Chat = Engine:GetModule("Chat", true)
+		if Chat and Chat.RefreshAutoHide then Chat:RefreshAutoHide() end
+	end
+
+	local ah_enabled = CreateCheckbox(chatContent, "ChatAutoHide",
+		L["Auto-hide chat"], L["Auto-hide chat tip"],
+		function() return chah().enabled end,
+		function(c) chah().enabled = c; applyAutoHide() end,
+		nil)
+	ah_enabled:SetPoint("TOPLEFT", ch_bg, "BOTTOMLEFT", 0, -28)
+
+	local ah_mode = CreateDropdown(chatContent, "ChatAutoHideMode",
+		L["Auto-hide mode"],
+		{
+			{ value = "fade", text = L["Make transparent"] },
+			{ value = "hide", text = L["Hide completely"] },
+		},
+		function() return chah().mode end,
+		function(v) chah().mode = v; applyAutoHide() end,
+		ah_enabled)
+	UIDropDownMenu_SetWidth(ah_mode, 180)
+
+	local ah_delay = CreateSlider(chatContent, "ChatAutoHideDelay",
+		L["Inactivity delay"], L["Inactivity delay tip"],
+		5, 120, 5,
+		function() return chah().delay end,
+		function(v) chah().delay = v; applyAutoHide() end,
+		function(v) return ("%d"):format(v) end,
+		ah_mode)
+
+	local ah_alpha = CreateSlider(chatContent, "ChatAutoHideAlpha",
+		L["Faded opacity"], L["Faded opacity tip"],
+		0.05, 0.9, 0.05,
+		function() return chah().alpha end,
+		function(v) chah().alpha = v; applyAutoHide() end,
+		function(v) return ("%d%%"):format(v * 100) end,
+		ah_delay)
+
+	-- glowing Chat button on new messages while the chat is hidden/faded
+	local function chnotify()
+		local a = chah()
+		if type(a.notify) ~= "table" then a.notify = {} end
+		local n = a.notify
+		if n.enabled == nil then n.enabled = true end
+		if n.style == nil then n.style = "art" end
+		return n
+	end
+	-- re-paint the button right away (style / counter changes)
+	local function applyNotify()
+		local Chat = Engine:GetModule("Chat", true)
+		if Chat and Chat.FireNotifyChanged then Chat:FireNotifyChanged() end
+	end
+
+	local nt_enabled = CreateCheckbox(chatContent, "ChatNotify",
+		L["Notify on new messages"], L["Notify on new messages tip"],
+		function() return chnotify().enabled ~= false end,
+		function(c) chnotify().enabled = c; applyNotify() end,
+		nil)
+	nt_enabled:SetPoint("TOPLEFT", ah_alpha, "BOTTOMLEFT", -4, -28)
+
+	local nt_style = CreateDropdown(chatContent, "ChatNotifyStyle",
+		L["Glow style"],
+		{
+			{ value = "art",    text = L["Smouldering button"] },
+			{ value = "border", text = L["Glowing outline"] },
+			{ value = "both",   text = L["Button and outline"] },
+		},
+		function() return chnotify().style end,
+		function(v) chnotify().style = v; applyNotify() end,
+		nt_enabled)
+	UIDropDownMenu_SetWidth(nt_style, 180)
+
+	local nt_count = CreateCheckbox(chatContent, "ChatNotifyCount",
+		L["Show message count"], L["Show message count tip"],
+		function() return chnotify().count end,
+		function(c) chnotify().count = c; applyNotify() end,
+		nt_style)
+
+	local nt_guild = CreateCheckbox(chatContent, "ChatNotifyGuild",
+		L["Also guild messages"], L["Also guild messages tip"],
+		function() return chnotify().guild end,
+		function(c) chnotify().guild = c end,
+		nt_count)
+
+	local nt_group = CreateCheckbox(chatContent, "ChatNotifyGroup",
+		L["Also party and raid messages"], L["Also party and raid messages tip"],
+		function() return chnotify().group end,
+		function(c) chnotify().group = c end,
+		nt_guild)
+
+	local nt_channel = CreateCheckbox(chatContent, "ChatNotifyChannel",
+		L["Also public channels"], L["Also public channels tip"],
+		function() return chnotify().channel end,
+		function(c) chnotify().channel = c end,
+		nt_group)
+
+	chatContent:SetHeight(980)
 	InterfaceOptions_AddCategory(chat)
 
 	-- ==============================================================

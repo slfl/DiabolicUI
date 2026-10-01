@@ -364,12 +364,28 @@ Module.UpdateButtonsVisibility = function(self)
         return
     end
 
+    -- the Chat button can stay on screen while the other menu buttons hide
+    local hideChatButton = Engine:GetConfig("UI", "character").hide_chat_button ~= false
+    -- ...but a Chat button with unread news stays on screen so it can glow
+    local ChatModule = Engine:GetModule("Chat", true)
+    if ChatModule and ChatModule.HasNotification and ChatModule:HasNotification() then
+        hideChatButton = false
+    end
+    local chatMenu = self:GetWidget("Menu: Chat")
+    local social = chatMenu and chatMenu.SocialButton
+
     if show then
         menu:Show()
         chat:Show()
+        if social then social:Show() end
     else
         menu:Hide()
-        chat:Hide()
+        if hideChatButton then
+            chat:Hide()
+        else
+            chat:Show()
+            if social then social:Hide() end
+        end
     end
 end
 

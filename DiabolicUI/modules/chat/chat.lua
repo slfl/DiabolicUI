@@ -6,6 +6,7 @@ local L = Engine:GetLocale()
 local date = date
 local format = string.format
 local type = type
+local tinsert, tremove = table.insert, table.remove
 
 -- WoW API
 local hooksecurefunc = hooksecurefunc
@@ -324,6 +325,295 @@ Module.ShowCopyWindow = function(self, chatFrame)
 	if sb then sb:SetValue(sb:GetMinMaxValues() and select(2, sb:GetMinMaxValues()) or 0) end
 end
 
+-- ======================================================================
+-- Auto-hide / auto-fade on inactivity
+-- ======================================================================
+-- "fade": after the delay the chat drops to the configured opacity; hovering
+--         any chat element brings it straight back to 100%.
+-- "hide": after the delay the chat goes fully invisible AND mouse-transparent
+--         (so it can't eat world clicks); it comes back via the action bar Chat
+--         button, or whenever the input line opens.
+-- Activity = hovering the chat or an open input line. Incoming messages don't
+-- count, otherwise busy channels would keep the chat up forever.
+
+-- third-party chat button bars that should follow the chat
+local EXTRA_FRAMES = { "ChatBarFrame" }
+
+local function isAncestorIn(frame, set)
+	local p = frame.GetParent and frame:GetParent()
+	while p do
+		if set[p] then return true end
+		p = p.GetParent and p:GetParent()
+	end
+	return false
+end
+
+-- every top-most chat element we drive (children of a listed frame are skipped,
+-- so their alpha isn't multiplied twice)
+Module.GetFadeTargets = function(self)
+	local list, set = {}, {}
+	local function add(f)
+		if f and not set[f] and f.SetAlpha then
+			set[f] = true
+			list[#list + 1] = f
+		end
+	end
+	for i = 1, NUM_CHAT_WINDOWS do
+		local name = "ChatFrame" .. i
+		add(_G[name])
+		add(_G[name .. "Tab"])
+		add(_G[name .. "ButtonFrameUpButton"])
+		add(_G[name .. "ButtonFrameDownButton"])
+		add(_G[name .. "ButtonFrameBottomButton"])
+	end
+	add(ChatFrameMenuButton)
+	add(FriendsMicroButton)   -- the "Social" button above the chat
+	add(self.copyButton)
+	for _, n in ipairs(EXTRA_FRAMES) do add(_G[n]) end
+
+	local out = {}
+	for _, f in ipairs(list) do
+		if not isAncestorIn(f, set) then out[#out + 1] = f end
+	end
+	return out
+end
+
+local function editBoxActive()
+	for i = 1, NUM_CHAT_WINDOWS do
+		local eb = _G["ChatFrame" .. i .. "EditBox"]
+		if eb and eb:IsShown() and eb:HasFocus() then return true end
+	end
+	return false
+end
+
+Module.IsAutoHideEnabled = function(self)
+	return self.db and self.db.autohide and self.db.autohide.enabled and true or false
+end
+
+local function isChatWindow(f)
+	local n = f.GetName and f:GetName()
+	return n and n:find("^ChatFrame%d+$") and true or false
+end
+
+-- apply (or re-assert) the faded state on every target
+Module.SetChatFaded = function(self, faded)
+	local cfg = self.db.autohide
+	local hideMode = (cfg.mode == "hide")
+	local mult = hideMode and 0 or (cfg.alpha or 0.3)
+	self.hiddenWindows = self.hiddenWindows or {}
+	for _, f in ipairs(self:GetFadeTargets()) do
+		-- Chat windows are really hidden in "hide" mode: some clients draw emoji
+		-- in chat lines themselves and ignore frame alpha. We remember exactly
+		-- which windows we hid and show only those again.
+		if faded and hideMode and isChatWindow(f) and f:IsShown() then
+			self.hiddenWindows[f] = true
+			f:Hide()
+		end
+		if faded then
+			if f._duiOrigAlpha == nil then f._duiOrigAlpha = f:GetAlpha() end
+			f:SetAlpha(f._duiOrigAlpha * mult)
+			if hideMode and f.EnableMouse then
+				if f._duiOrigMouse == nil then f._duiOrigMouse = f:IsMouseEnabled() and true or false end
+				f:EnableMouse(false)
+				if f.EnableMouseWheel and f.IsMouseWheelEnabled then
+					if f._duiOrigWheel == nil then f._duiOrigWheel = f:IsMouseWheelEnabled() and true or false end
+					f:EnableMouseWheel(false)
+				end
+			end
+		else
+			if f._duiOrigAlpha ~= nil then f:SetAlpha(f._duiOrigAlpha); f._duiOrigAlpha = nil end
+			if f._duiOrigMouse ~= nil then f:EnableMouse(f._duiOrigMouse); f._duiOrigMouse = nil end
+			if f._duiOrigWheel ~= nil then f:EnableMouseWheel(f._duiOrigWheel); f._duiOrigWheel = nil end
+		end
+	end
+	if not faded then
+		for f in pairs(self.hiddenWindows) do f:Show() end
+		wipe(self.hiddenWindows)
+	end
+	self.chatFaded = faded
+	if not faded then self:ClearNotification() end
+end
+
+local function hoveringChat(targets)
+	for _, f in ipairs(targets) do
+		if f:IsVisible() and f:IsMouseOver() then return true end
+	end
+	return false
+end
+
+Module.UpdateAutoHide = function(self)
+	local cfg = self.db.autohide
+	if not cfg.enabled then
+		if self.chatFaded then self:SetChatFaded(false) end
+		return
+	end
+	local now = GetTime()
+	local hideMode = (cfg.mode == "hide")
+
+	-- typing always brings the chat back, in both modes
+	if editBoxActive() then
+		self.lastActive = now
+		if self.chatFaded then self:SetChatFaded(false) end
+		return
+	end
+
+	local targets = self:GetFadeTargets()
+	if self.chatFaded then
+		if not hideMode and hoveringChat(targets) then
+			self.lastActive = now
+			self:SetChatFaded(false)
+		else
+			self:SetChatFaded(true) -- re-assert (Blizzard animates tab alpha)
+		end
+		return
+	end
+
+	if hoveringChat(targets) then
+		self.lastActive = now
+	elseif now - (self.lastActive or now) >= (cfg.delay or 30) then
+		self:SetChatFaded(true)
+	end
+end
+
+-- Left-click on the action bar Chat button: show / hide. Returns false when
+-- the feature is off, so the button can fall back to opening the input line.
+Module.ToggleChatVisibility = function(self)
+	if not self:IsAutoHideEnabled() then return false end
+	if self.chatFaded then
+		self:SetChatFaded(false)
+		self.lastActive = GetTime()
+	else
+		self:SetChatFaded(true)
+	end
+	return true
+end
+
+-- called by the options panel after a setting change
+Module.RefreshAutoHide = function(self)
+	if self.chatFaded then self:SetChatFaded(false) end
+	self.lastActive = GetTime()
+	self:UpdateAutoHide()
+end
+
+-- ----------------------------------------------------------------------
+-- New-message notification: while the chat is hidden/faded, incoming
+-- messages make the action bar Chat button glow. Whispers by default;
+-- guild and party/raid are opt-in. Cleared as soon as the chat is shown.
+-- ----------------------------------------------------------------------
+local NOTIFY_EVENTS = {
+	CHAT_MSG_WHISPER      = "whisper",
+	CHAT_MSG_BN_WHISPER   = "whisper",
+	CHAT_MSG_GUILD        = "guild",
+	CHAT_MSG_OFFICER      = "guild",
+	CHAT_MSG_PARTY        = "group",
+	CHAT_MSG_PARTY_LEADER = "group",
+	CHAT_MSG_RAID         = "group",
+	CHAT_MSG_RAID_LEADER  = "group",
+	CHAT_MSG_RAID_WARNING = "group",
+	CHAT_MSG_CHANNEL      = "channel",
+}
+local MAX_SENDERS = 8
+
+local function notifyCfg(self)
+	local n = self.db.autohide.notify
+	if type(n) ~= "table" then
+		n = { enabled = true, style = "art", count = false, guild = false, group = false, channel = false }
+		self.db.autohide.notify = n
+	end
+	return n
+end
+
+local function senderColor(guid, event)
+	if guid and guid ~= "" and GetPlayerInfoByGUID then
+		local ok, _, class = pcall(GetPlayerInfoByGUID, guid)
+		local c = ok and class and RAID_CLASS_COLORS and RAID_CLASS_COLORS[class]
+		if c then return ("|cff%.2x%.2x%.2x"):format(c.r * 255, c.g * 255, c.b * 255) end
+	end
+	local info = ChatTypeInfo and ChatTypeInfo[(event or ""):gsub("^CHAT_MSG_", "")]
+	if info then return ("|cff%.2x%.2x%.2x"):format(info.r * 255, info.g * 255, info.b * 255) end
+	return "|cffffffff"
+end
+
+Module.HasNotification = function(self)
+	return (self.notifyCount or 0) > 0
+end
+
+-- number of unread messages since the chat was hidden
+Module.GetNotifyCount = function(self)
+	return self.notifyCount or 0
+end
+
+-- current look settings, read by the Chat button
+Module.GetNotifyStyle = function(self)
+	local n = notifyCfg(self)
+	return n.style or "art", n.count and true or false
+end
+
+-- colored, de-duplicated sender names (newest last), for the button tooltip
+Module.GetNotifySenders = function(self)
+	return self.notifySenders or {}
+end
+
+-- also called by the options panel so style changes apply live
+Module.FireNotifyChanged = function(self)
+	if self.onNotifyChanged then self.onNotifyChanged(self:HasNotification(), self:GetNotifyCount()) end
+end
+
+Module.ClearNotification = function(self)
+	if (self.notifyCount or 0) == 0 then return end
+	self.notifyCount = 0
+	if self.notifySenders then wipe(self.notifySenders) end
+	if self.notifySeen then wipe(self.notifySeen) end
+	self:FireNotifyChanged()
+end
+
+Module.OnNotifyEvent = function(self, event, msg, author, ...)
+	if not (self:IsAutoHideEnabled() and self.chatFaded) then return end
+	local n = notifyCfg(self)
+	if not n.enabled then return end
+	local kind = NOTIFY_EVENTS[event]
+	if kind == "guild" and not n.guild then return end
+	if kind == "group" and not n.group then return end
+	if kind == "channel" and not n.channel then return end
+	if not author or author == "" or author == UnitName("player") then return end
+
+	self.notifySenders = self.notifySenders or {}
+	self.notifySeen = self.notifySeen or {}
+	self.notifyCount = (self.notifyCount or 0) + 1
+	if not self.notifySeen[author] then
+		self.notifySeen[author] = true
+		local guid = select(10, ...)   -- arg12 = sender GUID
+		tinsert(self.notifySenders, senderColor(guid, event) .. author .. "|r")
+		if #self.notifySenders > MAX_SENDERS then tremove(self.notifySenders, 1) end
+	end
+	self:FireNotifyChanged()
+end
+
+Module.SetupAutoHide = function(self)
+	if self.autoHideTicker then return end
+	self.lastActive = GetTime()
+	for i = 1, NUM_CHAT_WINDOWS do
+		local eb = _G["ChatFrame" .. i .. "EditBox"]
+		if eb then
+			eb:HookScript("OnEditFocusGained", function()
+				self.lastActive = GetTime()
+				if self.chatFaded then self:SetChatFaded(false) end
+			end)
+		end
+	end
+	local t = CreateFrame("Frame")
+	for event in pairs(NOTIFY_EVENTS) do t:RegisterEvent(event) end
+	t:SetScript("OnEvent", function(_, event, ...) self:OnNotifyEvent(event, ...) end)
+	t.elapsed = 0
+	t:SetScript("OnUpdate", function(f, e)
+		f.elapsed = f.elapsed + e
+		if f.elapsed < 0.25 then return end
+		f.elapsed = 0
+		self:UpdateAutoHide()
+	end)
+	self.autoHideTicker = t
+end
+
 Module.OnInit = function(self)
 	self.db = self:GetConfig("Chat", "character")
 	self.config = self:GetStaticConfig("Chat")
@@ -351,4 +641,7 @@ Module.OnEnable = function(self)
 		end
 		self:ApplyStyle()
 	end
+
+	-- inactivity auto-hide / auto-fade
+	self:SetupAutoHide()
 end

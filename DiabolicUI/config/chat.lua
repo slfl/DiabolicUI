@@ -16,6 +16,20 @@ local db = {
 		bg_alpha = 0.5,       -- dark background strength (0..1)
 		show_buttons = true,  -- show the up/down/menu chat buttons
 		hide_friends_button = false -- hide the top "Social" (friends) micro button
+	},
+	autohide = {
+		enabled = false, -- hide/fade the chat after a period of inactivity
+		mode = "fade",   -- "fade" (semi-transparent, hover restores) or "hide" (button restores)
+		delay = 30,      -- seconds of inactivity before it kicks in
+		alpha = 0.3,     -- opacity in "fade" mode (0..1)
+		notify = {
+			enabled = true,  -- make the Chat button glow on new messages while the chat is hidden/faded
+			style = "art",   -- "art" (smouldering button), "border" (glowing outline) or "both"
+			count = false,   -- show the unread message count in the middle of the button
+			guild = false,   -- also guild / officer messages
+			group = false,   -- also party / raid messages
+			channel = false  -- also public channels (General, Trade, custom...)
+		}
 	}
 }
 

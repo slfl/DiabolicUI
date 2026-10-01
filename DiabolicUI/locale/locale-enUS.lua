@@ -261,3 +261,35 @@ L["Combat text font"] = true
 L["Combat font relog notice"] = "The damage and healing font is applied after logging out to the character screen.\nA plain interface reload (/reload) does not change it.\n\nLog out now?"
 L["Log out now"] = true
 L["Later"] = true
+
+-- Chat auto-hide (options + chat button)
+L["Hide chat button"] = true
+L["Hide chat button tip"] = "When menu buttons are hidden, hide the Chat button too. Unchecked: the Chat button always stays on screen."
+L["Auto-hide chat"] = true
+L["Auto-hide chat tip"] = "Hide or fade the chat after a period of inactivity. Hover it or use the Chat button to bring it back."
+L["Auto-hide mode"] = true
+L["Make transparent"] = true
+L["Hide completely"] = true
+L["Inactivity delay"] = "Inactivity delay (sec)"
+L["Inactivity delay tip"] = "Seconds without using the chat before it hides or fades."
+L["Faded opacity"] = true
+L["Faded opacity tip"] = "Chat opacity in transparent mode. Hovering the chat restores it to 100%."
+L["<Left-click> to show or hide the chat."] = true
+L["<Right-click> to write a message."] = true
+
+-- Chat new-message notification
+L["Notify on new messages"] = true
+L["Notify on new messages tip"] = "While the chat is hidden or faded, make the Chat button glow when someone writes to you. Whispers by default."
+L["Also guild messages"] = true
+L["Also guild messages tip"] = "Also glow on guild and officer chat."
+L["Also party and raid messages"] = true
+L["Also party and raid messages tip"] = "Also glow on party and raid chat."
+L["New messages:"] = true
+L["Glow style"] = true
+L["Smouldering button"] = true
+L["Glowing outline"] = true
+L["Button and outline"] = true
+L["Show message count"] = true
+L["Show message count tip"] = "Show the number of unread messages in the middle of the Chat button."
+L["Also public channels"] = true
+L["Also public channels tip"] = "Also glow on public channels: General, Trade, custom channels."
