@@ -22,6 +22,7 @@ local db = {
 		mode = "fade",   -- "fade" (semi-transparent, hover restores) or "hide" (button restores)
 		delay = 30,      -- seconds of inactivity before it kicks in
 		alpha = 0.3,     -- opacity in "fade" mode (0..1)
+		keep_in_group = true, -- never hide/fade while in a party or raid
 		notify = {
 			enabled = true,  -- make the Chat button glow on new messages while the chat is hidden/faded
 			style = "art",   -- "art" (smouldering button), "border" (glowing outline) or "both"

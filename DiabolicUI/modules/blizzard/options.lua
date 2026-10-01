@@ -632,12 +632,20 @@ Module.OnEnable = function(self)
 		if Chat and Chat.FireNotifyChanged then Chat:FireNotifyChanged() end
 	end
 
+	-- keep the chat visible while in a party / raid
+	local ah_group = CreateCheckbox(chatContent, "ChatKeepInGroup",
+		L["Keep visible in party and raid"], L["Keep visible in party and raid tip"],
+		function() return chah().keep_in_group ~= false end,
+		function(c) chah().keep_in_group = c; applyAutoHide() end,
+		nil)
+	ah_group:SetPoint("TOPLEFT", ah_alpha, "BOTTOMLEFT", -4, -28)
+
 	local nt_enabled = CreateCheckbox(chatContent, "ChatNotify",
 		L["Notify on new messages"], L["Notify on new messages tip"],
 		function() return chnotify().enabled ~= false end,
 		function(c) chnotify().enabled = c; applyNotify() end,
 		nil)
-	nt_enabled:SetPoint("TOPLEFT", ah_alpha, "BOTTOMLEFT", -4, -28)
+	nt_enabled:SetPoint("TOPLEFT", ah_group, "BOTTOMLEFT", 0, -20)
 
 	local nt_style = CreateDropdown(chatContent, "ChatNotifyStyle",
 		L["Glow style"],
@@ -675,7 +683,7 @@ Module.OnEnable = function(self)
 		function(c) chnotify().channel = c end,
 		nt_group)
 
-	chatContent:SetHeight(980)
+	chatContent:SetHeight(1030)
 	InterfaceOptions_AddCategory(chat)
 
 	-- ==============================================================

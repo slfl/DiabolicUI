@@ -209,7 +209,7 @@ MenuWidget.OnEnable = function(self)
 		if Chat and Chat.HasNotification and Chat:HasNotification() then
 			GameTooltip:AddLine(L["New messages:"] .. " " .. table.concat(Chat:GetNotifySenders(), ", "), 1, .82, 0, true)
 		end
-		if Chat and Chat.IsAutoHideEnabled and Chat:IsAutoHideEnabled() then
+		if Chat and Chat.IsAutoHideActive and Chat:IsAutoHideActive() then
 			GameTooltip:AddLine(L["<Left-click> to show or hide the chat."], 0, .7, 0)
 			GameTooltip:AddLine(L["<Right-click> to write a message."], 0, .7, 0)
 		else

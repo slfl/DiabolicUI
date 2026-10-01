@@ -293,3 +293,5 @@ L["Show message count"] = true
 L["Show message count tip"] = "Show the number of unread messages in the middle of the Chat button."
 L["Also public channels"] = true
 L["Also public channels tip"] = "Also glow on public channels: General, Trade, custom channels."
+L["Keep visible in party and raid"] = true
+L["Keep visible in party and raid tip"] = "While you are in a party or raid the chat never hides or fades. Uncheck to auto-hide it there too."

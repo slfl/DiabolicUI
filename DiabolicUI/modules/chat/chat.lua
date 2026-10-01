@@ -390,6 +390,18 @@ Module.IsAutoHideEnabled = function(self)
 	return self.db and self.db.autohide and self.db.autohide.enabled and true or false
 end
 
+local function inGroup()
+	return ((GetNumRaidMembers and GetNumRaidMembers() or 0) > 0)
+		or ((GetNumPartyMembers and GetNumPartyMembers() or 0) > 0)
+end
+
+-- enabled AND not suspended by the "keep visible in party/raid" rule
+Module.IsAutoHideActive = function(self)
+	if not self:IsAutoHideEnabled() then return false end
+	if self.db.autohide.keep_in_group ~= false and inGroup() then return false end
+	return true
+end
+
 local function isChatWindow(f)
 	local n = f.GetName and f:GetName()
 	return n and n:find("^ChatFrame%d+$") and true or false
@@ -443,8 +455,11 @@ end
 
 Module.UpdateAutoHide = function(self)
 	local cfg = self.db.autohide
-	if not cfg.enabled then
+	if not self:IsAutoHideActive() then
+		-- off, or in a party/raid with "keep visible" on: chat stays up,
+		-- and the idle timer restarts from the moment the rule stops applying
 		if self.chatFaded then self:SetChatFaded(false) end
+		self.lastActive = GetTime()
 		return
 	end
 	local now = GetTime()
@@ -478,7 +493,7 @@ end
 -- Left-click on the action bar Chat button: show / hide. Returns false when
 -- the feature is off, so the button can fall back to opening the input line.
 Module.ToggleChatVisibility = function(self)
-	if not self:IsAutoHideEnabled() then return false end
+	if not self:IsAutoHideActive() then return false end
 	if self.chatFaded then
 		self:SetChatFaded(false)
 		self.lastActive = GetTime()
@@ -568,7 +583,7 @@ Module.ClearNotification = function(self)
 end
 
 Module.OnNotifyEvent = function(self, event, msg, author, ...)
-	if not (self:IsAutoHideEnabled() and self.chatFaded) then return end
+	if not (self:IsAutoHideActive() and self.chatFaded) then return end
 	local n = notifyCfg(self)
 	if not n.enabled then return end
 	local kind = NOTIFY_EVENTS[event]
