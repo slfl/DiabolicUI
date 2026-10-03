@@ -242,6 +242,22 @@ Module.OnEnable = function(self)
 			if ActionBars and ActionBars.UpdateButtonsVisibility then ActionBars:UpdateButtonsVisibility() end
 		end, buttons)
 
+	-- icons only on the action bars: hide the keybind text
+	local keybinds = CreateCheckbox(cmdContent, "HideKeybinds",
+		L["Hide keybinds"],
+		L["Hide keybinds tip"],
+		function() return Engine:GetConfig("UI", "character").hide_keybinds end,
+		function(checked)
+			Engine:GetConfig("UI", "character").hide_keybinds = checked
+			local AB = Engine:GetModule("ActionBars", true)
+			local W = AB and AB.GetWidget and AB:GetWidget("Template: Button")
+			if W and W.GetAll then
+				for button in W:GetAll() do
+					if button.UpdateBindings then button:UpdateBindings() end
+				end
+			end
+		end, chatbtn)
+
 	local classcolor = CreateCheckbox(cmdContent, "ClassHealthColor",
 		L["Class colored health orb"],
 		L["Colors the player health orb using your class color instead of the default red."],
@@ -250,7 +266,7 @@ Module.OnEnable = function(self)
 			Engine:GetConfig("UI", "character").class_health_color = checked
 			local UnitFrames = Engine:GetModule("UnitFrames", true)
 			if UnitFrames and UnitFrames.RefreshHealthColor then UnitFrames:RefreshHealthColor() end
-		end, chatbtn)
+		end, keybinds)
 
 	local classcolorpet = CreateCheckbox(cmdContent, "ClassHealthColorPet",
 		L["Also color the pet health orb"],
@@ -395,7 +411,7 @@ Module.OnEnable = function(self)
 		end,
 		xpText)
 
-	cmdContent:SetHeight(680)
+	cmdContent:SetHeight(720)
 	InterfaceOptions_AddCategory(cmd)
 
 	-- ==============================================================

@@ -295,3 +295,5 @@ L["Also public channels"] = true
 L["Also public channels tip"] = "Also glow on public channels: General, Trade, custom channels."
 L["Keep visible in party and raid"] = true
 L["Keep visible in party and raid tip"] = "While you are in a party or raid the chat never hides or fades. Uncheck to auto-hide it there too."
+L["Hide keybinds"] = true
+L["Hide keybinds tip"] = "Hide the key binding text on action buttons, so only the spell icons are shown."

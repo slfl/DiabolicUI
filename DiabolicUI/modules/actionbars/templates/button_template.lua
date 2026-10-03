@@ -1140,7 +1140,8 @@ end
 Button.UpdateBindings = function(self)
 	local key = self:GetKeyBind() or ""
 	local keybind = self.keybind
-	if self.type_by_state == "stance" then
+	-- "hide keybinds" option: icons only (range is shown by the icon color, not this text)
+	if self.type_by_state == "stance" or Engine:GetConfig("UI", "character").hide_keybinds then
 		keybind:SetText("")
 		keybind:Hide()
 	else
