@@ -348,6 +348,57 @@ local function isAncestorIn(frame, set)
 	return false
 end
 
+local function isChatWindow(f)
+	local n = f.GetName and f:GetName()
+	return n and n:find("^ChatFrame%d+$") and true or false
+end
+
+-- every chat window name: the permanent ones plus 3.3 temporary whisper windows,
+-- which get ids above NUM_CHAT_WINDOWS and are listed in CHAT_FRAMES
+local function chatWindowNames()
+	local names, seen = {}, {}
+	for i = 1, NUM_CHAT_WINDOWS do
+		local n = "ChatFrame" .. i
+		seen[n] = true
+		names[#names + 1] = n
+	end
+	if type(CHAT_FRAMES) == "table" then
+		for _, n in ipairs(CHAT_FRAMES) do
+			if type(n) == "string" and not seen[n] then
+				seen[n] = true
+				names[#names + 1] = n
+			end
+		end
+	end
+	return names
+end
+
+-- Event-driven guards, installed once per element. Polling alone left a gap:
+-- something (e.g. a shapeshift re-layout updating the chat dock) re-shows a
+-- window, and it got drawn for a frame before the next poll. These react inside
+-- the very Show()/SetAlpha() call, before the frame is rendered.
+Module.GuardFadeTarget = function(self, f)
+	if f._duiFadeGuarded then return end
+	f._duiFadeGuarded = true
+	-- remember the alpha Blizzard wants, but keep ours on screen while faded
+	hooksecurefunc(f, "SetAlpha", function(frame, alpha)
+		if self.applyingAlpha or not self.chatFaded or frame._duiOrigAlpha == nil then return end
+		frame._duiOrigAlpha = alpha
+		self.applyingAlpha = true
+		frame:SetAlpha(alpha * (self.fadeMult or 0))
+		self.applyingAlpha = false
+	end)
+	-- a chat window shown while the chat is hidden goes straight back down
+	if isChatWindow(f) then
+		f:HookScript("OnShow", function(frame)
+			if self.chatFaded and self.fadeHideMode then
+				self.hiddenWindows[frame] = true
+				frame:Hide()
+			end
+		end)
+	end
+end
+
 -- every top-most chat element we drive (children of a listed frame are skipped,
 -- so their alpha isn't multiplied twice)
 Module.GetFadeTargets = function(self)
@@ -358,8 +409,7 @@ Module.GetFadeTargets = function(self)
 			list[#list + 1] = f
 		end
 	end
-	for i = 1, NUM_CHAT_WINDOWS do
-		local name = "ChatFrame" .. i
+	for _, name in ipairs(chatWindowNames()) do
 		add(_G[name])
 		add(_G[name .. "Tab"])
 		add(_G[name .. "ButtonFrameUpButton"])
@@ -373,7 +423,10 @@ Module.GetFadeTargets = function(self)
 
 	local out = {}
 	for _, f in ipairs(list) do
-		if not isAncestorIn(f, set) then out[#out + 1] = f end
+		if not isAncestorIn(f, set) then
+			self:GuardFadeTarget(f)
+			out[#out + 1] = f
+		end
 	end
 	return out
 end
@@ -402,26 +455,30 @@ Module.IsAutoHideActive = function(self)
 	return true
 end
 
-local function isChatWindow(f)
-	local n = f.GetName and f:GetName()
-	return n and n:find("^ChatFrame%d+$") and true or false
-end
-
 -- apply (or re-assert) the faded state on every target
 Module.SetChatFaded = function(self, faded)
 	local cfg = self.db.autohide
 	local hideMode = (cfg.mode == "hide")
 	local mult = hideMode and 0 or (cfg.alpha or 0.3)
 	self.hiddenWindows = self.hiddenWindows or {}
-	for _, f in ipairs(self:GetFadeTargets()) do
-		-- Chat windows are really hidden in "hide" mode: some clients draw emoji
-		-- in chat lines themselves and ignore frame alpha. We remember exactly
-		-- which windows we hid and show only those again.
-		if faded and hideMode and isChatWindow(f) and f:IsShown() then
-			self.hiddenWindows[f] = true
-			f:Hide()
-		end
+	local targets = self:GetFadeTargets()
+
+	-- State first: the guards read it, and our own Show() calls below must not
+	-- be bounced back by the OnShow guard.
+	self.chatFaded = faded
+	self.fadeMult = mult
+	self.fadeHideMode = faded and hideMode
+
+	self.applyingAlpha = true
+	for _, f in ipairs(targets) do
 		if faded then
+			-- Chat windows are really hidden in "hide" mode: some clients draw
+			-- emoji in chat lines themselves and ignore frame alpha. We remember
+			-- exactly which windows we hid and show only those again.
+			if hideMode and isChatWindow(f) and f:IsShown() then
+				self.hiddenWindows[f] = true
+				f:Hide()
+			end
 			if f._duiOrigAlpha == nil then f._duiOrigAlpha = f:GetAlpha() end
 			f:SetAlpha(f._duiOrigAlpha * mult)
 			if hideMode and f.EnableMouse then
@@ -438,12 +495,13 @@ Module.SetChatFaded = function(self, faded)
 			if f._duiOrigWheel ~= nil then f:EnableMouseWheel(f._duiOrigWheel); f._duiOrigWheel = nil end
 		end
 	end
+	self.applyingAlpha = false
+
 	if not faded then
 		for f in pairs(self.hiddenWindows) do f:Show() end
 		wipe(self.hiddenWindows)
+		self:ClearNotification()
 	end
-	self.chatFaded = faded
-	if not faded then self:ClearNotification() end
 end
 
 local function hoveringChat(targets)
